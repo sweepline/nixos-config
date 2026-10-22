@@ -74,7 +74,7 @@ nixos-rebuild build-vm --flake .#dongmyo
 ./result/bin/run-dongmyo-vm
 ```
 
-Disk encryption and the TPM are not used in the VM, but the desktop (ly, Hyprland, waybar,
+Disk encryption and the TPM are not used in the VM, but the desktop (ly, Hyprland, ashell,
 Home Manager) is. Log in as `mikkel` / `changeme`. Hyprland in a VM can be slow or need
 `WLR_RENDERER_ALLOW_SOFTWARE=1`.
 
@@ -101,9 +101,19 @@ Adding a new machine or a new user key: add its public key in `secrets.nix`, the
 On the machines the decrypted file is at `/run/agenix/wg0` (root only). WireGuard:
 `sudo wg show`, `systemctl status wg-quick-wg0`.
 
+## Network
+
+- **Wi-Fi:** iwd. Use the network panel in ashell, `impala` (TUI), or
+  `iwctl station wlan0 scan` / `get-networks` / `connect "<SSID>"`. Known networks are
+  stored in `/var/lib/iwd/`.
+- **Addresses:** systemd-networkd does DHCP on every wired and wireless interface.
+  `networkctl` shows the state.
+- **DNS:** systemd-resolved. `resolvectl status` shows which DNS servers are used per
+  interface (Wi-Fi, Tailscale MagicDNS, WireGuard).
+
 ## Light / dark theme
 
-The sun/moon button in waybar switches between dark (default) and light. Both themes are
+The sun/moon button in ashell switches between dark (default) and light. Both themes are
 built in advance as a Home Manager **specialisation**, so switching takes a second or two
 and needs no rebuild. kitty, GTK apps and Firefox follow along. A rebuild always goes back
 to dark.

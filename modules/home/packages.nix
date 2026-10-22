@@ -11,6 +11,7 @@
     python3Packages.bpython
     tmux
     pavucontrol
+    impala
     swayimg
     nh
 
@@ -25,6 +26,7 @@
     discord
     signal-desktop
     joplin-desktop
+    gelly
     godot
     chromium
     qgis

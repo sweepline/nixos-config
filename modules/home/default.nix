@@ -3,7 +3,7 @@
   imports = [
     ./hyprland.nix
     ./idle-lock.nix
-    ./waybar.nix
+    ./ashell.nix
     ./mako.nix
     ./rofi.nix
     ./kitty.nix

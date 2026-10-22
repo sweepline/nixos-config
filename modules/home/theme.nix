@@ -1,7 +1,7 @@
 { lib, pkgs, ... }:
 let
   # Dark is the normal Home Manager generation; light is a specialisation of it.
-  # The waybar button activates the other one (no rebuild, both are prebuilt).
+  # The theme button in ashell activates the other one (no rebuild, both are prebuilt).
   themeToggle = pkgs.writeShellApplication {
     name = "theme-toggle";
     runtimeInputs = with pkgs; [
@@ -15,10 +15,11 @@ let
       current="$state/home-manager/gcroots/current-home"
       basefile="$state/theme-base-generation"
 
+      # Output for the ashell custom module ("alt" selects the icon).
       show() {
         case "$(gsettings get "$schema" "$key")" in
-          *dark*) printf '{"text":"\U000f186","class":"dark","tooltip":"Dark theme — click for light"}\n' ;;
-          *)      printf '{"text":"\U000f185","class":"light","tooltip":"Light theme — click for dark"}\n' ;;
+          *dark*) echo '{"text":"","alt":"dark"}' ;;
+          *)      echo '{"text":"","alt":"light"}' ;;
         esac
       }
 

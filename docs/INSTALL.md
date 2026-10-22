@@ -83,7 +83,7 @@ Boot the **NixOS 26.05** ISO (graphical or minimal) from USB.
 
 ```sh
 sudo -i
-nmtui                                   # connect to Wi-Fi (not needed on ethernet)
+nmtui                                   # connect to Wi-Fi on the ISO (not needed on ethernet)
 nix-shell -p git gnupg zstd
 git clone https://github.com/sweepline/nixos-config /tmp/nixos-config
 cd /tmp/nixos-config
@@ -163,7 +163,10 @@ a good one.
 1. Limine shows **NixOS** (and **Windows** on 97). Pick NixOS.
 2. Type the **LUKS passphrase**.
 3. Log in at ly. Hyprland starts.
-4. Open kitty (`Mod+Enter`) and commit the hardware config:
+4. On Wi-Fi (the installed system uses iwd, not NetworkManager): open kitty (`Mod+Enter`)
+   and run `impala`, or click the network icon in the bar. Without a UI:
+   `iwctl station wlan0 connect "<SSID>"`.
+5. Commit the hardware config:
    ```sh
    cd ~/repos/nixos-config
    git add -A && git commit -m "<host>: hardware config"

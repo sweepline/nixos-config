@@ -11,10 +11,18 @@ in
 {
   networking.hostName = hostName;
 
-  networking.networkmanager = {
+  # Wi-Fi: iwd. Addresses (wired and wireless): systemd-networkd. DNS: systemd-resolved.
+  networking.wireless.iwd = {
     enable = true;
-    unmanaged = [ "wg0" ];
+    settings = {
+      General.EnableNetworkConfiguration = false;
+      Settings.AutoConnect = true;
+    };
   };
+  networking.useNetworkd = true;
+  networking.useDHCP = true;
+  systemd.network.wait-online.anyInterface = true;
+  services.resolved.enable = true;
 
   networking.firewall = {
     enable = true;

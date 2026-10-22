@@ -1,7 +1,7 @@
 { ... }:
 {
   # Kitty switches these automatically when the color scheme changes
-  # (theme toggle in waybar), so it is not themed by stylix.
+  # (theme toggle in ashell), so it is not themed by stylix.
   stylix.targets.kitty.enable = false;
   xdg.configFile = {
     "kitty/dark-theme.auto.conf".source = ./kitty/dark-theme.auto.conf;

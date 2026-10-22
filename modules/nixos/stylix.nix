@@ -1,7 +1,7 @@
 { pkgs, ... }:
 {
   # Dark is the default. The light variant is a Home Manager specialisation,
-  # switched at runtime by the theme button in waybar (see modules/home/theme.nix).
+  # switched at runtime by the theme button in ashell (see modules/home/theme.nix).
   stylix = {
     enable = true;
     polarity = "dark";

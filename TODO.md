@@ -25,5 +25,3 @@
       nixpkgs. Install with `pnpm add -g` if needed, or drop them.
 - [ ] Home folder backups to the home server with restic or borg (a systemd timer).
 - [ ] CI: a GitHub Action that evaluates/builds all hosts on every push.
-- [ ] Waybar: the old config had colorful module backgrounds; it now uses the stylix
-      colors. Restyle in `modules/home/waybar.nix` if wanted.
