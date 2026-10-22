@@ -1,0 +1,10 @@
+result
+result-*
+.direnv/
+
+# Plaintext secrets must never be committed; only *.age files belong in secrets/.
+*.conf
+!modules/home/kitty/*.conf
+secrets/*
+!secrets/*.age
+!secrets/secrets.nix

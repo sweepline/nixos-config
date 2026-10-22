@@ -1,0 +1,7 @@
+# Paths to back up from esa before reinstalling. ~ is expanded to $HOME.
+# TODO: add anything else you want to keep
+~/Pictures
+~/Videos
+~/.ssh
+# SSH host key for agenix (generated if missing)
+/etc/ssh/ssh_host_ed25519_key

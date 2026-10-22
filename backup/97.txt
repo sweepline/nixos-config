@@ -1,0 +1,9 @@
+# Paths to back up from 97. One per line, ~ is expanded to $HOME.
+# Lines starting with / outside $HOME are read with sudo.
+~/Pictures
+~/Videos
+~/.ssh
+~/.local/share/Steam/steamapps/compatdata/7200/pfx/drive_c/users/steamuser/Documents/TrackMania
+~/.local/share/Steam/steamapps/common/Black Mesa/bms/save
+# SSH host key for agenix. If it does not exist, backup.sh generates one.
+/etc/ssh/ssh_host_ed25519_key
