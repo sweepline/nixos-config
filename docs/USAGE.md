@@ -159,6 +159,12 @@ Put images in `~/Pictures/Wallpapers` (not in git). At login every monitor gets 
 one matching its orientation: portrait images on rotated monitors, landscape on the rest.
 If there are no portrait images, any image is used. `Mod+Shift+b` picks new ones.
 
+## USB drives
+
+Drives are mounted automatically when plugged in (udiskie), at `/run/media/mikkel/<label>`,
+with a notification. Unmount/eject from the tray icon, or `udiskie-umount /run/media/mikkel/<label>`.
+Encrypted (LUKS) drives ask for the passphrase.
+
 ## SSH agent
 
 The SSH agent is part of the GNOME keyring (`gcr-ssh-agent`), which ly unlocks when you log

@@ -36,4 +36,13 @@
   home.sessionVariables.UV_PYTHON_PREFERENCE = "only-managed";
 
   xdg.configFile."swayimg/init.lua".source = ./swayimg.lua;
+
+  # Auto-mount USB drives under /run/media/mikkel/<label>, with a notification
+  # and a tray icon (click to unmount/eject).
+  services.udiskie = {
+    enable = true;
+    automount = true;
+    notify = true;
+    tray = "auto";
+  };
 }
