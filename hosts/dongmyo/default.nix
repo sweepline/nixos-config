@@ -3,9 +3,9 @@
   imports = [
     ./hardware-configuration.nix
     (import ../disk-layout.nix {
-      # TODO: `ls -l /dev/disk/by-id/` on the installer
-      device = "/dev/disk/by-id/CHANGE-ME";
-      # TODO: at least the amount of RAM, needed for hibernate
+      # SK Hynix 256 GB (nvme0n1)
+      device = "/dev/disk/by-id/nvme-SKHynix_HFS256GDE9X081N_FYB4N046411904T8H";
+      # Same as RAM (32 GB), needed for hibernate
       swapSize = "32G";
     })
   ];
@@ -14,8 +14,8 @@
     gpu = "amd";
     laptop = {
       enable = true;
-      chargeLimit = 80;
-      # TODO: only if dongmyo has a fingerprint reader (lsusb | grep -i finger)
+      chargeLimit = 80; # BAT0 supports charge_control_end_threshold
+      # TODO: check for a reader with `nix-shell -p usbutils --run lsusb`; set false if none
       fingerprint.enable = true;
     };
     secureBoot.enable = false;
