@@ -151,6 +151,7 @@ Same as the old sway config. `Mod` is the Super/Windows key.
 | `Mod+Shift+b` | new random wallpapers |
 | `Mod+n` / `Mod+Shift+n` | dismiss notification / bring back the last one |
 | `Mod+Ctrl+n` | toggle Do Not Disturb |
+| `Mod+Shift+v` | clipboard history (pick an entry to copy it again) |
 | `Mod+mouse` | left: move, right: resize |
 
 Not available in Hyprland: sway's stacking layout and `focus parent`.
@@ -187,6 +188,20 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
 - yazi is the file manager. Archives open/extract with `ouch` (`ouch decompress file.zip`),
   7-zip (`7zz`) and `unrar` are also installed.
 - PDFs open in zathura (vim keys: `j`/`k`, `/` to search, `d` for two pages).
+- Opening a folder from another app (e.g. "Show in folder" in Firefox) opens yazi in kitty.
+- Clipboard history: `Mod+Shift+v`. `cliphist wipe` clears it.
+
+## Gaming (97)
+
+- **Proton-GE** is installed next to Valve's Proton. Pick it per game: Properties →
+  Compatibility → "Force the use of a specific Steam Play compatibility tool".
+- **MangoHud** (FPS, frame times, CPU/GPU load and temperatures): launch options
+  `mangohud %command%`, toggle in game with `Right Shift+F12`. Combine with gamemode:
+  `gamemoderun mangohud %command%`.
+- **Discord** is Vesktop (Discord with Vencord). Screen sharing includes audio on Wayland.
+- **Xbox controllers** work wired, over Bluetooth, and with the wireless dongle (xone).
+- **FiiO K11** (USB DAC) works out of the box. Select it as output in the ashell audio menu
+  or pavucontrol; PipeWire remembers it.
 
 ## USB drives
 

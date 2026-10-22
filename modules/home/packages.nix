@@ -27,7 +27,7 @@
     opencode
 
     # Apps
-    discord
+    vesktop # Discord with Vencord; screen share with audio on Wayland
     signal-desktop
     joplin-desktop
     gelly

@@ -25,7 +25,6 @@ lib.mkIf config.my.gaming.enable {
   environment.systemPackages = with pkgs; [
     lutris
     heroic
-    mangohud
     protonup-qt
     wineWow64Packages.staging
     winetricks

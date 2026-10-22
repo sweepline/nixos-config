@@ -160,6 +160,9 @@ in
       bind("SHIFT + N", run("makoctl restore"))
       bind("CTRL + N", run("${dndToggle}"))
 
+      -- Clipboard history
+      bind("SHIFT + V", run("cliphist list | ${rofi} -dmenu -display-columns 2 -p clipboard | cliphist decode | wl-copy"))
+
       -- Smart gaps: no gaps or borders when a window is alone
       hl.workspace_rule({ workspace = "w[tv1]s[false]", gaps_out = 0, gaps_in = 0 })
       hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = 0, gaps_in = 0 })
@@ -207,6 +210,12 @@ in
   };
 
   services.hyprpolkitagent.enable = true;
+
+  # Clipboard history (text and images), picker on Mod+Shift+V
+  services.cliphist = {
+    enable = true;
+    allowImages = true;
+  };
 
   # stylix writes hyprlang-style keys ("col.active_border"), which the Lua
   # config does not use, so the colors are set above instead.
