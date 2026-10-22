@@ -19,7 +19,7 @@ Secure Boot → TPM + PIN → secrets/WireGuard → restore the rest.
 From the machine that is about to be reinstalled:
 
 ```sh
-cd ~/repos/nixos-config
+cd ~/nixos-config
 backup/backup.sh <host>          # e.g. backup/backup.sh 97
 ```
 
@@ -147,8 +147,8 @@ A brand-new machine without a backup skips this step.
 ```sh
 nixos-install --flake .#<host> --no-root-passwd
 nixos-enter --root /mnt -c 'passwd mikkel'     # your login password
-mkdir -p /mnt/home/mikkel/repos
-cp -a /tmp/nixos-config /mnt/home/mikkel/repos/nixos-config
+mkdir -p /mnt/home/mikkel
+cp -a /tmp/nixos-config /mnt/home/mikkel/nixos-config
 chown -R 1000:100 /mnt/home/mikkel
 reboot
 ```
@@ -168,7 +168,7 @@ a good one.
    `iwctl station wlan0 connect "<SSID>"`.
 5. Commit the hardware config:
    ```sh
-   cd ~/repos/nixos-config
+   cd ~/nixos-config
    git add -A && git commit -m "<host>: hardware config"
    ```
    The first `git push` asks for your SSH key passphrase. Tick **"Automatically unlock this
@@ -258,7 +258,7 @@ Each host has its own WireGuard config: `secrets/wg0-<host>.age`.
 2. Add them in `secrets/secrets.nix` (`hosts."<host>"` and `users.<name>`).
 3. Re-encrypt existing secrets for the new key list:
    ```sh
-   cd ~/repos/nixos-config/secrets
+   cd ~/nixos-config/secrets
    agenix -r
    ```
 4. Create the WireGuard secret. This opens `$EDITOR`; paste the contents of the host's

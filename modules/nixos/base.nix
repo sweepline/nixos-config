@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [ inputs.nur.overlays.default ];
@@ -14,7 +19,7 @@
 
   programs.nh = {
     enable = true;
-    flake = "/home/mikkel/repos/nixos-config";
+    flake = config.my.configDir;
     clean = {
       enable = true;
       extraArgs = "--keep 10 --keep-since 14d";

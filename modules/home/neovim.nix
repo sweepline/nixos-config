@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  osConfig,
+  pkgs,
+  ...
+}:
 {
   programs.neovim = {
     enable = true;
@@ -44,5 +49,5 @@
   # Your Lua config lives in this repo and is linked, not copied, so lazy.nvim
   # can update plugins and write lazy-lock.json.
   xdg.configFile."nvim".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/repos/nixos-config/dotfiles/nvim";
+    config.lib.file.mkOutOfStoreSymlink "${osConfig.my.configDir}/dotfiles/nvim";
 }

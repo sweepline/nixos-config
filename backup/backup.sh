@@ -20,17 +20,17 @@ for cmd in tar zstd gpg rsync ssh sha256sum sudo; do
     command -v "$cmd" >/dev/null || { echo "Missing: $cmd" >&2; exit 1; }
 done
 
-echo "==> Checking ~/repos for work that is not on a remote"
+echo "==> Checking ~/repos and ~/nixos-config for work that is not on a remote"
 dirty=0
-if [[ -d "$HOME/repos" ]]; then
-    for repo in "$HOME"/repos/*/; do
-        [[ -d "$repo/.git" ]] || { echo "  NOT A GIT REPO: $repo"; dirty=1; continue; }
-        git -C "$repo" remote | grep -q . || { echo "  NO REMOTE:      $repo"; dirty=1; }
-        [[ -n "$(git -C "$repo" status --porcelain 2>/dev/null)" ]] && { echo "  UNCOMMITTED:    $repo"; dirty=1; }
-        unpushed="$(git -C "$repo" log --branches --not --remotes --oneline 2>/dev/null | wc -l)"
-        [[ "$unpushed" -gt 0 ]] && { echo "  UNPUSHED ($unpushed): $repo"; dirty=1; }
-    done
-fi
+shopt -s nullglob
+for repo in "$HOME"/repos/*/ "$HOME/nixos-config/"; do
+    [[ -d "$repo" ]] || continue
+    [[ -d "$repo/.git" ]] || { echo "  NOT A GIT REPO: $repo"; dirty=1; continue; }
+    git -C "$repo" remote | grep -q . || { echo "  NO REMOTE:      $repo"; dirty=1; }
+    [[ -n "$(git -C "$repo" status --porcelain 2>/dev/null)" ]] && { echo "  UNCOMMITTED:    $repo"; dirty=1; }
+    unpushed="$(git -C "$repo" log --branches --not --remotes --oneline 2>/dev/null | wc -l)"
+    [[ "$unpushed" -gt 0 ]] && { echo "  UNPUSHED ($unpushed): $repo"; dirty=1; }
+done
 if [[ "$dirty" -eq 1 ]]; then
     read -rp "Repos above are NOT included in the backup. Continue anyway? [y/N] " ok
     [[ "$ok" == [yY] ]] || exit 1

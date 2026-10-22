@@ -2,7 +2,7 @@
 
 ## Rebuilding
 
-The repo lives in `~/repos/nixos-config` on every machine. `nh` knows where it is.
+The repo lives in `~/nixos-config` on every machine. `nh` knows where it is.
 
 ```sh
 nh os switch            # build and switch to the config for this host
@@ -11,7 +11,7 @@ nh os test              # switch now, but do not add a boot entry
 ```
 
 `nh` shows a diff of what changed. The plain equivalent is
-`sudo nixos-rebuild switch --flake ~/repos/nixos-config#<host>`.
+`sudo nixos-rebuild switch --flake ~/nixos-config#<host>`.
 
 > **Flakes only see files tracked by git.** A new file that is not `git add`-ed is invisible
 > to the build and you get "file not found" errors. Run `git add -A` before rebuilding.
@@ -31,7 +31,7 @@ same versions until you update.
 Once a week a notification reminds you when the inputs are older than 7 days. Then:
 
 ```sh
-cd ~/repos/nixos-config
+cd ~/nixos-config
 nh os switch --update          # = nix flake update + rebuild, with a diff
 ```
 
@@ -90,7 +90,7 @@ Secrets are files encrypted with SSH keys, listed in `secrets/secrets.nix`. Run 
 from the `secrets/` folder; it uses your `~/.ssh/id_ed25519` to decrypt.
 
 ```sh
-cd ~/repos/nixos-config/secrets
+cd ~/nixos-config/secrets
 agenix -e wg0-97.age       # edit (or create) a secret
 agenix -r                  # re-encrypt all secrets after changing keys in secrets.nix
 ```

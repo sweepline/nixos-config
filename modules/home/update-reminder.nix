@@ -1,6 +1,6 @@
-{ pkgs, ... }:
+{ osConfig, pkgs, ... }:
 let
-  repo = "$HOME/repos/nixos-config";
+  repo = osConfig.my.configDir;
   reminder = pkgs.writeShellScript "nixos-update-reminder" ''
     lock="${repo}/flake.lock"
     [ -f "$lock" ] || exit 0

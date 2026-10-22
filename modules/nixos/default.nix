@@ -18,6 +18,11 @@
   ];
 
   options.my = {
+    configDir = lib.mkOption {
+      type = lib.types.str;
+      default = "/home/mikkel/nixos-config";
+      description = "Where this repo is checked out (used by nh, the Neovim symlink and the update reminder).";
+    };
     gpu = lib.mkOption {
       type = lib.types.enum [
         "amd"
