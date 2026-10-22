@@ -12,6 +12,16 @@ let
     choice=$(printf 'No\nYes, exit Hyprland' | ${rofi} -dmenu -p 'Exit Hyprland?')
     [ "$choice" = "Yes, exit Hyprland" ] && hyprctl dispatch 'hl.dsp.exit()'
   '';
+  dndToggle = pkgs.writeShellScript "dnd-toggle" ''
+    if makoctl mode | grep -q do-not-disturb; then
+      makoctl mode -r do-not-disturb
+      notify-send "Do Not Disturb off"
+    else
+      notify-send "Do Not Disturb on"
+      sleep 2
+      makoctl mode -a do-not-disturb
+    fi
+  '';
 in
 {
   wayland.windowManager.hyprland = {
@@ -145,6 +155,11 @@ in
       -- Wallpaper: pick new random ones
       bind("SHIFT + B", run("wallpaper-random"))
 
+      -- Notifications: dismiss, bring back the last one, Do Not Disturb
+      bind("N", run("makoctl dismiss"))
+      bind("SHIFT + N", run("makoctl restore"))
+      bind("CTRL + N", run("${dndToggle}"))
+
       -- Smart gaps: no gaps or borders when a window is alone
       hl.workspace_rule({ workspace = "w[tv1]s[false]", gaps_out = 0, gaps_in = 0 })
       hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = 0, gaps_in = 0 })
@@ -173,7 +188,23 @@ in
     brightnessctl
     wl-clipboard
     hyprpicker
+    libnotify
   ];
+
+  # Night light: warmer screen from 21:00 to 07:00
+  services.hyprsunset = {
+    enable = true;
+    settings.profile = [
+      {
+        time = "7:00";
+        identity = true;
+      }
+      {
+        time = "21:00";
+        temperature = 4000;
+      }
+    ];
+  };
 
   services.hyprpolkitagent.enable = true;
 

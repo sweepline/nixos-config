@@ -12,6 +12,10 @@
     tmux
     pavucontrol
     impala
+    # Archives (yazi uses ouch for previews/extracting)
+    ouch
+    _7zz
+    unrar
     swayimg
     nh
 
@@ -36,6 +40,15 @@
   home.sessionVariables.UV_PYTHON_PREFERENCE = "only-managed";
 
   xdg.configFile."swayimg/init.lua".source = ./swayimg.lua;
+
+  # PDF viewer (vim keys, themed by stylix)
+  programs.zathura = {
+    enable = true;
+    options = {
+      selection-clipboard = "clipboard";
+      recolor = false;
+    };
+  };
 
   # Auto-mount USB drives under /run/media/mikkel/<label>, with a notification
   # and a tray icon (click to unmount/eject).

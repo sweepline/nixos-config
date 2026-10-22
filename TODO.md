@@ -15,6 +15,10 @@
       in `hosts/<host>/home.nix`. They were translated from sway and are guesses.
 - [ ] esa: check that `DP-1`/`DP-2` in the workspace rules are the right outputs.
 - [ ] dongmyo: test `systemctl hibernate` early (amdgpu can need tweaks).
+- [ ] dongmyo: check it has a fingerprint reader (`lsusb | grep -i finger`), otherwise set
+      `my.laptop.fingerprint.enable = false`. Check the charge limit works:
+      `cat /sys/class/power_supply/BAT*/charge_control_end_threshold`.
+- [ ] dongmyo: check that the lid switch is called "Lid Switch" (`hyprctl devices`).
 - [ ] Check that the `Mod+Space` (tiled ↔ floating focus) bind behaves like sway's `focus mode_toggle`.
 
 ## Later

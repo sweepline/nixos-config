@@ -12,7 +12,12 @@
 
   my = {
     gpu = "amd";
-    laptop.enable = true;
+    laptop = {
+      enable = true;
+      chargeLimit = 80;
+      # TODO: only if dongmyo has a fingerprint reader (lsusb | grep -i finger)
+      fingerprint.enable = true;
+    };
     secureBoot.enable = false;
   };
 }

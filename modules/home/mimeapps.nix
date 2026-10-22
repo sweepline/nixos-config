@@ -38,7 +38,7 @@ in
         "x-scheme-handler/sgnl" = "signal.desktop";
         "x-scheme-handler/signalcaptcha" = "signal.desktop";
         "video/mp4" = "mpv.desktop";
-        "application/pdf" = "firefox.desktop";
+        "application/pdf" = "org.pwmt.zathura.desktop";
       };
   };
 }

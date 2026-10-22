@@ -149,6 +149,8 @@ Same as the old sway config. `Mod` is the Super/Windows key.
 | `Mod+Shift+s`, `Print` | screenshot of an area to the clipboard |
 | `Mod+Shift+r` | start/stop recording an area (gpu-screen-recorder, saved to ~/Videos) |
 | `Mod+Shift+b` | new random wallpapers |
+| `Mod+n` / `Mod+Shift+n` | dismiss notification / bring back the last one |
+| `Mod+Ctrl+n` | toggle Do Not Disturb |
 | `Mod+mouse` | left: move, right: resize |
 
 Not available in Hyprland: sway's stacking layout and `focus parent`.
@@ -158,6 +160,33 @@ Not available in Hyprland: sway's stacking layout and `focus parent`.
 Put images in `~/Pictures/Wallpapers` (not in git). At login every monitor gets a random
 one matching its orientation: portrait images on rotated monitors, landscape on the rest.
 If there are no portrait images, any image is used. `Mod+Shift+b` picks new ones.
+
+## Notifications
+
+mako keeps the last 50 dismissed notifications. `Mod+Shift+n` (or `makoctl restore`) brings
+back the most recent one, `makoctl history` lists them. Do Not Disturb (`Mod+Ctrl+n`)
+hides new notifications; they still go to the history, so you can restore them afterwards.
+
+## Night light
+
+hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the times in
+`modules/home/hyprland.nix`. Turn it off for now with `systemctl --user stop hyprsunset`.
+
+## Laptop (dongmyo)
+
+- **Lid:** closing it suspends, and after 2 hours asleep it hibernates. With an external
+  monitor connected, closing the lid only turns off the laptop screen.
+- **Battery:** charging stops at 80% to save the battery (if the laptop supports it). Change
+  `my.laptop.chargeLimit` in `hosts/dongmyo/default.nix`, or set it to `null` before a trip.
+- **Fingerprint:** enroll a finger once with `fprintd-enroll`. It then works for `sudo` and
+  the lock screen. Logging in at ly still uses the password, because the password also
+  unlocks the keyring and your SSH key.
+
+## Files, PDFs and archives
+
+- yazi is the file manager. Archives open/extract with `ouch` (`ouch decompress file.zip`),
+  7-zip (`7zz`) and `unrar` are also installed.
+- PDFs open in zathura (vim keys: `j`/`k`, `/` to search, `d` for two pages).
 
 ## USB drives
 

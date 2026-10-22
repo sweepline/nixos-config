@@ -14,6 +14,9 @@ lib.mkIf config.my.gaming.enable {
   };
 
   programs.gamemode.enable = true;
+
+  # Xbox wireless adapter (dongle) for controllers
+  hardware.xone.enable = true;
   programs.gamescope = {
     enable = true;
     capSysNice = true;
