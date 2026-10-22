@@ -19,6 +19,15 @@
     };
   };
 
+  # Overflow swap (16 GB RAM): used only after zram is full. Inside LUKS, so encrypted.
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 16 * 1024;
+      priority = 0;
+    }
+  ];
+
   # If a new kernel breaks the NVIDIA driver build, use the default kernel:
   # boot.kernelPackages = lib.mkForce pkgs.linuxPackages;
 }
