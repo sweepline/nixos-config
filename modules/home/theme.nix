@@ -7,6 +7,7 @@ let
     runtimeInputs = with pkgs; [
       glib
       coreutils
+      procps
     ];
     text = ''
       schema=org.gnome.desktop.interface
@@ -44,6 +45,9 @@ let
         "$base/activate"
         gsettings set "$schema" "$key" prefer-dark
       fi
+
+      # Running kitty windows reload their (stylix) config.
+      pkill -USR1 -x kitty || true
     '';
   };
 in

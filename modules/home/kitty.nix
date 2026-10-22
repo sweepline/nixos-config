@@ -1,20 +1,9 @@
 { ... }:
 {
-  # Kitty switches these automatically when the color scheme changes
-  # (theme toggle in ashell), so it is not themed by stylix.
-  stylix.targets.kitty.enable = false;
-  xdg.configFile = {
-    "kitty/dark-theme.auto.conf".source = ./kitty/dark-theme.auto.conf;
-    "kitty/light-theme.auto.conf".source = ./kitty/light-theme.auto.conf;
-    "kitty/no-preference-theme.auto.conf".source = ./kitty/no-preference-theme.auto.conf;
-  };
-
+  # Colors and font come from stylix. theme-toggle tells running kitty
+  # windows to reload (SIGUSR1) so they follow the light/dark switch.
   programs.kitty = {
     enable = true;
-    font = {
-      name = "Iosevka";
-      size = 14;
-    };
     shellIntegration.enableBashIntegration = true;
     settings = {
       window_padding_width = 4;
