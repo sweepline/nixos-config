@@ -68,6 +68,8 @@ echo "==> Creating $archive (you will be asked for an encryption passphrase)"
 sudo tar --numeric-owner --acls --xattrs -C / -cf - "${paths[@]}" "${extra[@]}" \
     | zstd -T0 -10 \
     | gpg --symmetric --cipher-algo AES256 --pinentry-mode loopback -o "$archive"
+# The generated private host key is now inside the encrypted archive only.
+rm -rf "$work/keys"
 
 sum="$(sha256sum "$archive" | cut -d' ' -f1)"
 echo "$sum  $(basename "$archive")" > "$archive.sha256"
