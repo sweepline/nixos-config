@@ -28,6 +28,21 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = true;
+    # Let PipeWire switch the output rate to match the music (44.1k CD, 96k/192k
+    # hi-res, ...) instead of resampling everything to 48 kHz. Only rates the
+    # device supports are used.
+    extraConfig.pipewire."10-allowed-rates" = {
+      "context.properties"."default.clock.allowed-rates" = [
+        44100
+        48000
+        88200
+        96000
+        176400
+        192000
+        352800
+        384000
+      ];
+    };
   };
 
   hardware.bluetooth = {
