@@ -32,12 +32,12 @@ in
       position = "Top";
       modules = {
         left = [
-          "Workspaces"
+          "MediaPlayer"
+          "WindowTitle"
           "KeyboardSubmap"
         ];
         center = [
-          "WindowTitle"
-          "MediaPlayer"
+          "Workspaces"
         ];
         right = [
           "SystemInfo"
