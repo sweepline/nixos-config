@@ -35,7 +35,8 @@ The script:
 4. Encrypts everything with a passphrase (gpg, AES256), uploads it to
    `x.i.esmi.dk:/storage/backup/` and checks the checksum on the server.
 
-On NixOS (dongmyo) the script needs `nix-shell -p gnupg zstd rsync` first.
+On a machine already running this config, gpg, zstd and rsync are installed. On other
+NixOS machines run it inside `nix-shell -p gnupg zstd rsync`.
 
 **Also copy the `.gpg` archive to a USB stick.** During the install there is no SSH key on
 the machine yet (it is inside the archive), so it is easiest to restore from USB.

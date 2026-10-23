@@ -16,6 +16,8 @@
     ouch
     _7zz
     unrar
+    zstd
+    rsync
     swayimg
     nh
 
@@ -40,6 +42,14 @@
   home.sessionVariables.UV_PYTHON_PREFERENCE = "only-managed";
 
   xdg.configFile."swayimg/init.lua".source = ./swayimg.lua;
+
+  # GnuPG (backups, encrypted files on USB). Passphrase prompts use the GNOME
+  # prompt, which also works in the terminal and under Hyprland.
+  programs.gpg.enable = true;
+  services.gpg-agent = {
+    enable = true;
+    pinentry.package = pkgs.pinentry-gnome3;
+  };
 
   # PDF viewer (vim keys, themed by stylix)
   programs.zathura = {
