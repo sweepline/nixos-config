@@ -57,3 +57,4 @@
       nixpkgs. Install with `pnpm add -g` if needed, or drop them.
 - [ ] Home folder backups to the home server with restic or borg (a systemd timer).
 - [ ] CI: a GitHub Action that evaluates/builds all hosts on every push.
+- [ ] Re-enable xpad-noone on 97 (remove `hardware.xpad-noone.enable = false` in gaming.nix) once NixOS/nixpkgs#575192 is fixed.

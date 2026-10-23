@@ -28,6 +28,12 @@ lib.mkIf config.my.gaming.enable {
 
   # Xbox wireless adapter (dongle) for controllers
   hardware.xone.enable = true;
+  # xone enables xpad-noone by default, but its package breaks the kernel modules build on
+  # unstable (NixOS/nixpkgs#575192). Remove both lines below once that is fixed.
+  hardware.xpad-noone.enable = false;
+  # xone blacklists the kernel's xpad, which is what drives the wireless Xbox 360 receiver
+  # (Guitar Hero controller), so keep xpad loaded and only blacklist mt76x2u.
+  boot.blacklistedKernelModules = lib.mkForce [ "mt76x2u" ];
   programs.gamescope = {
     enable = true;
     capSysNice = true;
