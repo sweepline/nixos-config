@@ -100,6 +100,11 @@ end
 hl.bind(mainMod .. " + CTRL + k",  hl.dsp.layout("promote"))
 hl.bind(mainMod .. " + CTRL + up", hl.dsp.layout("promote"))
 
+-- The reverse: a window alone in its column joins the previous column (at the bottom).
+-- On a window that shares its column this pops it out to the left instead.
+hl.bind(mainMod .. " + CTRL + j",    hl.dsp.layout("consume_or_expel prev"))
+hl.bind(mainMod .. " + CTRL + down", hl.dsp.layout("consume_or_expel prev"))
+
 -- Column width: cycle through 1/3, 1/2, 2/3 and full width
 hl.bind(mainMod .. " + E", hl.dsp.layout("colresize +conf"))
 

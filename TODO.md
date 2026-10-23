@@ -14,7 +14,7 @@
 - [ ] esa: check that `DP-1`/`DP-2` in the workspace rules are the right outputs.
 - [ ] Check that the `Mod+Space` (tiled ↔ floating focus) bind behaves like sway's `focus mode_toggle`.
 - [ ] Scrolling layout: try every bind in `docs/USAGE.md` ("Hyprland"). The build check cannot
-      catch typos in layout messages (`focus`, `swapcol`, `colresize`, `promote`, ...).
+      catch typos in layout messages (`focus`, `swapcol`, `colresize`, `promote`, `consume_or_expel`, ...).
 - [ ] `Mod+Shift+e` (rofi, then `hyprshutdown`) and `Mod+Shift+p` (`hyprpicker -a`) work.
 - [ ] Border and group colors now come from stylix (the manual colors are gone): check them,
       also after the light/dark toggle.
