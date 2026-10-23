@@ -74,7 +74,7 @@ Do this in Windows before touching Secure Boot:
 - **Clear the Secure Boot keys / enter Setup Mode** (the wording differs per vendor, often
   "Reset to Setup Mode", "Delete all Secure Boot keys" or "Clear Secure Boot keys").
   `nixos-install` then creates our own keys and enrolls them automatically, together with
-  Microsoft's (Windows, GPU firmware) and the manufacturer's built-in keys.
+  Microsoft's (Windows, GPU firmware).
 - Make sure the **TPM** is enabled (AMD: "fTPM", Intel: "PTT").
 
 ---
@@ -199,14 +199,14 @@ The keys were created and enrolled by `nixos-install`, and Limine is signed. Che
 sudo sbctl status
 ```
 
-- `Setup Mode: ✓ Disabled` and `Vendor Keys: microsoft builtin-...` means the keys are
+- `Setup Mode: ✓ Disabled` and `Vendor Keys: microsoft` means the keys are
   enrolled. Reboot into the firmware, turn **Secure Boot on**, save and boot NixOS.
 - `Setup Mode: ✗ Enabled` means enrolling did not happen (e.g. the firmware was not in Setup
   Mode during install, or `nixos-install` printed "file is immutable" / "chattr -i files in
   efivarfs"). Enroll now, then turn Secure Boot on in the firmware:
   ```sh
   sudo chattr -i /sys/firmware/efi/efivars/{PK,KEK,db}-* 2>/dev/null
-  sudo sbctl enroll-keys --microsoft --firmware-builtin
+  sudo sbctl enroll-keys --microsoft
   ```
   If it complains that the firmware is not in Setup Mode, clear the keys in the firmware
   first (step 1.3), boot NixOS and run it again.

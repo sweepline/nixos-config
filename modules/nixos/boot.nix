@@ -22,9 +22,13 @@ in
         secureBoot = {
           enable = cfg.secureBoot.enable;
           autoGenerateKeys = true;
-          # Enrolls our keys plus Microsoft's (Windows, GPU firmware) and the
-          # manufacturer's built-in keys. Only works while in Setup Mode.
-          autoEnrollKeys.enable = true;
+          # Enrolls our keys plus Microsoft's (Windows, GPU and other option ROMs).
+          # Only works while in Setup Mode. (--firmware-builtin is left out: not
+          # all firmware exposes its default keys, e.g. Lenovo.)
+          autoEnrollKeys = {
+            enable = true;
+            extraArgs = [ "--microsoft" ];
+          };
         };
         extraEntries = lib.mkIf cfg.windowsDualBoot.enable ''
           /Windows
