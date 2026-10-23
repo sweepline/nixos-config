@@ -26,6 +26,12 @@
     };
   };
 
+  # Which commit of this repo a generation was built from ("-dirty": uncommitted changes).
+  # `nixos-version --configuration-revision` shows the full hash; the label (shown in the
+  # Limine entry's comment) gets the short one.
+  system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
+  system.nixos.tags = [ "cfg.${inputs.self.shortRev or inputs.self.dirtyShortRev or "unknown"}" ];
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   time.timeZone = "Europe/Copenhagen";
