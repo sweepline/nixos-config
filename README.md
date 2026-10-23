@@ -30,6 +30,6 @@ hosts/disk-layout.nix     shared disko layout (EFI + LUKS2 + ext4)
 modules/nixos/            system modules (boot, desktop, networking, gaming, ...)
 modules/home/             Home Manager modules (Hyprland, ashell, Firefox, ...)
 dotfiles/nvim/            Neovim Lua config (lazy.nvim), symlinked into ~/.config/nvim
-secrets/                  agenix: secrets.nix (who can decrypt) and *.age files
+secrets/                  agenix: agenix-rules.nix (who can decrypt) and *.age files
 backup/                   backup/restore scripts and per-host path lists
 ```

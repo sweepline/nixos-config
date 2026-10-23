@@ -86,16 +86,16 @@ Hyprland --verify-config -c ~/.config/hypr/hyprland.lua
 
 ## Secrets (agenix)
 
-Secrets are files encrypted with SSH keys, listed in `secrets/secrets.nix`. Run `agenix`
+Secrets are files encrypted with SSH keys, listed in `secrets/agenix-rules.nix`. Run `agenix`
 from the `secrets/` folder; it uses your `~/.ssh/id_ed25519` to decrypt.
 
 ```sh
 cd ~/nixos-config/secrets
 agenix -e wg0-97.age       # edit (or create) a secret
-agenix -r                  # re-encrypt all secrets after changing keys in secrets.nix
+agenix -r                  # re-encrypt all secrets after changing keys in agenix-rules.nix
 ```
 
-Adding a new machine or a new user key: add its public key in `secrets.nix`, then
+Adding a new machine or a new user key: add its public key in `agenix-rules.nix`, then
 `agenix -r`, commit and rebuild. See docs/INSTALL.md section 4.
 
 On the machines the decrypted file is at `/run/agenix/wg0` (root only). WireGuard:

@@ -6,4 +6,4 @@ result-*
 *.conf
 secrets/*
 !secrets/*.age
-!secrets/secrets.nix
+!secrets/agenix-rules.nix

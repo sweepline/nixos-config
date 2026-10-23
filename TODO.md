@@ -5,8 +5,8 @@
 - [ ] Push this repo to GitHub (`github.com/sweepline/nixos-config`) so the installer can clone it.
 - [ ] esa: set the disk by-id in `hosts/esa/default.nix`. Check that work allows its own OS,
       Secure Boot keys and WireGuard.
-- [ ] Add the user keys from dongmyo and esa to `secrets/secrets.nix`.
-- [ ] Add the host keys to `secrets/secrets.nix` and create `secrets/wg0-<host>.age` (docs/INSTALL.md §4).
+- [ ] Add the user keys from dongmyo and esa to `secrets/agenix-rules.nix`.
+- [ ] Add the host keys to `secrets/agenix-rules.nix` and create `secrets/wg0-<host>.age` (docs/INSTALL.md §4).
 
 ## After the first login on each host
 

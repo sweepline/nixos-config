@@ -48,7 +48,7 @@ in
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  # The secret only exists once the host key is in secrets/secrets.nix
+  # The secret only exists once the host key is in secrets/agenix-rules.nix
   # (see docs/INSTALL.md), so the first install works without it.
   age.secrets.wg0 = lib.mkIf hasWg { file = wgSecret; };
   networking.wg-quick.interfaces.wg0 = lib.mkIf hasWg {
