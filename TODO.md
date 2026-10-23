@@ -10,9 +10,27 @@
 ## After the first login on each host
 
 - [ ] Check monitor descriptions (`hyprctl monitors all`) and keyboard names (`hyprctl devices`)
-      in `hosts/<host>/home.nix`. They were translated from sway and are guesses.
+      in `hosts/<host>/hyprland.lua`. They were translated from sway and are guesses.
 - [ ] esa: check that `DP-1`/`DP-2` in the workspace rules are the right outputs.
 - [ ] Check that the `Mod+Space` (tiled ↔ floating focus) bind behaves like sway's `focus mode_toggle`.
+- [ ] Scrolling layout: try every bind in `docs/USAGE.md` ("Hyprland"). The build check cannot
+      catch typos in layout messages (`focus`, `swapcol`, `colresize`, `consume`, ...).
+- [ ] `Mod+Shift+e` (rofi, then `hyprshutdown`) and `Mod+Shift+p` (`hyprpicker -a`) work.
+- [ ] Border and group colors now come from stylix (the manual colors are gone): check them,
+      also after the light/dark toggle.
+
+## Hyprland cleanup candidates (need a running session to test)
+
+- [ ] `systemd.variables = [ "--all" ]` in `modules/home/hyprland/default.nix` imports the whole
+      environment into systemd. Home Manager's default list is smaller; try removing it and
+      check that ashell, hypridle, mako and the wallpaper service still start.
+- [ ] The `Open/Save` window rule in `hyprland.lua`: Hyprland floats dialogs that have a parent
+      window by itself. Try removing the rule; the `xdg-desktop-portal-gtk` one is still needed.
+- [ ] kitty: `remember_window_size no` would stop kitty from restoring a "maximized" state, which
+      is the root cause of the covering windows. Then the `suppress-maximize-events` rule is only
+      a safety net.
+- [ ] dongmyo: the laptop screen is defined three times (`hosts/dongmyo/hyprland.lua`, and the
+      hypridle command in `hosts/dongmyo/home.nix`).
 
 ## Later
 

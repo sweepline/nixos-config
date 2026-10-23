@@ -8,7 +8,7 @@ NixOS + Home Manager flake for my machines.
 | `97` | Desktop (dual boot Windows) | NVIDIA | gaming (Steam, Proton-GE, Lutris, Heroic) |
 | `esa` | Work PC | Intel | three monitors |
 
-All hosts share the same desktop: **ly** (black hole animation) → **Hyprland** (sway-like keybinds),
+All hosts share the same desktop: **ly** (black hole animation) → **Hyprland** (scrolling layout, sway-style hjkl keys),
 ashell, mako, rofi, kitty, Firefox and Neovim, themed with **stylix** (gruvbox-material, light/dark
 toggle in the bar). Disks are **LUKS2** encrypted and unlocked with **TPM2 + PIN**, booted
 through **Limine** with **Secure Boot**. Every host joins **Tailscale** and a **WireGuard** network
@@ -29,6 +29,7 @@ hosts/<host>/             host settings, disk device, hardware config, monitors 
 hosts/disk-layout.nix     shared disko layout (EFI + LUKS2 + ext4)
 modules/nixos/            system modules (boot, desktop, networking, gaming, ...)
 modules/home/             Home Manager modules (Hyprland, ashell, Firefox, ...)
+modules/home/hyprland/    plain hyprland.lua; hosts/<host>/hyprland.lua holds monitors and rules
 dotfiles/nvim/            Neovim Lua config (lazy.nvim), symlinked into ~/.config/nvim
 secrets/                  agenix: agenix-rules.nix (who can decrypt) and *.age files
 backup/                   backup/restore scripts and per-host path lists

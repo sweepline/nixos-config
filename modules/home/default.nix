@@ -1,7 +1,7 @@
 { lib, ... }:
 {
   imports = [
-    ./hyprland.nix
+    ./hyprland
     ./idle-lock.nix
     ./ashell.nix
     ./mako.nix

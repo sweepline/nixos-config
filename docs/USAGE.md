@@ -149,35 +149,48 @@ built in advance as a Home Manager **specialisation**, so switching takes a seco
 and needs no rebuild. kitty, GTK apps and Firefox follow along. A rebuild always goes back
 to dark.
 
-## Keybinds (Hyprland)
+## Hyprland
 
-Same as the old sway config. `Mod` is the Super/Windows key.
+The config is plain Lua: `modules/home/hyprland/hyprland.lua` (shared) and
+`hosts/<host>/hyprland.lua` (monitors, keyboards, workspace rules), appended after it. It
+follows https://wiki.hypr.land, so examples there can be pasted in. Colors come from stylix.
+
+The layout is **scrolling**: windows sit in columns on an endless strip and the view scrolls
+sideways. A new window opens as a new column on the right (half the screen wide by default);
+a single column fills the screen. Fullscreen is layout-aware: you can scroll away from a
+fullscreen window without leaving fullscreen.
+
+`Mod` is the Super/Windows key (the key left of the space bar on keyboards where Alt and
+Windows are swapped).
 
 | Keys | Action |
 |---|---|
 | `Mod+Enter` | kitty |
 | `Mod+d` / `Mod+c` | rofi launcher / calculator |
 | `Mod+Shift+q` | close window |
-| `Mod+h/j/k/l`, arrows | move focus |
-| `Mod+Shift+h/j/k/l`, arrows | move window |
-| `Mod+1..0` / `Mod+Shift+1..0` | go to / move window to workspace 1-10 |
-| `Mod+m` | move workspace to the other monitor |
-| `Mod+b` / `Mod+v` | next window opens to the right / below (sway splith/splitv) |
-| `Mod+e` | toggle split direction |
-| `Mod+w` | toggle tabbed group (sway's tabbed layout) |
-| `Mod+s` | next tab in the group |
+| `Mod+h/l`, left/right | focus the column to the left / right (the view scrolls) |
+| `Mod+j/k`, down/up | focus the window below / above in the column |
+| `Mod+Shift+h/j/k/l`, arrows | move the window between columns / within its column |
+| `Mod+Ctrl+h/l`, left/right | move the whole column |
+| `Mod+v` / `Mod+b` | pull the window into the previous column / push it out into its own column |
+| `Mod+e` | cycle the column width: 1/3, 1/2, 2/3, full |
+| `Mod+,` / `Mod+.` | scroll the view one column left / right |
+| `Mod+a` | center the focused column |
+| `Mod+r` | resize mode: h/l column width, j/k window height, Enter/Esc to leave |
 | `Mod+f` | fullscreen |
 | `Mod+Shift+Space` | toggle floating |
 | `Mod+Space` | jump between tiled and floating windows |
+| `Mod+1..0` / `Mod+Shift+1..0` | go to / move window to workspace 1-10 |
+| `Mod+m` | move workspace to the other monitor |
 | `Mod+Shift+-` / `Mod+-` | to scratchpad / show scratchpad |
-| `Mod+r` | resize mode (hjkl, Enter/Esc to leave) |
 | `Mod+Shift+w` | lock (and pause media) |
 | `Mod+Shift+c` | reload Hyprland config |
-| `Mod+Shift+e` | exit Hyprland |
+| `Mod+Shift+e` | exit Hyprland (asks first, then `hyprshutdown`) |
 | `Mod+u` / `Mod+i` / `Mod+o` | mute / volume down / volume up |
 | `Mod+y` | mute microphone |
 | `Mod+p`, `Mod+]`, `Mod+[` | play/pause, next, previous |
 | `Mod+Shift+s`, `Print` | screenshot of an area to the clipboard |
+| `Mod+Shift+p` | pick a color from the screen (copied to the clipboard) |
 | `Mod+Shift+r` | start/stop recording an area (gpu-screen-recorder, saved to ~/Videos) |
 | `Mod+Shift+b` | new random wallpapers |
 | `Mod+n` / `Mod+Shift+n` | dismiss notification / bring back the last one |
@@ -185,7 +198,14 @@ Same as the old sway config. `Mod` is the Super/Windows key.
 | `Mod+Shift+v` | clipboard history (pick an entry to copy it again) |
 | `Mod+mouse` | left: move, right: resize |
 
-Not available in Hyprland: sway's stacking layout and `focus parent`.
+Hyprland groups (tabs) are not bound to any key. Sway's stacking layout and `focus parent`
+have no equivalent.
+
+Layout settings (column width, scroll direction, ...) are documented at
+https://wiki.hypr.land/Configuring/Layouts/Scrolling-Layout. Note that the wiki follows
+Hyprland's main branch: the messages `fit_into_view` and `inhibit_scroll` it lists are newer
+than the 0.55.4 shipped with NixOS 26.05. The build check cannot catch a typo in a layout
+message such as `"swapcol l"`, because it is only handled when the key is pressed.
 
 ## Wallpapers
 
