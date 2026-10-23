@@ -39,7 +39,15 @@ in
         hide_cursor = true;
         ignore_empty_input = true;
       };
-      # input-field and background come from stylix
+      # The background is a screenshot of the live screen (the current
+      # wallpaper), blurred. Stylix keeps theming the input-field and the
+      # fallback colour; stylix.targets.hyprlock.image.enable below stops it
+      # from pinning a static background image.
+      background = {
+        path = "screenshot";
+        blur_passes = 3;
+        blur_size = 8;
+      };
       label = [
         {
           text = "$TIME";
@@ -51,4 +59,6 @@ in
       ];
     };
   };
+
+  stylix.targets.hyprlock.image.enable = false;
 }
