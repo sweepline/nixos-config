@@ -28,15 +28,16 @@ in
 
         environment.systemPackages = [ pkgs.brightnessctl ];
 
-        # Sleep first, hibernate after 2 hours asleep. With an external monitor
-        # (docked), closing the lid does nothing; Hyprland turns the laptop screen off.
+        # Closing the lid only sleeps. Not suspend-then-hibernate: when its hibernate step
+        # was aborted, amdgpu was left broken (EGL_BAD_ALLOC) and Hyprland crashed until a
+        # reboot. The power button hibernates. With an external monitor (docked), closing
+        # the lid does nothing; Hyprland turns the laptop screen off.
         services.logind.settings.Login = {
-          HandleLidSwitch = "suspend-then-hibernate";
-          HandleLidSwitchExternalPower = "suspend-then-hibernate";
+          HandleLidSwitch = "suspend";
+          HandleLidSwitchExternalPower = "suspend";
           HandleLidSwitchDocked = "ignore";
-          HandlePowerKey = "suspend-then-hibernate";
+          HandlePowerKey = "hibernate";
         };
-        systemd.sleep.settings.Sleep.HibernateDelaySec = "2h";
       }
 
       (lib.mkIf (cfg.chargeLimit != null) {
@@ -58,7 +59,10 @@ in
       (lib.mkIf cfg.fingerprint.enable {
         services.fprintd.enable = true;
         # Login keeps the password: it also unlocks the keyring (and SSH key).
+        # Ly's PAM file includes "login", so that one needs it off too (else Ly waits
+        # for the fingerprint timeout before asking for the password).
         security.pam.services.ly.fprintAuth = false;
+        security.pam.services.login.fprintAuth = false;
         # hyprlock does fingerprint itself, in parallel with the password.
         security.pam.services.hyprlock.fprintAuth = false;
       })

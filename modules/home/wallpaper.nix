@@ -78,12 +78,14 @@ in
       Description = "Random wallpaper per monitor";
       Wants = [ "hyprpaper.service" ];
       After = [ "hyprpaper.service" ];
-      PartOf = [ "graphical-session.target" ];
+      PartOf = [ "hyprpaper.service" ];
     };
     Service = {
       Type = "oneshot";
       ExecStart = "${wallpaperRandom}/bin/wallpaper-random";
     };
-    Install.WantedBy = [ "graphical-session.target" ];
+    # Not graphical-session.target: hyprpaper starts after that target, so ordering this
+    # after hyprpaper and before the target is a cycle (systemd then drops this job).
+    Install.WantedBy = [ "hyprpaper.service" ];
   };
 }
