@@ -167,6 +167,13 @@ in
       -- Clipboard history
       bind("SHIFT + V", run("cliphist list | ${rofi} -dmenu -display-columns 2 -p clipboard | cliphist decode | wl-copy"))
 
+      -- Animations. Hyprland's built-in default is 0.8 s per animation (speed 8,
+      -- 1 = 0.1 s), which is slow when tiles move around. Everything inherits "global".
+      hl.curve("easeOutQuint", { type = "bezier", points = { {0.23, 1}, {0.32, 1} } })
+      hl.animation({ leaf = "global", enabled = true, speed = 3, bezier = "easeOutQuint" })
+      hl.animation({ leaf = "windowsIn", enabled = true, speed = 3, bezier = "easeOutQuint", style = "popin 90%" })
+      hl.animation({ leaf = "windowsOut", enabled = true, speed = 2, bezier = "easeOutQuint", style = "popin 90%" })
+
       -- Smart gaps: no gaps or borders when a window is alone
       hl.workspace_rule({ workspace = "w[tv1]s[false]", gaps_out = 0, gaps_in = 0 })
       hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = 0, gaps_in = 0 })
