@@ -202,8 +202,10 @@ sudo sbctl status
 - `Setup Mode: ✓ Disabled` and `Vendor Keys: microsoft builtin-...` means the keys are
   enrolled. Reboot into the firmware, turn **Secure Boot on**, save and boot NixOS.
 - `Setup Mode: ✗ Enabled` means enrolling did not happen (e.g. the firmware was not in Setup
-  Mode during install). Enroll now, then turn Secure Boot on in the firmware:
+  Mode during install, or `nixos-install` printed "file is immutable" / "chattr -i files in
+  efivarfs"). Enroll now, then turn Secure Boot on in the firmware:
   ```sh
+  sudo chattr -i /sys/firmware/efi/efivars/{PK,KEK,db}-* 2>/dev/null
   sudo sbctl enroll-keys --microsoft --firmware-builtin
   ```
   If it complains that the firmware is not in Setup Mode, clear the keys in the firmware
