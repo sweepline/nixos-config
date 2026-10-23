@@ -181,6 +181,9 @@ in
       --hl.window_rule({ match = { float = false, workspace = "f[1]s[false]" }, border_size = 0 })
 
       -- Window rules
+      -- Ignore apps that ask to be maximized when they open (kitty did, and covered the
+      -- window next to it). Real fullscreen, e.g. video, still works.
+      hl.window_rule({ name = "suppress-maximize-events", match = { class = ".*" }, suppress_event = "maximize" })
       hl.window_rule({ match = { class = ".*" }, idle_inhibit = "fullscreen" })
       hl.window_rule({ match = { class = "^Godot$" }, float = true })
       hl.window_rule({ match = { class = "^Godot$", title = "^Godot Engine" }, float = false, tile = true })
