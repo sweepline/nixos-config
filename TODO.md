@@ -2,7 +2,6 @@
 
 ## Before installing
 
-- [ ] Push this repo to GitHub (`github.com/sweepline/nixos-config`) so the installer can clone it.
 - [ ] esa: set the disk by-id in `hosts/esa/default.nix`. Check that work allows its own OS,
       Secure Boot keys and WireGuard.
 - [ ] Add the user key from esa to `secrets/agenix-rules.nix`.
