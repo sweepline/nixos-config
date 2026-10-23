@@ -5,12 +5,12 @@ let
   wallpaperRandom = pkgs.writeShellApplication {
     name = "wallpaper-random";
     runtimeInputs = with pkgs; [
-      awww
       hyprland
       jq
       imagemagick
       coreutils
       findutils
+      gnugrep
     ];
     text = ''
       dir="''${WALLPAPER_DIR:-$HOME/Pictures/Wallpapers}"
@@ -36,34 +36,44 @@ let
         shuf -n1 <<<"$pool"
       }
 
-      awww query >/dev/null 2>&1 || { awww-daemon & sleep 0.5; }
+      # hyprpaper starts together with the session: retry until it accepts the request.
+      set_wallpaper() {
+        for _ in $(seq 1 50); do
+          hyprctl hyprpaper wallpaper "$1, $2, cover" >/dev/null 2>&1 && return 0
+          sleep 0.2
+        done
+        echo "hyprpaper did not accept $2 for $1" >&2
+      }
 
       chosen=()
       while read -r name transform; do
         if (( transform % 2 == 1 )); then want=portrait; else want=landscape; fi
         img="$(pick "$want")"
         chosen+=("$img")
-        awww img -o "$name" --transition-type fade "$img"
+        set_wallpaper "$name" "$img"
       done < <(hyprctl monitors -j | jq -r '.[] | "\(.name) \(.transform)"')
     '';
   };
 in
 {
-  home.packages = [
-    wallpaperRandom
-    pkgs.awww
-  ];
+  home.packages = [ wallpaperRandom ];
 
-  systemd.user.services.wallpaper = {
+  # The wallpapers themselves are set per monitor by the script above (over hyprpaper's IPC).
+  services.hyprpaper = {
+    enable = true;
+    settings.splash = false;
+  };
+
+  systemd.user.services.wallpaper-random = {
     Unit = {
       Description = "Random wallpaper per monitor";
-      After = [ "graphical-session.target" ];
+      Wants = [ "hyprpaper.service" ];
+      After = [ "hyprpaper.service" ];
       PartOf = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.awww}/bin/awww-daemon";
-      ExecStartPost = "${pkgs.bash}/bin/bash -c 'sleep 1; ${wallpaperRandom}/bin/wallpaper-random'";
-      Restart = "on-failure";
+      Type = "oneshot";
+      ExecStart = "${wallpaperRandom}/bin/wallpaper-random";
     };
     Install.WantedBy = [ "graphical-session.target" ];
   };

@@ -214,6 +214,10 @@ Put images in `~/Pictures/Wallpapers` (not in git). At login every monitor gets 
 one matching its orientation: portrait images on rotated monitors, landscape on the rest.
 If there are no portrait images, any image is used. `Mod+Shift+b` picks new ones.
 
+The wallpapers are drawn by hyprpaper (Hyprland's own wallpaper tool); the script
+`wallpaper-random` chooses the images and sets them with `hyprctl hyprpaper wallpaper`.
+There is no fade between wallpapers. `hyprctl hyprpaper listactive` shows what is set.
+
 ## Notifications
 
 mako keeps the last 50 dismissed notifications. `Mod+Shift+n` (or `makoctl restore`) brings
