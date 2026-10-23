@@ -7,6 +7,11 @@
     shellIntegration.enableBashIntegration = true;
     settings = {
       window_padding_width = 4;
+      # Hyprland tells every window it is maximized, kitty saves that state when a window
+      # closes and restores it at the next start, so new windows opened maximized and covered
+      # the others. Kitty's author recommends turning this off. Tiled windows get their size
+      # from the layout anyway.
+      remember_window_size = "no";
       cursor_shape = "block";
       cursor_blink_interval = 1;
       scrollback_lines = 3000;

@@ -195,6 +195,5 @@ hl.window_rule({ match = { class = "^Godot$", title = "^Godot Engine" }, float =
 hl.window_rule({ match = { class = "^Godot_Engine$" }, float = true })
 hl.window_rule({ match = { class = "^mtgo.exe$" }, float = true })
 hl.window_rule({ match = { class = "^firefox$", title = "^Extension: \\(Bitwarden" }, float = true })
-hl.window_rule({ match = { title = "^(Open|Save) (File|Folder|As)" }, float = true, size = "1030 710", center = true })
 hl.window_rule({ match = { class = "^swayimg$" }, float = true, center = true })
 hl.window_rule({ match = { class = "^xdg-desktop-portal-gtk$" }, float = true })

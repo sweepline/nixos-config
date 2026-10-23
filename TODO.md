@@ -24,11 +24,12 @@
 - [ ] `systemd.variables = [ "--all" ]` in `modules/home/hyprland/default.nix` imports the whole
       environment into systemd. Home Manager's default list is smaller; try removing it and
       check that ashell, hypridle, mako and the wallpaper service still start.
-- [ ] The `Open/Save` window rule in `hyprland.lua`: Hyprland floats dialogs that have a parent
-      window by itself. Try removing the rule; the `xdg-desktop-portal-gtk` one is still needed.
-- [ ] kitty: `remember_window_size no` would stop kitty from restoring a "maximized" state, which
-      is the root cause of the covering windows. Then the `suppress-maximize-events` rule is only
-      a safety net.
+- [ ] The `Open/Save` window rule was removed, since Hyprland floats dialogs that have a parent
+      window by itself. Open a file dialog (Firefox: Ctrl+O, a download "Save as") and check that
+      it floats and is centered. If it tiles, put the rule back in `hyprland.lua`:
+      `hl.window_rule({ match = { title = "^(Open|Save) (File|Folder|As)" }, float = true, size = "1030 710", center = true })`
+- [ ] kitty: `remember_window_size = "no"` is set. Open and close a few kitty windows and check
+      that new ones tile. `suppress-maximize-events` stays as a safety net for other apps.
 - [ ] dongmyo: the laptop screen is defined three times (`hosts/dongmyo/hyprland.lua`, and the
       hypridle command in `hosts/dongmyo/home.nix`).
 
