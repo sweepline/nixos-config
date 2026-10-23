@@ -20,6 +20,7 @@ hl.config({
 
     decoration = {
         rounding = 2,
+        dim_around = 0.5,
         shadow   = { enabled = true },
         blur     = { enabled = true },
     },
@@ -197,8 +198,8 @@ hl.window_rule({ name = "suppress-maximize-events", match = { class = ".*" }, su
 -- Do not let the screen go idle while something is fullscreen (video, games)
 hl.window_rule({ match = { class = ".*" }, idle_inhibit = "fullscreen" })
 
--- Blur behind rofi; ignore_alpha keeps fully transparent areas unblurred.
-hl.layer_rule({ name = "rofi-blur", match = { namespace = "^rofi$" }, blur = true, ignore_alpha = 0.2 })
+-- Darken the screen behind rofi (strength: decoration.dim_around).
+hl.layer_rule({ name = "rofi-dim", match = { namespace = "^rofi$" }, dim_around = true })
 
 hl.window_rule({ match = { class = "^Godot$" }, float = true })
 hl.window_rule({ match = { class = "^Godot$", title = "^Godot Engine" }, float = false, tile = true })
