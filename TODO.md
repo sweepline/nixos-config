@@ -28,8 +28,10 @@
       window by itself. Open a file dialog (Firefox: Ctrl+O, a download "Save as") and check that
       it floats and is centered. If it tiles, put the rule back in `hyprland.lua`:
       `hl.window_rule({ match = { title = "^(Open|Save) (File|Folder|As)" }, float = true, size = "1030 710", center = true })`
-- [ ] kitty: `remember_window_size = "no"` is set. Open and close a few kitty windows and check
-      that new ones tile. `suppress-maximize-events` stays as a safety net for other apps.
+- [ ] kitty: new windows no longer cover the old one now that Hyprland ignores maximize requests
+      (`suppress-maximize-events` in `hyprland.lua`). Check it. The root cause is that kitty
+      restores a "maximized" state Hyprland reported to it; `remember_window_size no` in kitty
+      would remove that, but it is deliberately not set.
 - [ ] dongmyo: the laptop screen is defined three times (`hosts/dongmyo/hyprland.lua`, and the
       hypridle command in `hosts/dongmyo/home.nix`).
 
