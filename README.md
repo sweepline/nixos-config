@@ -26,7 +26,7 @@ through **Limine** with **Secure Boot**. Every host joins **Tailscale** and a **
 ```
 flake.nix                 inputs and the three hosts
 hosts/<host>/             host settings, disk device, hardware config, monitors (home.nix)
-hosts/disk-layout.nix     shared disko layout (EFI + LUKS, LVM + swap on the laptop)
+hosts/disk-layout.nix     shared disko layout (EFI + LUKS2 + ext4)
 modules/nixos/            system modules (boot, desktop, networking, gaming, ...)
 modules/home/             Home Manager modules (Hyprland, ashell, Firefox, ...)
 dotfiles/nvim/            Neovim Lua config (lazy.nvim), symlinked into ~/.config/nvim

@@ -104,7 +104,8 @@ Compare with `device = ...` in `hosts/<host>/default.nix`:
 - **(97)** it must be `nvme-WDC_WDS100T2B0C-00PXH0_20427P452912` (WD 1 TB, the old CachyOS
   disk). The **Force MP510** (447 GB) is the **Windows disk: never use it.**
 - dongmyo / esa: replace `CHANGE-ME` with the by-id name of the disk.
-- dongmyo: set `swapSize` to at least the amount of RAM (`free -g`), needed for hibernate.
+- Swap is zram plus, on dongmyo (hibernate) and 97, a swapfile set with `swapDevices` in
+  `hosts/<host>/default.nix`. For hibernate it must be at least the size of RAM (`free -g`).
 
 ### 2.3 Partition, encrypt and mount (disko)
 
@@ -116,8 +117,8 @@ nix --experimental-features "nix-command flakes" \
   run github:nix-community/disko/latest -- --mode destroy,format,mount --flake .#<host>
 ```
 
-Result: `/mnt/boot` (EFI, 2 GB) and `/mnt` (ext4 inside LUKS2; on dongmyo inside LVM with a
-swap volume).
+Result: `/mnt/boot` (EFI, 2 GB) and `/mnt` (ext4 inside LUKS2). The swapfile is created on
+the first boot.
 
 ### 2.4 Hardware config
 
@@ -236,7 +237,7 @@ sudo systemd-cryptenroll --wipe-slot=tpm2 --tpm2-device=auto --tpm2-pcrs=7 --tpm
 What it protects: the disk cannot be read in another machine, and nobody can boot the
 machine without the PIN. Once the machine is running and unlocked, the lock screen
 (hyprlock) is what protects it; that is also true while it is asleep. Hibernation
-writes memory into the encrypted swap, so a hibernated laptop is as safe as a powered-off one.
+writes memory into the swapfile inside LUKS, so a hibernated laptop is as safe as a powered-off one.
 
 ---
 
