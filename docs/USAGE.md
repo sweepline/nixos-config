@@ -175,7 +175,10 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
 
 ## Laptop (dongmyo)
 
-- **Lid:** closing it suspends, and after 2 hours asleep it hibernates. With an external
+- **Lid:** closing it suspends, and after 2 hours asleep it hibernates. Waking from
+  hibernate asks for the disk PIN, then shows the lock screen (fingerprint works there).
+  Opening the lid of a hibernated laptop powers it on if the BIOS option "Flip to Start"
+  (Config → Power) is on. With an external
   monitor connected, closing the lid only turns off the laptop screen.
 - **Battery:** charging stops at 80% to save the battery (if the laptop supports it). Change
   `my.laptop.chargeLimit` in `hosts/dongmyo/default.nix`, or set it to `null` before a trip.
