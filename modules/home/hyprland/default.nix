@@ -74,6 +74,10 @@ in
 
   services.hyprpolkitagent.enable = true;
 
+  # Bluetooth pairing agent (PIN/confirm prompts) and tray icon. Normally started from XDG
+  # autostart, which Hyprland does not run.
+  services.blueman-applet.enable = true;
+
   # Clipboard history (text and images), picker on Mod+Shift+V
   services.cliphist = {
     enable = true;

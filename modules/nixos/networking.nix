@@ -23,6 +23,12 @@ in
   networking.useDHCP = true;
   systemd.network.wait-online.anyInterface = true;
   services.resolved.enable = true;
+  # mDNS (.local, printer discovery) is avahi's job (modules/nixos/base.nix): CUPS and
+  # the GTK print dialog browse through it. Two mDNS stacks make it unreliable.
+  services.resolved.settings.Resolve = {
+    MulticastDNS = false;
+    LLMNR = false;
+  };
 
   networking.firewall = {
     enable = true;
