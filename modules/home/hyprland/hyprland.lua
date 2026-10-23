@@ -98,9 +98,9 @@ for key, dir in pairs({ h = "l", left = "l", l = "r", right = "r" }) do
     hl.bind(mainMod .. " + CTRL + " .. key, hl.dsp.window.move({ direction = dir }))
 end
 
--- Columns: pull a window into the previous column / push it out into its own column
-hl.bind(mainMod .. " + V", hl.dsp.layout("consume"))
-hl.bind(mainMod .. " + B", hl.dsp.layout("expel"))
+-- Take the focused window out of its column into a column of its own, right after it.
+-- (Mod+Ctrl+h/l only creates a new column at the edge of the strip.)
+hl.bind(mainMod .. " + B", hl.dsp.layout("promote"))
 
 -- Column width: cycle through 1/3, 1/2, 2/3 and full width
 hl.bind(mainMod .. " + E", hl.dsp.layout("colresize +conf"))
