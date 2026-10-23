@@ -77,7 +77,7 @@ point to them, or skip the devShell and use the global tools.
 
 ```nix
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   outputs = { nixpkgs, ... }:
     let pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {
@@ -93,7 +93,7 @@ point to them, or skip the devShell and use the global tools.
 ```nix
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     rust-overlay.url = "github:oxalica/rust-overlay";
     rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
   };
@@ -122,7 +122,7 @@ Without a `rust-toolchain.toml`, use `pkgs.rust-bin.stable.latest.default` inste
 
 ```nix
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   outputs = { nixpkgs, ... }:
     let pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {

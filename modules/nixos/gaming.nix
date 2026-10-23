@@ -1,17 +1,16 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
 }:
 let
-  # The GPU Screen Recorder overlay (ShadowPlay-style, controlled with gsr-ui-cli) is not in
-  # NixOS 26.05. It comes from nixos-unstable but is built against this system's own
-  # gpu-screen-recorder, like NixOS's own module does: the recorder, the overlay and the
-  # script on Mod+Shift+R then all share the same gsr-kms-server wrapper.
-  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-  gsrUi = unstable.gpu-screen-recorder-ui.override {
+  # The GPU Screen Recorder overlay (ShadowPlay-style, controlled with gsr-ui-cli), built
+  # against this system's own gpu-screen-recorder like NixOS's own module does: the recorder,
+  # the overlay and the script on Mod+Shift+R then all share the same gsr-kms-server wrapper.
+  # (programs.gpu-screen-recorder.ui.enable is not used: it also installs the
+  # gsr-global-hotkeys wrapper, see below.)
+  gsrUi = pkgs.gpu-screen-recorder-ui.override {
     gpu-screen-recorder = config.programs.gpu-screen-recorder.package;
     inherit (config.security) wrapperDir;
   };

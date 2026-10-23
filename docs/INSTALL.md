@@ -82,7 +82,8 @@ Do this in Windows before touching Secure Boot:
 
 ## 2. Install from the ISO
 
-Boot the **NixOS 26.05** ISO (graphical or minimal) from USB.
+Boot a recent **NixOS** ISO (graphical or minimal) from USB. The 26.05 release ISO is fine: the
+system itself is built from this flake, which tracks nixos-unstable.
 
 ### 2.1 Network and repo
 

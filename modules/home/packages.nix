@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ inputs, pkgs, ... }:
 {
   home.packages = with pkgs; [
     # CLI
@@ -26,7 +26,8 @@
     uv
     nodejs
     pnpm
-    opencode
+    # opencode 2.1+ from upstream's flake (see flake.nix); nixpkgs has 2.0.x
+    inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.opencode
 
     # Apps
     vesktop # Discord with Vencord; screen share with audio on Wayland

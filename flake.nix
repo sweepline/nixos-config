@@ -2,19 +2,25 @@
   description = "NixOS configuration for dongmyo, 97 and esa";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-
-    # Only for packages that are not in 26.05 yet (the GPU Screen Recorder overlay, see
-    # modules/nixos/gaming.nix).
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Rolling: nixos-unstable only advances when the channel's tests pass, so what it points
+    # to is built and cached. flake.lock pins the exact revision; update with `nh os switch --update`.
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     home-manager = {
-      url = "github:nix-community/home-manager/release-26.05";
+      url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     stylix = {
-      url = "github:nix-community/stylix/release-26.05";
+      url = "github:nix-community/stylix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # opencode 2.x is only published as git tags (nixpkgs has 2.0.x). Upstream's flake builds
+    # a tag with its own maintained hashes. To update, change the tag here and run
+    # `nix flake update opencode`.
+    opencode = {
+      url = "github:anomalyco/opencode/v2.1.4";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

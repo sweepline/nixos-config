@@ -25,17 +25,20 @@ nix flake check
 
 ## Updating
 
-Nothing updates by itself. Versions are pinned in `flake.lock`, so all machines run the
-same versions until you update.
+The system follows **nixos-unstable** (rolling, like Arch). Nothing updates by itself:
+versions are pinned in `flake.lock`, so all machines run the same versions until you update.
+nixos-unstable only moves to a new revision after its tests pass, so what you pull is
+built and cached.
 
 Once a week a notification reminds you when the inputs are older than 7 days. Then:
 
 ```sh
 cd ~/nixos-config
-nh os switch --update          # = nix flake update + rebuild, with a diff
+nh os switch --update          # = nix flake update + rebuild, with a diff of what changes
 ```
 
-Check that things work (reboot if the kernel changed), then commit and push `flake.lock`:
+Read the diff nh shows (new major versions, removed packages). Check that things work (reboot
+if the kernel changed), then commit and push `flake.lock`:
 
 ```sh
 git commit -am "flake update" && git push
@@ -48,12 +51,33 @@ versions):
 git pull && nh os switch
 ```
 
-Update one input only: `nix flake update nixpkgs` (or `home-manager`, `stylix`, ...).
+Safer for big updates: `nh os boot --update` installs the new generation without switching,
+and you pick it at the next boot (the old one stays in the Limine menu).
 
-**97 and the NVIDIA driver:** the kernel is `linuxPackages_latest`. Very occasionally a new
-kernel arrives before the NVIDIA driver supports it and the build fails. Nothing breaks, you
-just stay on the current version. Wait a few days, or switch 97 to the default kernel (see
-the comment in `hosts/97/default.nix`).
+Update one input only: `nix flake update nixpkgs` (or `home-manager`, `stylix`, `opencode`, ...).
+
+**Things that can go wrong on a rolling base, and what to do:**
+
+- **A rebuild fails with an evaluation error** (an option was renamed or removed): the update
+  stops before anything is switched. Read the message, fix the option, or go back with
+  `git checkout flake.lock` and wait a few days. Renamed options print a warning first, so
+  watch the output of every update.
+- **A rebuild starts compiling lots of packages:** the channel moved but its binary cache is
+  not complete yet. Cancel it and try again in a few hours.
+- **A program broke after an update:** boot the previous generation from the Limine menu, or
+  `sudo nixos-rebuild switch --rollback`, then `git checkout flake.lock` to stay on the old
+  versions until it is fixed.
+- **Hyprland config:** the build-time check (see "Testing changes safely") runs against the new
+  Hyprland and fails the build if its Lua API changed.
+
+**opencode** is not taken from nixpkgs (it has 2.0.x) but from upstream's flake, pinned to a
+tag in `flake.nix`. For a newer one, change the tag there and run `nix flake update opencode`.
+It is built from source on each machine.
+
+**97 and the NVIDIA driver:** the kernel is `linuxPackages_latest`. Occasionally a new kernel
+arrives before the NVIDIA driver supports it and the build fails. Nothing breaks, you just stay
+on the current version. Wait a few days, or switch 97 to the default kernel (see the comment in
+`hosts/97/default.nix`).
 
 ## Rolling back
 
@@ -206,7 +230,7 @@ have no equivalent.
 Layout settings (column width, scroll direction, ...) are documented at
 https://wiki.hypr.land/Configuring/Layouts/Scrolling-Layout. Note that the wiki follows
 Hyprland's main branch: the messages `fit_into_view` and `inhibit_scroll` it lists are newer
-than the 0.55.4 shipped with NixOS 26.05. The build check cannot catch a typo in a layout
+than older Hyprland versions. The build check cannot catch a typo in a layout
 message such as `"swapcol l"`, because it is only handled when the key is pressed.
 
 ## Wallpapers
@@ -269,7 +293,7 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
   program to grab every keyboard and re-emit the keys through a virtual keyboard, which would
   bypass the per-keyboard options in `hosts/97/hyprland.lua` (Caps as Ctrl, Alt/Win swap).
   The overlay is X11-first with a Wayland overlay layer, so on Hyprland it may look off;
-  see the TODO list. It comes from nixos-unstable (not in 26.05 yet) but uses the system's
+  see the TODO list. It is built against the system's
   recorder, so everything shares one version.
 - **Xbox controllers** work wired, over Bluetooth, and with the wireless dongle (xone).
 - **FiiO K11** (USB DAC) works out of the box. Select it as output in the ashell audio menu

@@ -3,11 +3,13 @@
   programs.rofi = {
     enable = true;
     plugins = [ pkgs.rofi-calc ];
-    terminal = "kitty";
-    modes = [ "combi" ];
-    extraConfig.combi-modes = [
-      "window"
-      "drun"
-    ];
+    settings = {
+      terminal = "kitty";
+      modes = [ "combi" ];
+      combi-modes = [
+        "window"
+        "drun"
+      ];
+    };
   };
 }
