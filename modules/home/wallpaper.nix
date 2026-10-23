@@ -45,13 +45,22 @@ let
         echo "hyprpaper did not accept $2 for $1" >&2
       }
 
+      # Right after login Hyprland may not answer (or list its monitors) yet: wait for it.
+      monitors=""
+      for _ in $(seq 1 50); do
+        monitors="$(hyprctl monitors -j 2>/dev/null | jq -r '.[] | "\(.name) \(.transform)"' || true)"
+        [[ -n "$monitors" ]] && break
+        sleep 0.2
+      done
+      [[ -n "$monitors" ]] || { echo "Hyprland did not list any monitors" >&2; exit 1; }
+
       chosen=()
       while read -r name transform; do
         if (( transform % 2 == 1 )); then want=portrait; else want=landscape; fi
         img="$(pick "$want")"
         chosen+=("$img")
         set_wallpaper "$name" "$img"
-      done < <(hyprctl monitors -j | jq -r '.[] | "\(.name) \(.transform)"')
+      done <<<"$monitors"
     '';
   };
 in

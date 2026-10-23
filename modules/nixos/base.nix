@@ -41,7 +41,12 @@
       LC_TIME = "da_DK.UTF-8";
     };
   };
-  console.keyMap = "us";
+  # Console and Ly: US with Caps as Ctrl on every keyboard (Hyprland sets its own per device).
+  console.useXkbConfig = true;
+  services.xserver.xkb = {
+    layout = "us";
+    options = "ctrl:nocaps";
+  };
 
   zramSwap.enable = true;
 
