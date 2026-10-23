@@ -3,9 +3,14 @@ let
   cfg = config.my;
 in
 {
-  options.my.secureBoot.enable = lib.mkEnableOption ''
-    signing Limine with sbctl. Turn this on only after `sbctl create-keys` and
-    `sbctl enroll-keys -m` (see docs/INSTALL.md)'';
+  options.my.secureBoot.enable = lib.mkOption {
+    type = lib.types.bool;
+    default = true;
+    description = ''
+      Sign Limine with sbctl. Keys are generated and enrolled automatically when
+      the bootloader is installed, if the firmware is in Setup Mode (see docs/INSTALL.md).
+    '';
+  };
 
   config = {
     boot.loader = {
@@ -14,7 +19,13 @@ in
       limine = {
         enable = true;
         maxGenerations = 10;
-        secureBoot.enable = cfg.secureBoot.enable;
+        secureBoot = {
+          enable = cfg.secureBoot.enable;
+          autoGenerateKeys = true;
+          # Enrolls our keys plus Microsoft's (Windows, GPU firmware) and the
+          # manufacturer's built-in keys. Only works while in Setup Mode.
+          autoEnrollKeys.enable = true;
+        };
         extraEntries = lib.mkIf cfg.windowsDualBoot.enable ''
           /Windows
             protocol: efi

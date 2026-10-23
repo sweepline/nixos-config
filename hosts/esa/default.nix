@@ -10,6 +10,5 @@
 
   my = {
     gpu = "intel";
-    secureBoot.enable = false;
   };
 }

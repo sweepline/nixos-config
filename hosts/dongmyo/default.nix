@@ -26,6 +26,5 @@
       # TODO: check for a reader with `nix-shell -p usbutils --run lsusb`; set false if none
       fingerprint.enable = true;
     };
-    secureBoot.enable = false;
   };
 }

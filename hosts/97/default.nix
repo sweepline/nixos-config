@@ -10,8 +10,6 @@
   my = {
     gpu = "nvidia";
     gaming.enable = true;
-    # Turn on after enrolling keys (docs/INSTALL.md, step "Secure Boot").
-    secureBoot.enable = false;
     windowsDualBoot = {
       enable = true;
       # EFI partition on the Windows disk (Force MP510, nvme0n1p1)

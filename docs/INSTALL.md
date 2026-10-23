@@ -70,7 +70,11 @@ Do this in Windows before touching Secure Boot:
 
 ### 1.3 Firmware
 
-- Turn **Secure Boot off** for now (the NixOS ISO is not signed). It is turned on again in step 5.
+- Turn **Secure Boot off** (the NixOS ISO is not signed). It is turned on again in step 5.
+- **Clear the Secure Boot keys / enter Setup Mode** (the wording differs per vendor, often
+  "Reset to Setup Mode", "Delete all Secure Boot keys" or "Clear Secure Boot keys").
+  `nixos-install` then creates our own keys and enrolls them automatically, together with
+  Microsoft's (Windows, GPU firmware) and the manufacturer's built-in keys.
 - Make sure the **TPM** is enabled (AMD: "fTPM", Intel: "PTT").
 
 ---
@@ -189,27 +193,28 @@ Open the printed URL and log in. Check the name with `tailscale status`.
 
 ## 5. Secure Boot
 
-1. Create keys:
-   ```sh
-   sudo sbctl create-keys
-   ```
-2. Reboot into the firmware setup and **clear the Secure Boot keys** / enter **Setup Mode**
-   (the wording differs per vendor, often "Reset to Setup Mode" or "Delete all keys").
-   Leave Secure Boot **off** for now, save and boot NixOS.
-3. Enroll your keys **together with Microsoft's** (`-m`), which Windows and many firmware
-   drivers need:
-   ```sh
-   sudo sbctl enroll-keys -m
-   ```
-4. In `hosts/<host>/default.nix` set `my.secureBoot.enable = true;` and rebuild:
-   ```sh
-   nh os switch
-   ```
-5. Reboot into the firmware, turn **Secure Boot on**, boot NixOS.
-6. Check: `sbctl status` should say `Secure Boot: ✓ Enabled`.
-7. **(97)** Boot Windows once from the Limine menu to check it still works.
+The keys were created and enrolled by `nixos-install`, and Limine is signed. Check:
 
-Commit the change.
+```sh
+sudo sbctl status
+```
+
+- `Setup Mode: ✓ Disabled` and `Vendor Keys: microsoft builtin-...` means the keys are
+  enrolled. Reboot into the firmware, turn **Secure Boot on**, save and boot NixOS.
+- `Setup Mode: ✗ Enabled` means enrolling did not happen (e.g. the firmware was not in Setup
+  Mode during install). Enroll now, then turn Secure Boot on in the firmware:
+  ```sh
+  sudo sbctl enroll-keys --microsoft --firmware-builtin
+  ```
+  If it complains that the firmware is not in Setup Mode, clear the keys in the firmware
+  first (step 1.3), boot NixOS and run it again.
+
+Afterwards `sbctl status` should say `Secure Boot: ✓ Enabled`.
+
+**(97)** Boot Windows once from the Limine menu to check it still works.
+
+The keys live in `/var/lib/sbctl` and every rebuild signs Limine with them. They are not in
+git; if a machine is reinstalled it gets new keys (clear the old ones in the firmware first).
 
 ---
 
