@@ -58,6 +58,18 @@
   services.dbus.packages = [ pkgs.gcr_4 ];
   programs.seahorse.enable = true;
 
+  # The daemon PAM started (and unlocked) quits after 120 s unless the session runs
+  # `--start`, which GNOME does from its autostart files and Hyprland does not. Then the
+  # next request starts a new, locked daemon ("login keyring was not unlocked").
+  systemd.user.services.gnome-keyring-start = {
+    description = "Take over the gnome-keyring daemon unlocked at login";
+    wantedBy = [ "default.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/run/wrappers/bin/gnome-keyring-daemon --start --components=secrets";
+    };
+  };
+
   programs.gpu-screen-recorder.enable = true;
 
   services.udisks2.enable = true;
