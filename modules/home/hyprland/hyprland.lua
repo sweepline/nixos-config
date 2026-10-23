@@ -84,18 +84,15 @@ for key, dir in pairs(dirs) do
     hl.bind(mainMod .. " + " .. key, hl.dsp.layout("focus " .. dir))
 end
 
--- Swap places. Left/right: the whole column swaps with its neighbour column. Up/down: the
--- window swaps with the one above/below it in its column.
-for key, dir in pairs({ h = "l", left = "l", l = "r", right = "r" }) do
-    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.layout("swapcol " .. dir))
-end
-for key, dir in pairs({ j = "d", down = "d", k = "u", up = "u" }) do
+-- Move the window. Left/right: into the neighbouring column, or into a new column at the edge
+-- of the strip. Up/down: swap places with the window above/below in its column.
+for key, dir in pairs(dirs) do
     hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ direction = dir }))
 end
 
--- Move the window across columns: into the neighbouring column, or into a new column at the edge
+-- Move the column: swap places with the neighbouring column
 for key, dir in pairs({ h = "l", left = "l", l = "r", right = "r" }) do
-    hl.bind(mainMod .. " + CTRL + " .. key, hl.dsp.window.move({ direction = dir }))
+    hl.bind(mainMod .. " + CTRL + " .. key, hl.dsp.layout("swapcol " .. dir))
 end
 
 -- Take the focused window out of its column into a column of its own, right after it.
