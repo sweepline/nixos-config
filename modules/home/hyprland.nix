@@ -60,6 +60,10 @@ in
         disable_hyprland_logo = true;
         force_default_wallpaper = 0;
         focus_on_activate = true;
+        # Any key or mouse movement turns screens back on after hypridle turned
+        # them off. Without this, waking depends only on hypridle's resume event.
+        key_press_enables_dpms = true;
+        mouse_move_enables_dpms = true;
       };
       ecosystem.no_update_news = true;
     };
