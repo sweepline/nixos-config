@@ -259,6 +259,18 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
   `mangohud %command%`, toggle in game with `Right Shift+F12`. Combine with gamemode:
   `gamemoderun mangohud %command%`.
 - **Discord** is Vesktop (Discord with Vencord). Screen sharing includes audio on Wayland.
+- **GPU Screen Recorder overlay** (ShadowPlay-style, `gsr-ui`) runs in the background as a
+  user service. `Mod+g` shows or hides it; from there you can record the screen, a region or a
+  window, take screenshots, stream, and run a **replay buffer** (the last minutes of
+  gameplay). `Mod+Shift+g` saves the replay buffer (start it from the overlay, or with
+  `gsr-ui-cli start-replay`). `gsr-ui-cli --help` lists every command, so more binds can go in
+  `hosts/97/hyprland.lua`. `Mod+Shift+r` (quick region recording) still works on its own.
+  The overlay's own hotkeys (Left Alt+Z, ...) are deliberately not set up: they need the
+  program to grab every keyboard and re-emit the keys through a virtual keyboard, which would
+  bypass the per-keyboard options in `hosts/97/hyprland.lua` (Caps as Ctrl, Alt/Win swap).
+  The overlay is X11-first with a Wayland overlay layer, so on Hyprland it may look off;
+  see the TODO list. It comes from nixos-unstable (not in 26.05 yet) but uses the system's
+  recorder, so everything shares one version.
 - **Xbox controllers** work wired, over Bluetooth, and with the wireless dongle (xone).
 - **FiiO K11** (USB DAC) works out of the box. Select it as output in the ashell audio menu
   or pavucontrol; PipeWire remembers it.

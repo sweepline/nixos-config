@@ -37,6 +37,18 @@
       current mode and the laptop on the left of the external monitor; then test: lid closed
       docked (screen off), lid open (screen on), and wake from sleep.
 
+## GPU Screen Recorder overlay on 97 (first run)
+
+- [ ] `systemctl --user status gsr-ui` is running. Press `Mod+g`: the overlay should appear
+      over the game or desktop. It is an X11-first program with a Wayland layer-shell overlay;
+      check that it looks right, is not zoomed, and does not steal focus from a game.
+- [ ] The overlay's settings should not ask for keyboard grabbing: `gsr-global-hotkeys` is not
+      installed on purpose. Check that Caps Lock still acts as Ctrl and Alt/Win are still swapped.
+- [ ] Start the replay buffer (from the overlay or `gsr-ui-cli start-replay`), play a bit, then
+      `Mod+Shift+g` and check the saved clip. NVENC recording of a game works.
+- [ ] Decide whether the overlay replaces `Mod+Shift+r` (`gsr-ui-cli toggle-record-region`) and
+      the `gpu-screen-recorder-gtk` app on 97.
+
 ## Later
 
 - [ ] Firefox: pick **Tridactyl** (vim-like, config file fits Nix, more powerful) or

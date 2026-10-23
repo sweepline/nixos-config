@@ -25,6 +25,12 @@ hl.device({ name = "topre-corporation-hhkb-professional",  kb_options = "compose
 -- Move the current workspace to the other monitor
 hl.bind("SUPER + M", hl.dsp.workspace.move({ monitor = "u" }))
 
+-- GPU Screen Recorder overlay (gsr-ui, see modules/nixos/gaming.nix). Its own hotkeys are not
+-- set up, so it is controlled from here. The overlay also offers screen, region and window
+-- recording, screenshots, streaming and a replay buffer.
+hl.bind("SUPER + G",         hl.dsp.exec_cmd("gsr-ui-cli toggle-show"))
+hl.bind("SUPER + SHIFT + G", hl.dsp.exec_cmd("gsr-ui-cli replay-save"))
+
 for i = 1, 4 do
     hl.workspace_rule({ workspace = tostring(i), monitor = "desc:Lenovo Group Limited LEN G34w-10 UGW05532" })
 end
