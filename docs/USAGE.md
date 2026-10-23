@@ -96,7 +96,7 @@ agenix -r                  # re-encrypt all secrets after changing keys in secre
 ```
 
 Adding a new machine or a new user key: add its public key in `secrets.nix`, then
-`agenix -r`, commit and rebuild. See docs/INSTALL.md section 7.
+`agenix -r`, commit and rebuild. See docs/INSTALL.md section 4.
 
 On the machines the decrypted file is at `/run/agenix/wg0` (root only). WireGuard:
 `sudo wg show`, `systemctl status wg-quick-wg0`.

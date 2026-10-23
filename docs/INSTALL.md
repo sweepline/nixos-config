@@ -70,7 +70,7 @@ Do this in Windows before touching Secure Boot:
 
 ### 1.3 Firmware
 
-- Turn **Secure Boot off** (the NixOS ISO is not signed). It is turned on again in step 5.
+- Turn **Secure Boot off** (the NixOS ISO is not signed). It is turned on again in section 5.
 - **Clear the Secure Boot keys / enter Setup Mode** (the wording differs per vendor, often
   "Reset to Setup Mode", "Delete all Secure Boot keys" or "Clear Secure Boot keys").
   `nixos-install` then creates our own keys and enrolls them automatically, together with
@@ -171,23 +171,75 @@ a good one.
 4. On Wi-Fi (the installed system uses iwd, not NetworkManager): open kitty (`Mod+Enter`)
    and run `impala`, or click the network icon in the bar. Without a UI:
    `iwctl station wlan0 connect "<SSID>"`.
-5. Commit the hardware config:
+5. **SSH key.** With a backup it was restored in 2.5. On a new machine, create one:
+   ```sh
+   ssh-keygen -t ed25519 -C mikkel@<host>          # choose a passphrase
+   cat ~/.ssh/id_ed25519.pub
+   ```
+   Add it to GitHub (Settings → SSH keys) and to the home server (`ssh-copy-id x.i.esmi.dk`
+   if it accepts passwords, otherwise add it to `~/.ssh/authorized_keys` there from another
+   machine).
+6. Commit the hardware config:
    ```sh
    cd ~/nixos-config
-   git add -A && git commit -m "<host>: hardware config"
+   git remote set-url origin git@github.com:sweepline/nixos-config.git
+   git add -A && git commit -m "<host>: hardware config" && git push
    ```
-   The first `git push` asks for your SSH key passphrase. Tick **"Automatically unlock this
-   key whenever I'm logged in"** and it is never asked again.
+   The first push asks for your SSH key passphrase. Tick **"Automatically unlock this key
+   whenever I'm logged in"** and it is never asked again.
 
 ---
 
-## 4. Tailscale
+## 4. Secrets and WireGuard (agenix)
 
-```sh
-sudo tailscale up
-```
+agenix encrypts a file for a list of SSH public keys (`secrets/secrets.nix`):
 
-Open the printed URL and log in. Check the name with `tailscale status`.
+- the **host key** of the machine, so it can decrypt the file at boot
+  (to `/run/agenix/wg0`, readable only by root, never in git or the Nix store), and
+- your **user keys**, so you can edit the secrets from your machines.
+
+Each host has its own WireGuard config: `secrets/wg0-<host>.age`.
+
+1. Get the host's public key (for 97 it was printed by `backup.sh` and is already in
+   `secrets.nix`):
+   ```sh
+   cat /etc/ssh/ssh_host_ed25519_key.pub
+   ```
+   and your user key on this machine: `cat ~/.ssh/id_ed25519.pub`.
+2. Add them in `secrets/secrets.nix` (`hosts."<host>"` and `users.mikkel-<host>`).
+3. Re-encrypt the existing secrets for the new key list:
+   ```sh
+   cd ~/nixos-config/secrets
+   agenix -r
+   ```
+   This must run on a machine whose key can **already** decrypt them. A brand-new machine
+   cannot: push the `secrets.nix` change, run `agenix -r` on one of the other machines,
+   push, and `git pull` here. If there are no `.age` files yet, skip this step.
+4. Create the WireGuard secret. This opens `$EDITOR`; paste the contents of the host's
+   `wg0.conf` and save:
+   ```sh
+   agenix -e wg0-<host>.age
+   ```
+   From an encrypted copy on a USB stick instead:
+   ```sh
+   gpg -d /run/media/mikkel/<usb>/<host>/wg0.conf.gpg > /tmp/wg0.conf
+   EDITOR="cp /tmp/wg0.conf" agenix -e wg0-<host>.age
+   shred -u /tmp/wg0.conf
+   ```
+5. Add, rebuild, check:
+   ```sh
+   cd .. && git add -A
+   nh os switch
+   sudo wg show            # wg0 should have a recent handshake
+   ```
+6. Commit and push. Never commit a plain `wg0.conf` (`.gitignore` blocks `*.conf`).
+
+The secret only becomes part of the system once `secrets/wg0-<host>.age` exists, so
+installing without it works; WireGuard just stays off until this step.
+
+For 97 the host key is known before the install (from the backup), so `wg0-97.age` can be
+created on another NixOS machine (dongmyo) beforehand, and WireGuard works on the very
+first boot.
 
 ---
 
@@ -197,6 +249,7 @@ The keys were created and enrolled by `nixos-install`, and Limine is signed. Che
 
 ```sh
 sudo sbctl status
+sudo sbctl verify       # the Limine .efi must be signed; kernels show "not signed", that is fine
 ```
 
 - `Setup Mode: ✓ Disabled` and `Vendor Keys: microsoft` means the keys are
@@ -212,6 +265,10 @@ sudo sbctl status
   first (step 1.3), boot NixOS and run it again.
 
 Afterwards `sbctl status` should say `Secure Boot: ✓ Enabled`.
+
+Kernels are not signed on purpose: the firmware checks Limine's signature, and Limine
+checks every kernel and initrd against checksums in its config, whose own checksum is built
+into the signed Limine file.
 
 **(97)** Boot Windows once from the Limine menu to check it still works.
 
@@ -248,47 +305,13 @@ writes memory into the swapfile inside LUKS, so a hibernated laptop is as safe a
 
 ---
 
-## 7. Secrets and WireGuard (agenix)
+## 7. Tailscale
 
-agenix encrypts a file for a list of SSH public keys (`secrets/secrets.nix`):
+```sh
+sudo tailscale up
+```
 
-- the **host key** of the machine, so it can decrypt the file at boot
-  (to `/run/agenix/wg0`, readable only by root, never in git or the Nix store), and
-- your **user keys**, so you can edit the secrets from your machines.
-
-Each host has its own WireGuard config: `secrets/wg0-<host>.age`.
-
-1. Get the host's public key (for 97 it was printed by `backup.sh`):
-   ```sh
-   cat /etc/ssh/ssh_host_ed25519_key.pub
-   ```
-   and your user key on this machine: `cat ~/.ssh/id_ed25519.pub`.
-2. Add them in `secrets/secrets.nix` (`hosts."<host>"` and `users.<name>`).
-3. Re-encrypt existing secrets for the new key list:
-   ```sh
-   cd ~/nixos-config/secrets
-   agenix -r
-   ```
-4. Create the WireGuard secret. This opens `$EDITOR`; paste the contents of the host's
-   `wg0.conf` and save:
-   ```sh
-   agenix -e wg0-<host>.age
-   ```
-5. Add, rebuild, check:
-   ```sh
-   cd .. && git add -A
-   nh os switch
-   sudo wg show            # wg0 should have a recent handshake
-   ```
-6. Commit and push. Never commit a plain `wg0.conf` (`.gitignore` blocks `*.conf`).
-
-The secret only becomes part of the system once `secrets/wg0-<host>.age` exists, so
-installing without it works; WireGuard just stays off until this step.
-
-A host can only decrypt secrets after its host key is in `secrets.nix` and the secrets have
-been re-encrypted. For 97 the host key is known before the install (from the backup), so
-you can do steps 1 to 4 on another NixOS machine (dongmyo) beforehand and WireGuard works
-on the very first boot.
+Open the printed URL and log in. Check the name with `tailscale status`.
 
 ---
 
