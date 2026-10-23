@@ -62,8 +62,32 @@ Every rebuild is a **generation** and shows up in the Limine boot menu. If somet
 - **It boots:** `sudo nixos-rebuild switch --rollback` or pick the old generation at boot.
 - **It does not boot:** pick an older generation in the Limine menu, then fix the config.
 
-Old generations are cleaned up automatically (`nh clean`: keeps the last 10 and everything
-from the last 14 days). Limine shows at most 10.
+### Automatic cleanup of old generations
+
+Old generations are removed so the disk does not fill up:
+
+- A weekly timer (`nh-clean`) runs `nh clean all --keep 10 --keep-since 14d`. If the machine
+  was off, it runs at the next boot.
+- A generation is only deleted if it is **both** outside the newest 10 **and** older than
+  14 days. Your last 10 builds and anything from the last two weeks are always kept.
+- After that, packages no generation uses any more are garbage collected, which is where the
+  disk space comes back.
+- The Limine menu is a separate limit (`maxGenerations = 10`): it lists only the newest 10,
+  even if older generations have not been cleaned yet.
+- `auto-optimise-store` makes identical files in `/nix/store` share disk space. That runs on
+  its own.
+
+Settings: `modules/nixos/base.nix` (`programs.nh.clean`) and `modules/nixos/boot.nix`.
+
+Clean by hand. A plain `nh clean all` does **not** use the timer's rules: its defaults are to
+keep only the current generation, so it removes every rollback option. Pass the same limits
+as the timer:
+
+```sh
+nh clean all --keep 10 --keep-since 14d    # what the timer does
+nh clean all --keep 3 --keep-since 0h      # harder: frees more, fewer rollback options
+nh clean all --dry                         # show what would be deleted, change nothing
+```
 
 ## Testing changes safely
 
