@@ -68,6 +68,7 @@ hl.bind(mainMod .. " + RETURN",      hl.dsp.exec_cmd("kitty"))
 hl.bind(mainMod .. " + D",           hl.dsp.exec_cmd("rofi -show combi"))
 hl.bind(mainMod .. " + C",           hl.dsp.exec_cmd("rofi -show calc -modi calc -no-show-match -no-sort"))
 hl.bind(mainMod .. " + SHIFT + V",   hl.dsp.exec_cmd("cliphist list | rofi -dmenu -display-columns 2 -p clipboard | cliphist decode | wl-copy"))
+hl.bind(mainMod .. " + SHIFT + X",   hl.dsp.exec_cmd("cliphist list | rofi -dmenu -display-columns 2 -p 'delete from clipboard' | cliphist delete"))
 hl.bind(mainMod .. " + SHIFT + P",   hl.dsp.exec_cmd("hyprpicker -a"))
 
 -- Session
@@ -195,6 +196,9 @@ hl.window_rule({ name = "suppress-maximize-events", match = { class = ".*" }, su
 
 -- Do not let the screen go idle while something is fullscreen (video, games)
 hl.window_rule({ match = { class = ".*" }, idle_inhibit = "fullscreen" })
+
+-- Blur behind rofi; ignore_alpha keeps fully transparent areas unblurred.
+hl.layer_rule({ name = "rofi-blur", match = { namespace = "^rofi$" }, blur = true, ignore_alpha = 0.2 })
 
 hl.window_rule({ match = { class = "^Godot$" }, float = true })
 hl.window_rule({ match = { class = "^Godot$", title = "^Godot Engine" }, float = false, tile = true })

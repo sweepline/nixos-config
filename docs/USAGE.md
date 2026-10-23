@@ -222,6 +222,7 @@ Windows are swapped).
 | `Mod+n` / `Mod+Shift+n` | dismiss notification / bring back the last one |
 | `Mod+Ctrl+n` | toggle Do Not Disturb |
 | `Mod+Shift+v` | clipboard history (pick an entry to copy it again) |
+| `Mod+Shift+x` | delete an entry from the clipboard history (pick it in the list) |
 | `Mod+mouse` | left: move, right: resize |
 
 Hyprland groups (tabs) are not bound to any key. Sway's stacking layout and `focus parent`

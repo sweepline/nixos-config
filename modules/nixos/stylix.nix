@@ -32,6 +32,9 @@
       };
     };
 
+    # Slightly see-through popups (rofi, notifications), so the blur layer rule shows.
+    opacity.popups = 0.9;
+
     cursor = {
       package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
