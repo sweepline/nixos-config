@@ -108,6 +108,13 @@ Check that Hyprland accepts the config before logging in:
 Hyprland --verify-config -c ~/.config/hypr/hyprland.lua
 ```
 
+`nh os switch`, `boot` and `test` already do this for you: the build includes a check that
+runs `Hyprland --verify-config` on the generated config, so a broken config stops the rebuild
+before anything is switched. It catches syntax errors, unknown functions and options at load
+time, and API changes after a Hyprland update. It cannot catch code that only runs on a key
+press, or device and monitor names that do not match the hardware. If the checker itself ever
+blocks a rebuild, set `my.checkHyprland = false;` in the host's `default.nix`.
+
 ## Secrets (agenix)
 
 Secrets are files encrypted with SSH keys, listed in `secrets/agenix-rules.nix`. Run `agenix`

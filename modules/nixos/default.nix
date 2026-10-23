@@ -8,6 +8,7 @@
 
     ./base.nix
     ./boot.nix
+    ./checks.nix
     ./desktop.nix
     ./hardware.nix
     ./networking.nix
