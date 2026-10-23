@@ -84,16 +84,19 @@ for key, dir in pairs(dirs) do
     hl.bind(mainMod .. " + " .. key, hl.dsp.layout("focus " .. dir))
 end
 
--- Move the window: between columns, or within its column
-for key, dir in pairs(dirs) do
+-- Swap places. Left/right: the whole column swaps with its neighbour column. Up/down: the
+-- window swaps with the one above/below it in its column.
+for key, dir in pairs({ h = "l", left = "l", l = "r", right = "r" }) do
+    hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.layout("swapcol " .. dir))
+end
+for key, dir in pairs({ j = "d", down = "d", k = "u", up = "u" }) do
     hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ direction = dir }))
 end
 
--- Move the whole column
-hl.bind(mainMod .. " + CTRL + h",     hl.dsp.layout("swapcol l"))
-hl.bind(mainMod .. " + CTRL + left",  hl.dsp.layout("swapcol l"))
-hl.bind(mainMod .. " + CTRL + l",     hl.dsp.layout("swapcol r"))
-hl.bind(mainMod .. " + CTRL + right", hl.dsp.layout("swapcol r"))
+-- Move the window across columns: into the neighbouring column, or into a new column at the edge
+for key, dir in pairs({ h = "l", left = "l", l = "r", right = "r" }) do
+    hl.bind(mainMod .. " + CTRL + " .. key, hl.dsp.window.move({ direction = dir }))
+end
 
 -- Columns: pull a window into the previous column / push it out into its own column
 hl.bind(mainMod .. " + V", hl.dsp.layout("consume"))

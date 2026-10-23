@@ -170,8 +170,9 @@ Windows are swapped).
 | `Mod+Shift+q` | close window |
 | `Mod+h/l`, left/right | focus the column to the left / right (the view scrolls) |
 | `Mod+j/k`, down/up | focus the window below / above in the column |
-| `Mod+Shift+h/j/k/l`, arrows | move the window between columns / within its column |
-| `Mod+Ctrl+h/l`, left/right | move the whole column |
+| `Mod+Shift+h/l`, left/right | swap places with the neighbouring column (wraps around at the ends) |
+| `Mod+Shift+j/k`, down/up | swap places with the window below / above in the column |
+| `Mod+Ctrl+h/l`, left/right | move the window into the neighbouring column (a new column at the edge) |
 | `Mod+v` / `Mod+b` | pull the window into the previous column / push it out into its own column |
 | `Mod+e` | cycle the column width: 1/3, 1/2, 2/3, full |
 | `Mod+,` / `Mod+.` | scroll the view one column left / right |
