@@ -22,7 +22,7 @@ let
       [[ ''${#files[@]} -gt 0 ]] || { echo "No wallpapers in $dir" >&2; exit 0; }
       for f in "''${files[@]}"; do
         grep -qF "$f	" "$cache" && continue
-        read -r w h < <(identify -format '%w %h\n' "$f[0]" 2>/dev/null || echo "1 0")
+        read -r w h < <(identify -format '%w %h\n' "''${f}[0]" 2>/dev/null || echo "1 0")
         if (( h > w )); then o=portrait; else o=landscape; fi
         printf '%s\t%s\n' "$f" "$o" >> "$cache"
       done
