@@ -45,12 +45,12 @@ in
         };
       };
       decoration = {
-        rounding = 0;
-        shadow.enabled = false;
-        blur.enabled = false;
+        rounding = 2;
+        shadow.enabled = true;
+        blur.enabled = true;
       };
       animations.enabled = true;
-      dwindle.preserve_split = true;
+      dwindle.preserve_split = false;
       input = {
         kb_layout = "us";
         kb_options = "compose:ralt";
@@ -175,10 +175,10 @@ in
       hl.animation({ leaf = "windowsOut", enabled = true, speed = 2, bezier = "easeOutQuint", style = "popin 90%" })
 
       -- Smart gaps: no gaps or borders when a window is alone
-      hl.workspace_rule({ workspace = "w[tv1]s[false]", gaps_out = 0, gaps_in = 0 })
-      hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = 0, gaps_in = 0 })
-      hl.window_rule({ match = { float = false, workspace = "w[tv1]s[false]" }, border_size = 0 })
-      hl.window_rule({ match = { float = false, workspace = "f[1]s[false]" }, border_size = 0 })
+      --hl.workspace_rule({ workspace = "w[tv1]s[false]", gaps_out = 0, gaps_in = 0 })
+      --hl.workspace_rule({ workspace = "f[1]s[false]", gaps_out = 0, gaps_in = 0 })
+      --hl.window_rule({ match = { float = false, workspace = "w[tv1]s[false]" }, border_size = 0 })
+      --hl.window_rule({ match = { float = false, workspace = "f[1]s[false]" }, border_size = 0 })
 
       -- Window rules
       hl.window_rule({ match = { class = ".*" }, idle_inhibit = "fullscreen" })

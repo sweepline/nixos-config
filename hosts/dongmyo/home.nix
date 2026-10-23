@@ -25,6 +25,7 @@
     })
 
     hl.device({ name = "topre-corporation-hhkb-professional", kb_options = "compose:ralt" })
+    hl.device({ name = "at-translated-set-2-keyboard", kb_options = "ctrl:nocaps,altwin:swap_lalt_lwin,compose:ralt"
 
     -- Move the current workspace to the other monitor
     hl.bind("SUPER + M", hl.dsp.workspace.move({ monitor = "r" }))
