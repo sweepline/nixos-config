@@ -32,8 +32,10 @@
       (`suppress-maximize-events` in `hyprland.lua`). Check it. The root cause is that kitty
       restores a "maximized" state Hyprland reported to it; `remember_window_size no` in kitty
       would remove that, but it is deliberately not set.
-- [ ] dongmyo: the laptop screen is defined three times (`hosts/dongmyo/hyprland.lua`, and the
-      hypridle command in `hosts/dongmyo/home.nix`).
+- [ ] dongmyo: the laptop screen now uses the generic `preferred, auto, scale 1` everywhere
+      (monitor rule, lid-open bind, hypridle). Check `hyprctl monitors all` shows 1920x1200 as the
+      current mode and the laptop on the left of the external monitor; then test: lid closed
+      docked (screen off), lid open (screen on), and wake from sleep.
 
 ## Later
 

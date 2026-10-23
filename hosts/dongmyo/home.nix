@@ -10,6 +10,6 @@
   services.hypridle.settings.general.after_sleep_cmd = lib.mkForce (
     "hyprctl dispatch 'hl.dsp.dpms({ action = \"enable\" })'; "
     + "grep -q open /proc/acpi/button/lid/*/state && "
-    + "hyprctl eval 'hl.monitor({ output = \"eDP-1\", mode = \"1920x1200\", position = \"0x0\", scale = 1 })'"
+    + "hyprctl eval 'hl.monitor({ output = \"eDP-1\", mode = \"preferred\", position = \"auto\", scale = 1 })'"
   );
 }

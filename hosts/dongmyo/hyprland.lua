@@ -4,7 +4,7 @@
 -- Docked (another monitor connected): turn the laptop screen off when the lid closes.
 -- Not docked: do nothing here, logind suspends. Opening the lid always turns the laptop
 -- screen back on.
-local laptopScreen = [[hyprctl eval 'hl.monitor({ output = "eDP-1", mode = "1920x1200", position = "0x0", scale = 1 })']]
+local laptopScreen = [[hyprctl eval 'hl.monitor({ output = "eDP-1", mode = "preferred", position = "auto", scale = 1 })']]
 
 hl.bind("switch:on:Lid Switch", function()
     for _, mon in ipairs(hl.get_monitors()) do
@@ -16,7 +16,8 @@ hl.bind("switch:on:Lid Switch", function()
 end, { locked = true })
 hl.bind("switch:off:Lid Switch", hl.dsp.exec_cmd(laptopScreen), { locked = true })
 
-hl.monitor({ output = "eDP-1", mode = "1920x1200", position = "0x0", scale = 1 })
+-- Every monitor, the laptop panel included: native mode, placed left to right in the order
+-- they were connected (the laptop first), no scaling. Scale "auto" would pick 1.5 for this panel.
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
 hl.config({
