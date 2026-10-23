@@ -11,6 +11,7 @@
     ./ssh-git.nix
     ./firefox.nix
     ./neovim.nix
+    ./opencode.nix
     ./packages.nix
     ./mimeapps.nix
     ./theme.nix

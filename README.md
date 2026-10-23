@@ -31,6 +31,7 @@ modules/nixos/            system modules (boot, desktop, networking, gaming, ...
 modules/home/             Home Manager modules (Hyprland, ashell, Firefox, ...)
 modules/home/hyprland/    plain hyprland.lua; hosts/<host>/hyprland.lua holds monitors and rules
 dotfiles/nvim/            Neovim Lua config (lazy.nvim), symlinked into ~/.config/nvim
+dotfiles/opencode/        opencode config (opencode.json, cli.json), symlinked into ~/.config/opencode
 secrets/                  agenix: agenix-rules.nix (who can decrypt) and *.age files
 backup/                   backup/restore scripts and per-host path lists
 ```
