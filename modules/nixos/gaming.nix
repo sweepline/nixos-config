@@ -31,10 +31,19 @@ lib.mkIf config.my.gaming.enable {
   # xone enables xpad-noone by default, but its package breaks the kernel modules build on
   # unstable (NixOS/nixpkgs#575192). Remove both lines below once that is fixed.
   hardware.xpad-noone.enable = false;
-  # xone blacklists the kernel's xpad, which is what drives the wireless Xbox 360 receiver
-  # (Guitar Hero controller). A blacklist only stops autoloading, so load xpad explicitly
+  # xone blacklists the kernel's xpad, which drives the wireless Xbox 360 receiver (Guitar
+  # Hero controller) and the GameSir Kaleid (3537:1004). systemd-modules-load (boot.kernelModules)
+  # now honours the blacklist, so load it with modprobe by name, which ignores it
   # (not mkForce on the blacklist: that would also drop e.g. NVIDIA's nouveau blacklist).
-  boot.kernelModules = [ "xpad" ];
+  systemd.services.load-xpad = {
+    description = "Load xpad despite xone's blacklist";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.kmod}/bin/modprobe xpad";
+    };
+  };
   programs.gamescope = {
     enable = true;
     capSysNice = true;
