@@ -20,18 +20,12 @@
       rmi = "rm -v";
       ls = "ls --color=auto";
       grep = "grep --color=auto";
-      # Work
-      localstack = "$HOME/repos/mono/scripts/localstack.py";
     };
     initExtra = ''
       PROMPT_COMMAND="history -a"
 
       source ${config.programs.git.package}/share/bash-completion/completions/git-prompt.sh
       export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(__git_ps1)\[\033[00m\] $ "
-
-      findimage() {
-        sadmin listImages -e 'docker:sadmin.scalgo.com/{image}@{hash} {rel_time} {labels[GIT_BRANCH]}' -i ''${1:-$(basename `pwd`)} | grep `git rev-parse --abbrev-ref HEAD`
-      }
 
       ${builtins.readFile ./gut.sh}
     '';

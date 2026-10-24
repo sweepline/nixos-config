@@ -20,6 +20,7 @@
     ./update-reminder.nix
     ./gaming.nix
     ./laptop.nix
+    ./work.nix
   ];
 
   options.my.hyprland.hostConfig = lib.mkOption {

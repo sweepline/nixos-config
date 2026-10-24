@@ -10,6 +10,7 @@
   my = {
     gpu = "nvidia";
     gaming.enable = true;
+    work.enable = true;
     windowsDualBoot = {
       enable = true;
       # EFI partition on the Windows disk (Force MP510, nvme0n1p1)

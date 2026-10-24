@@ -20,6 +20,7 @@
 
   my = {
     gpu = "amd";
+    work.enable = true;
     laptop = {
       enable = true;
       chargeLimit = 80; # BAT0 supports charge_control_end_threshold

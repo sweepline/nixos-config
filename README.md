@@ -11,8 +11,9 @@ NixOS + Home Manager flake for my machines.
 All hosts share the same desktop: **ly** (black hole animation) → **Hyprland** (scrolling layout, sway-style hjkl keys),
 ashell, mako, rofi, kitty, Firefox and Neovim, themed with **stylix** (gruvbox-material, light/dark
 toggle in the bar). Disks are **LUKS2** encrypted and unlocked with **TPM2 + PIN**, booted
-through **Limine** with **Secure Boot**. Every host joins **Tailscale** and a **WireGuard** network
-(`wg0`, config encrypted with **agenix**).
+through **Limine** with **Secure Boot**. Every host joins a **WireGuard** network
+(`wg0`, config encrypted with **agenix**); hosts with `my.work.enable` also join **Tailscale**
+and get the work setup (sadmin, SSH hosts, git aliases and email).
 
 ## Docs
 

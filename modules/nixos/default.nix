@@ -16,6 +16,7 @@
     ./laptop.nix
     ./stylix.nix
     ./users.nix
+    ./work.nix
   ];
 
   options.my = {
@@ -34,6 +35,7 @@
     };
     laptop.enable = lib.mkEnableOption "laptop features (power profiles, hibernate, brightness)";
     gaming.enable = lib.mkEnableOption "Steam, Proton-GE, Lutris and friends";
+    work.enable = lib.mkEnableOption "Scalgo work setup (Tailscale, sadmin, SSH hosts, git aliases and email)";
     windowsDualBoot = {
       enable = lib.mkEnableOption "a boot menu entry for Windows on another disk";
       efiPartUuid = lib.mkOption {

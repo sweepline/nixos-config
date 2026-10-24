@@ -31,20 +31,11 @@ in
     LLMNR = false;
   };
 
-  # Over Tailscale only SSH and HTTP(S) are reachable; open more ports here when needed.
-  networking.firewall = {
-    enable = true;
-    interfaces.tailscale0.allowedTCPPorts = [
-      22
-      80
-      443
-    ];
-  };
-
-  services.tailscale.enable = true;
+  networking.firewall.enable = true;
 
   # sshd mainly exists for the host key, which agenix uses to decrypt secrets.
-  # It is only reachable over Tailscale.
+  # It is reachable between my own machines over WireGuard (below) and, with
+  # my.work.enable, over Tailscale (modules/nixos/work.nix).
   services.openssh = {
     enable = true;
     openFirewall = false;
@@ -67,6 +58,7 @@ in
     configFile = config.age.secrets.wg0.path;
     autostart = true;
   };
+  networking.firewall.interfaces.wg0.allowedTCPPorts = lib.mkIf hasWg [ 22 ];
 
   # The ashell WireGuard popup (modules/home/ashell.nix) reads peer details with `wg show`,
   # which needs root. Allow exactly that command (same store path) without a password prompt.

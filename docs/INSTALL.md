@@ -308,7 +308,7 @@ writes memory into the swapfile inside LUKS, so a hibernated laptop is as safe a
 
 ---
 
-## 7. Tailscale
+## 7. Tailscale (hosts with `my.work.enable`)
 
 ```sh
 sudo tailscale up

@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ osConfig, pkgs, ... }:
 let
+  # Tailscale only runs with my.work.enable (modules/nixos/work.nix); without it the VPN icon
+  # and popup only look at WireGuard.
+  useTs = if osConfig.services.tailscale.enable then "1" else "";
   # Caps lock state from the keyboard LEDs. Polls, but only prints on change.
   capsWatch = pkgs.writeShellApplication {
     name = "capslock-watch";
@@ -34,11 +37,12 @@ let
       tailscale
     ];
     text = ''
+      use_ts="${useTs}"
       last=""
       while true; do
         state=down
-        if [[ -d /sys/class/net/wg0 ]] &&
-          [[ "$(tailscale status --json 2>/dev/null | jq -r '.BackendState // empty')" == Running ]]; then
+        if [[ -d /sys/class/net/wg0 ]] && { [[ -z "$use_ts" ]] ||
+          [[ "$(tailscale status --json 2>/dev/null | jq -r '.BackendState // empty')" == Running ]]; }; then
           state=up
         fi
         if [[ "$state" != "$last" ]]; then
@@ -65,6 +69,7 @@ let
     text = ''
       # Usage: vpn-info [wg|ts]; both when no argument
       which="''${1:-all}"
+      use_ts="${useTs}"
       lines=()
 
       if [[ "$which" != ts ]]; then
@@ -90,7 +95,7 @@ let
         fi
       fi
 
-      if [[ "$which" != wg ]]; then
+      if [[ "$which" != wg && -n "$use_ts" ]]; then
         status="$(tailscale status --json 2>/dev/null || echo '{}')"
         if [[ "$(echo "$status" | jq -r '.BackendState // empty')" == Running ]]; then
           exit_node="$(echo "$status" | jq -r '[.Peer[]? | select(.ExitNode)] | first | .HostName // "none"')"
