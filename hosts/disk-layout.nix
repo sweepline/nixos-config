@@ -2,6 +2,14 @@
 # Swap is zram (all hosts) plus an optional swapfile per host (swapDevices).
 { device }:
 {
+  warnings =
+    if builtins.match ".*CHANGE-ME.*" device != null then
+      [
+        "disk-layout.nix: the disk is still a placeholder (${device}); set the by-id name before installing (docs/INSTALL.md 2.2)."
+      ]
+    else
+      [ ];
+
   disko.devices.disk.main = {
     type = "disk";
     inherit device;

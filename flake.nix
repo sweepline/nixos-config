@@ -39,6 +39,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Prebuilt nix-index database (nix-locate, command-not-found, comma), updated with the lock.
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     ly-community = {
       url = "git+https://codeberg.org/fairyglade/ly-community";
       flake = false;

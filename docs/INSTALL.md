@@ -194,7 +194,7 @@ a good one.
 
 ## 4. Secrets and WireGuard (agenix)
 
-agenix encrypts a file for a list of SSH public keys (`secrets/agenix-rules.nix`):
+agenix encrypts a file for a list of SSH public keys (`secrets/keys.nix`, assigned in `secrets/agenix-rules.nix`):
 
 - the **host key** of the machine, so it can decrypt the file at boot
   (to `/run/agenix/wg0`, readable only by root, never in git or the Nix store), and
@@ -203,19 +203,20 @@ agenix encrypts a file for a list of SSH public keys (`secrets/agenix-rules.nix`
 Each host has its own WireGuard config: `secrets/wg0-<host>.age`.
 
 1. Get the host's public key (for 97 it was printed by `backup.sh` and is already in
-   `agenix-rules.nix`):
+   `keys.nix`):
    ```sh
    cat /etc/ssh/ssh_host_ed25519_key.pub
    ```
    and your user key on this machine: `cat ~/.ssh/id_ed25519.pub`.
-2. Add them in `secrets/agenix-rules.nix` (`hosts."<host>"` and `users.mikkel-<host>`).
+2. Add them in `secrets/keys.nix` (`hosts."<host>"` and `users.mikkel-<host>`). User keys
+   there can also log in as mikkel over SSH on every host.
 3. Re-encrypt the existing secrets for the new key list:
    ```sh
    cd ~/nixos-config/secrets
    agenix -r
    ```
    This must run on a machine whose key can **already** decrypt them. A brand-new machine
-   cannot: push the `agenix-rules.nix` change, run `agenix -r` on one of the other machines,
+   cannot: push the `keys.nix` change, run `agenix -r` on one of the other machines,
    push, and `git pull` here. If there are no `.age` files yet, skip this step.
 4. Create the WireGuard secret. This opens `$EDITOR`; paste the contents of the host's
    `wg0.conf` and save:

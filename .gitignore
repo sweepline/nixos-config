@@ -7,3 +7,4 @@ result-*
 secrets/*
 !secrets/*.age
 !secrets/agenix-rules.nix
+!secrets/keys.nix

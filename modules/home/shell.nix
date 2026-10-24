@@ -63,9 +63,11 @@
     nix-direnv.enable = true;
   };
 
-  # nix-locate, and "command not found" suggestions
+  # nix-locate, "command not found" suggestions, and `, <cmd>` to run any package without
+  # installing it. The database comes prebuilt from nix-index-database (flake.nix).
   programs.nix-index = {
     enable = true;
     enableBashIntegration = true;
   };
+  programs.nix-index-database.comma.enable = true;
 }

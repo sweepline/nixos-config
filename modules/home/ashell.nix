@@ -3,16 +3,20 @@ let
   # Tailscale only runs with my.work.enable (modules/nixos/work.nix); without it the VPN icon
   # and popup only look at WireGuard.
   useTs = if osConfig.services.tailscale.enable then "1" else "";
-  # Caps lock state from the keyboard LEDs. Polls, but only prints on change.
+  # Caps lock state from the keyboard LEDs. sysfs has no change events for them, so this polls,
+  # but only with bash builtins (no process per check) and only prints on change.
   capsWatch = pkgs.writeShellApplication {
     name = "capslock-watch";
-    runtimeInputs = [ pkgs.coreutils ];
     text = ''
+      # A read with a timeout on a pipe nobody writes to is a sleep without starting `sleep`.
+      exec {never}<> <(:)
       last=""
       while true; do
         state=off
         for led in /sys/class/leds/*::capslock/brightness; do
-          [[ -r "$led" && "$(cat "$led")" != 0 ]] && state=on
+          if [[ -r "$led" ]] && read -r value < "$led" && [[ "$value" != 0 ]]; then
+            state=on
+          fi
         done
         if [[ "$state" != "$last" ]]; then
           if [[ "$state" == on ]]; then
@@ -22,7 +26,7 @@ let
           fi
           last="$state"
         fi
-        sleep 0.3
+        read -rt 0.3 -u "$never" _ || true
       done
     '';
   };

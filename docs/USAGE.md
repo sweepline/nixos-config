@@ -141,16 +141,17 @@ blocks a rebuild, set `my.checkHyprland = false;` in the host's `default.nix`.
 
 ## Secrets (agenix)
 
-Secrets are files encrypted with SSH keys, listed in `secrets/agenix-rules.nix`. Run `agenix`
+Secrets are files encrypted with SSH keys. The keys are in `secrets/keys.nix`, and
+`secrets/agenix-rules.nix` says which keys can decrypt which secret. Run `agenix`
 from the `secrets/` folder; it uses your `~/.ssh/id_ed25519` to decrypt.
 
 ```sh
 cd ~/nixos-config/secrets
 agenix -e wg0-97.age       # edit (or create) a secret
-agenix -r                  # re-encrypt all secrets after changing keys in agenix-rules.nix
+agenix -r                  # re-encrypt all secrets after changing keys in keys.nix
 ```
 
-Adding a new machine or a new user key: add its public key in `agenix-rules.nix`, then
+Adding a new machine or a new user key: add its public key in `keys.nix`, then
 `agenix -r`, commit and rebuild. See docs/INSTALL.md section 4.
 
 On the machines the decrypted file is at `/run/agenix/wg0` (root only). WireGuard:
@@ -294,15 +295,16 @@ hides new notifications; they still go to the history, so you can restore them a
 ## Night light
 
 hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the times in
-`modules/home/hyprland.nix`. Turn it off for now with `systemctl --user stop hyprsunset`.
+`modules/home/hyprland/default.nix`. Turn it off for now with `systemctl --user stop hyprsunset`.
 
 ## Laptop (dongmyo)
 
-- **Lid:** closing it suspends, and after 2 hours asleep it hibernates. Waking from
-  hibernate asks for the disk PIN, then shows the lock screen (fingerprint works there).
-  Opening the lid of a hibernated laptop powers it on if the BIOS option "Flip to Start"
-  (Config → Power) is on. With an external
-  monitor connected, closing the lid only turns off the laptop screen.
+- **Lid:** closing it suspends (not suspend-then-hibernate: an aborted hibernate left amdgpu
+  broken, see `modules/nixos/laptop.nix`). With an external monitor connected, closing the
+  lid only turns off the laptop screen.
+- **Power button:** hibernates. Waking from hibernate asks for the disk PIN, then shows the
+  lock screen (fingerprint works there). Opening the lid of a hibernated laptop powers it on
+  if the BIOS option "Flip to Start" (Config → Power) is on.
 - **Battery:** charging stops at 80% to save the battery (if the laptop supports it). Change
   `my.laptop.chargeLimit` in `hosts/dongmyo/default.nix`, or set it to `null` before a trip.
 - **Fingerprint:** enroll a finger once with `fprintd-enroll`. It then works for `sudo` and

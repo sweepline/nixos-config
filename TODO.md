@@ -4,8 +4,8 @@
 
 - [ ] esa: set the disk by-id in `hosts/esa/default.nix`. Check that work allows its own OS,
       Secure Boot keys and WireGuard.
-- [ ] Add the user key from esa to `secrets/agenix-rules.nix`.
-- [ ] Add the host keys to `secrets/agenix-rules.nix` and create `secrets/wg0-<host>.age` (docs/INSTALL.md §4).
+- [ ] Add the user key from esa to `secrets/keys.nix`.
+- [ ] Add the host keys to `secrets/keys.nix` and create `secrets/wg0-<host>.age` (docs/INSTALL.md §4).
 
 ## After the first login on each host
 
@@ -62,7 +62,7 @@
 - [ ] Home folder backups to the home server with restic or borg (a systemd timer).
 - [ ] CI: a GitHub Action that evaluates/builds all hosts on every push.
 - [ ] 97: once NixOS/nixpkgs#575192 is fixed, remove `hardware.xpad-noone.enable = false` and the
-      `boot.kernelModules = [ "xpad" ]` line in `modules/nixos/gaming.nix`. Until then the stock
-      `xpad` drives the wireless Xbox 360 receiver (Guitar Hero controller); check it works.
+      `load-xpad` service in `modules/nixos/gaming.nix`. Until then the stock `xpad` drives the
+      wireless Xbox 360 receiver (Guitar Hero controller); check it works.
 - [ ] ashell: the theme button (light/dark) showed a cogwheel after the switch to unstable.
       Check on dongmyo (`theme-toggle watch`, `fc-list | grep -i "symbols nerd"`).

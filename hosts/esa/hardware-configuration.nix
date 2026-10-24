@@ -3,6 +3,11 @@
 # (File systems come from disk-layout.nix / disko, so --no-filesystems.)
 { config, lib, ... }:
 {
+  # Disappears when the file is replaced by the generated one.
+  warnings = [
+    "hosts/esa/hardware-configuration.nix is a placeholder; generate it during install (docs/INSTALL.md 2.4)."
+  ];
+
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"

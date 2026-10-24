@@ -85,7 +85,7 @@ remote_sum="$(ssh "$server" "sha256sum '${dir%/}/$(basename "$archive")'" | cut 
 if [[ "$remote_sum" == "$sum" ]]; then
     echo "OK: checksum matches. Local copy kept in $work"
     if [[ -f "$work/$host-host-key.pub" ]]; then
-        echo "New host public key (put it in secrets/agenix-rules.nix):"
+        echo "New host public key (put it in secrets/keys.nix):"
         cat "$work/$host-host-key.pub"
     fi
 else
