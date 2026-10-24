@@ -29,6 +29,15 @@ in
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  # Early KMS: without it the console only switches from simpledrm to full resolution right
+  # before ly starts, and ly ends up drawn at the old size in the top-left corner.
+  boot.initrd.kernelModules = lib.mkIf (gpu == "nvidia") [
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_uvm"
+    "nvidia_drm"
+  ];
+
   environment.sessionVariables = lib.mkMerge [
     (lib.mkIf (gpu == "nvidia") {
       LIBVA_DRIVER_NAME = "nvidia";
