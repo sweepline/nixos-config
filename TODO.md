@@ -58,7 +58,7 @@
 - [ ] Home folder backups to the home server with restic or borg (a systemd timer).
 - [ ] CI: a GitHub Action that evaluates/builds all hosts on every push.
 - [ ] 97: once NixOS/nixpkgs#575192 is fixed, remove `hardware.xpad-noone.enable = false` and the
-      `boot.blacklistedKernelModules` override in `modules/nixos/gaming.nix`. Until then the stock
+      `boot.kernelModules = [ "xpad" ]` line in `modules/nixos/gaming.nix`. Until then the stock
       `xpad` drives the wireless Xbox 360 receiver (Guitar Hero controller); check it works.
 - [ ] opencode: the context7 MCP server needs `CONTEXT7_API_KEY` in the environment. Store it as
       an agenix secret and export it in the shell (`dotfiles/opencode/opencode.json` reads it).

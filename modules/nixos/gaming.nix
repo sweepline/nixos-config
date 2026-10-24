@@ -32,8 +32,9 @@ lib.mkIf config.my.gaming.enable {
   # unstable (NixOS/nixpkgs#575192). Remove both lines below once that is fixed.
   hardware.xpad-noone.enable = false;
   # xone blacklists the kernel's xpad, which is what drives the wireless Xbox 360 receiver
-  # (Guitar Hero controller), so keep xpad loaded and only blacklist mt76x2u.
-  boot.blacklistedKernelModules = lib.mkForce [ "mt76x2u" ];
+  # (Guitar Hero controller). A blacklist only stops autoloading, so load xpad explicitly
+  # (not mkForce on the blacklist: that would also drop e.g. NVIDIA's nouveau blacklist).
+  boot.kernelModules = [ "xpad" ];
   programs.gamescope = {
     enable = true;
     capSysNice = true;
@@ -51,7 +52,7 @@ lib.mkIf config.my.gaming.enable {
     ++ [ gsrUi ];
 
   # The overlay runs in the background and is controlled with `gsr-ui-cli` (Hyprland binds in
-  # hosts/97/hyprland.lua). Its own global hotkeys (Left Alt+Z, ...) are not set up: they need
+  # modules/home/gaming.nix). Its own global hotkeys (Left Alt+Z, ...) are not set up: they need
   # gsr-global-hotkeys, which grabs every keyboard and re-emits the keys through a virtual
   # keyboard, so Hyprland's per-keyboard options (Caps as Ctrl, Alt/Win swap) would stop
   # applying. To get them anyway, add a security.wrappers."gsr-global-hotkeys" entry

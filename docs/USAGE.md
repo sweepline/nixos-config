@@ -289,7 +289,7 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
   window, take screenshots, stream, and run a **replay buffer** (the last minutes of
   gameplay). `Mod+Shift+g` saves the replay buffer (start it from the overlay, or with
   `gsr-ui-cli start-replay`). `gsr-ui-cli --help` lists every command, so more binds can go in
-  `hosts/97/hyprland.lua`. `Mod+Shift+r` (quick region recording) still works on its own.
+  `modules/home/gaming.nix`. `Mod+Shift+r` (quick region recording) still works on its own.
   The overlay's own hotkeys (Left Alt+Z, ...) are deliberately not set up: they need the
   program to grab every keyboard and re-emit the keys through a virtual keyboard, which would
   bypass the per-keyboard options in `hosts/97/hyprland.lua` (Caps as Ctrl, Alt/Win swap).

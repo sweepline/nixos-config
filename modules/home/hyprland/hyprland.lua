@@ -37,6 +37,7 @@ hl.config({
         kb_layout    = "us",
         kb_options   = "ctrl:nocaps,altwin:swap_lalt_lwin,compose:ralt",
         follow_mouse = 1,
+        numlock_by_default = true,
     },
 
     misc = {

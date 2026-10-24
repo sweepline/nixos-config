@@ -18,6 +18,8 @@
     ./wallpaper.nix
     ./screen-record.nix
     ./update-reminder.nix
+    ./gaming.nix
+    ./laptop.nix
   ];
 
   options.my.hyprland.hostConfig = lib.mkOption {

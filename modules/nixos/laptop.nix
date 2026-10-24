@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -26,8 +25,6 @@ in
         services.power-profiles-daemon.enable = true;
         services.upower.enable = true;
 
-        environment.systemPackages = [ pkgs.brightnessctl ];
-
         # Closing the lid only sleeps. Not suspend-then-hibernate: when its hibernate step
         # was aborted, amdgpu was left broken (EGL_BAD_ALLOC) and Hyprland crashed until a
         # reboot. The power button hibernates. With an external monitor (docked), closing
@@ -41,19 +38,11 @@ in
       }
 
       (lib.mkIf (cfg.chargeLimit != null) {
-        systemd.services.battery-charge-limit = {
-          description = "Limit battery charging to ${toString cfg.chargeLimit}%";
-          wantedBy = [ "multi-user.target" ];
-          after = [ "multi-user.target" ];
-          serviceConfig.Type = "oneshot";
-          script = ''
-            for f in /sys/class/power_supply/BAT*/charge_control_end_threshold; do
-              [ -w "$f" ] && echo ${toString cfg.chargeLimit} > "$f"
-            done
-          '';
-        };
-        # Re-apply after resume, some firmware resets it.
-        powerManagement.resumeCommands = "systemctl restart battery-charge-limit.service";
+        # Set whenever a battery appears or changes (boot, resume, AC plug), since some
+        # firmware resets it. Batteries without the attribute are skipped.
+        services.udev.extraRules = ''
+          SUBSYSTEM=="power_supply", KERNEL=="BAT*", ATTR{charge_control_end_threshold}=="*", ATTR{charge_control_end_threshold}="${toString cfg.chargeLimit}"
+        '';
       })
 
       (lib.mkIf cfg.fingerprint.enable {
