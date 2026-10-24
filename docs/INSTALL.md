@@ -289,6 +289,7 @@ Only do this **after** Secure Boot is on: the TPM is bound to the Secure Boot st
 sudo systemd-cryptenroll --tpm2-device=auto --tpm2-pcrs=7 --tpm2-with-pin=yes /dev/disk/by-partlabel/disk-main-luks
 
 # A recovery key, as a second fallback next to the passphrase. Store it in Bitwarden.
+# Not needed if storing passphrase in Bitwarden
 sudo systemd-cryptenroll --recovery-key /dev/disk/by-partlabel/disk-main-luks
 ```
 

@@ -16,7 +16,11 @@ hl.monitor({
 })
 hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
-hl.config({ cursor = { hide_on_key_press = false } })
+hl.config({
+    cursor    = { hide_on_key_press = false },
+    -- Ultrawide: new columns start at 1/3 (same value as in the Mod+E cycle)
+    scrolling = { column_width = 0.333 },
+})
 
 hl.device({ name = "ducky-ducky-one-3-mini-rgb",           kb_options = "ctrl:nocaps,compose:ralt,altwin:swap_alt_win" })
 hl.device({ name = "fc750rbt-keyboard",                    kb_options = "compose:ralt" })
