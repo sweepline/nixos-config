@@ -10,6 +10,8 @@ let
       procps
     ];
     text = ''
+      # gsettings needs the schema files; a systemd user service does not have them in XDG_DATA_DIRS.
+      export XDG_DATA_DIRS="${pkgs.gsettings-desktop-schemas}/share/gsettings-schemas/${pkgs.gsettings-desktop-schemas.name}:''${XDG_DATA_DIRS:-}"
       schema=org.gnome.desktop.interface
       key=color-scheme
       state="''${XDG_STATE_HOME:-$HOME/.local/state}"
