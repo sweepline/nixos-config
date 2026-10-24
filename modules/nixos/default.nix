@@ -10,6 +10,7 @@
     ./boot.nix
     ./checks.nix
     ./desktop.nix
+    ./env-secrets.nix
     ./hardware.nix
     ./networking.nix
     ./gaming.nix

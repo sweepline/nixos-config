@@ -156,6 +156,26 @@ Adding a new machine or a new user key: add its public key in `agenix-rules.nix`
 On the machines the decrypted file is at `/run/agenix/wg0` (root only). WireGuard:
 `sudo wg show`, `systemctl status wg-quick-wg0`.
 
+### API tokens
+
+Each host has its own tokens in `secrets/env-<host>.age`, as `KEY=value` lines. Make a
+separate token per host at the provider, so a lost machine only means revoking its own.
+
+```sh
+cd ~/nixos-config/secrets
+agenix -e env-97.age
+```
+
+```
+CONTEXT7_API_KEY=...
+DEEPSEEK_API_KEY=...
+```
+
+Rebuild, then open a new terminal: the file is decrypted to `/run/agenix/env` (readable only
+by mikkel) and bash exports every line. Only programs started from a terminal see them, not
+apps started from rofi or a keybind. opencode reads both keys from the environment.
+A host without an `env-<host>.age` simply has no tokens.
+
 ## Network
 
 - **Wi-Fi:** iwd. Use the network panel in ashell, `impala` (TUI), or

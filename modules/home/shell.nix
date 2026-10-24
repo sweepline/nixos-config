@@ -24,6 +24,13 @@
     initExtra = ''
       PROMPT_COMMAND="history -a"
 
+      # Per-host API tokens from agenix (modules/nixos/env-secrets.nix)
+      if [[ -r /run/agenix/env ]]; then
+        set -a
+        source /run/agenix/env
+        set +a
+      fi
+
       source ${config.programs.git.package}/share/bash-completion/completions/git-prompt.sh
       export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(__git_ps1)\[\033[00m\] $ "
 
