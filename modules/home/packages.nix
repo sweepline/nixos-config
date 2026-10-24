@@ -1,4 +1,18 @@
 { inputs, pkgs, ... }:
+let
+  # Workaround for playback stalls over HTTP/2 (libsoup 3.8.0 enables h2 by
+  # default and stalls streamed audio). Gelly 1.16.2 sets this itself; nixpkgs
+  # currently ships 1.14.0, so drop this wrapper once it is updated.
+  # https://github.com/Fingel/gelly/issues/247
+  gelly = pkgs.symlinkJoin {
+    name = "gelly";
+    paths = [ pkgs.gelly ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postBuild = ''
+      wrapProgram $out/bin/gelly --set SOUP_FORCE_HTTP1 1
+    '';
+  };
+in
 {
   home.packages = with pkgs; [
     # CLI
@@ -41,11 +55,6 @@
   # uv downloads its own Python builds; they run through nix-ld.
   home.sessionVariables.UV_PYTHON_PREFERENCE = "only-managed";
 
-  # Workaround for playback stalls over HTTP/2 (libsoup 3.8.0 enables h2 by
-  # default and stalls streamed audio). Gelly 1.16.2 sets this itself; nixpkgs
-  # currently ships 1.14.0. https://github.com/Fingel/gelly/issues/247
-  home.sessionVariables.SOUP_FORCE_HTTP1 = "1";
-
   xdg.configFile."swayimg/init.lua".source = ./swayimg.lua;
 
   # GnuPG (backups, encrypted files on USB). Passphrase prompts use the GNOME
@@ -56,7 +65,8 @@
     pinentry.package = pkgs.pinentry-gnome3;
   };
 
-  # PDF viewer (vim keys, themed by stylix)
+  # PDF viewer (vim keys, themed by stylix). Unlike GTK4 apps and kitty it
+  # cannot follow the light/dark toggle live: restart it after toggling.
   programs.zathura = {
     enable = true;
     options = {
