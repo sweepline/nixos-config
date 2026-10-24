@@ -80,7 +80,7 @@ hl.bind(mainMod .. " + SHIFT + P",   hl.dsp.exec_cmd("hyprpicker -a"))
 
 -- Session
 hl.bind(mainMod .. " + SHIFT + Q",   hl.dsp.window.close())
-hl.bind(mainMod .. " + SHIFT + C",   hl.dsp.exec_cmd("hyprctl reload"))
+hl.bind(mainMod .. " + SHIFT + C",   hl.dsp.exec_cmd("reload-desktop"))
 hl.bind(mainMod .. " + SHIFT + E",   hl.dsp.exec_cmd("hypr-exit"))
 hl.bind(mainMod .. " + SHIFT + W",   hl.dsp.exec_cmd("playerctl -a pause; loginctl lock-session"))
 

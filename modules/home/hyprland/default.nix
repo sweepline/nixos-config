@@ -30,6 +30,22 @@ let
       fi
     '';
   };
+
+  reloadDesktop = pkgs.writeShellApplication {
+    name = "reload-desktop";
+    runtimeInputs = with pkgs; [
+      systemd
+      procps
+      libnotify
+    ];
+    text = ''
+      hyprctl reload
+      # try-restart skips units that are not running
+      systemctl --user try-restart ashell mako hyprpaper hyprsunset hypridle
+      pkill -USR1 kitty || true
+      notify-send -t 2000 "Desktop reloaded"
+    '';
+  };
 in
 {
   wayland.windowManager.hyprland = {
@@ -55,6 +71,7 @@ in
     libnotify
     hyprExit
     dndToggle
+    reloadDesktop
   ];
 
   # Night light: warmer screen from 21:00 to 07:00
