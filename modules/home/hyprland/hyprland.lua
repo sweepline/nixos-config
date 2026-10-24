@@ -215,13 +215,16 @@ hl.window_rule({ match = { class = "^Godot$" }, float = true })
 hl.window_rule({ match = { class = "^Godot$", title = "^Godot Engine" }, float = false, tile = true })
 hl.window_rule({ match = { class = "^Godot_Engine$" }, float = true })
 hl.window_rule({ match = { class = "^mtgo.exe$" }, float = true })
--- The Bitwarden popup opens as plain "Mozilla Firefox" and only gets its title afterwards, so
--- a window rule (evaluated once, on open) cannot match it. Float it when the title changes.
-hl.on("window.title", function(w)
-    if w ~= nil and w.class == "firefox" and w.title:find("^Extension: %(Bitwarden") then
+-- The Bitwarden popup usually opens as plain "Mozilla Firefox" and only gets its title
+-- afterwards, so a window rule (evaluated once, on open) cannot match it. Sometimes the title
+-- is already set when it opens, so check on both open and title change.
+local function float_bitwarden(w)
+    if w ~= nil and not w.floating and w.class == "firefox" and w.title:find("^Extension: %(Bitwarden") then
         hl.dispatch(hl.dsp.window.float({ action = "set", window = w }))
         hl.dispatch(hl.dsp.window.center({ window = w }))
     end
-end)
+end
+hl.on("window.open", float_bitwarden)
+hl.on("window.title", float_bitwarden)
 hl.window_rule({ match = { class = "^swayimg$" }, float = true, center = true })
 hl.window_rule({ match = { class = "^xdg-desktop-portal-gtk$" }, float = true })
