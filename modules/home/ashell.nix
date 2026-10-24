@@ -123,8 +123,8 @@ in
         ];
         right = [
           "SystemInfo"
+          "capslock"
           [
-            "capslock"
             "wg"
             "ts"
             "theme"
