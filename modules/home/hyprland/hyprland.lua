@@ -29,9 +29,13 @@ hl.config({
         enabled = true,
     },
 
+    -- Every keyboard: Caps Lock is Ctrl and Super sits next to space (left side; the right
+    -- Alt stays the Compose key). Keyboards that already do this in hardware are set back
+    -- to plain compose:ralt: the HHKB below (travels between hosts), the Leopolds in
+    -- hosts/<host>/hyprland.lua.
     input = {
         kb_layout    = "us",
-        kb_options   = "compose:ralt",
+        kb_options   = "ctrl:nocaps,altwin:swap_lalt_lwin,compose:ralt",
         follow_mouse = 1,
     },
 
@@ -47,6 +51,8 @@ hl.config({
         no_update_news = true,
     },
 })
+
+hl.device({ name = "topre-corporation-hhkb-professional", kb_options = "compose:ralt" })
 
 ---------------------------------------------------------------------------
 -- Animations

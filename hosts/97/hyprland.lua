@@ -22,9 +22,8 @@ hl.config({
     scrolling = { column_width = 0.333 },
 })
 
-hl.device({ name = "ducky-ducky-one-3-mini-rgb",           kb_options = "ctrl:nocaps,compose:ralt,altwin:swap_alt_win" })
-hl.device({ name = "fc750rbt-keyboard",                    kb_options = "compose:ralt" })
-hl.device({ name = "topre-corporation-hhkb-professional",  kb_options = "compose:ralt" })
+-- Keyboard with the remaps in hardware
+hl.device({ name = "fc750rbt-keyboard", kb_options = "compose:ralt" })
 
 -- GPU Screen Recorder overlay (gsr-ui, see modules/nixos/gaming.nix). Its own hotkeys are not
 -- set up, so it is controlled from here. The overlay also offers screen, region and window
