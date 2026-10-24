@@ -13,7 +13,6 @@
       "wheel"
       "video"
       "audio"
-      "input"
     ];
     shell = pkgs.bashInteractive;
     # Set with `passwd` after install (see docs/INSTALL.md).
