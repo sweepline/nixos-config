@@ -165,6 +165,27 @@ On the machines the decrypted file is at `/run/agenix/wg0` (root only). WireGuar
   `networkctl` shows the state.
 - **DNS:** systemd-resolved. `resolvectl status` shows which DNS servers are used per
   interface (Wi-Fi, Tailscale MagicDNS, WireGuard).
+- **SSH between my machines:** port 22 is open on `wg0` (every host with a WireGuard secret)
+  and, on work hosts, on `tailscale0`. It is closed on Wi-Fi and Ethernet.
+
+## Work (`my.work.enable`)
+
+Set per host in `hosts/<host>/default.nix` (all three for now). It adds, from
+`modules/nixos/work.nix` and `modules/home/work.nix`:
+
+- **Tailscale**, with SSH and HTTP(S) (22, 80, 443) open on `tailscale0`. esa also opens
+  5900 there for VNC (`vncstart`, used from the meeting room).
+- **sadmin** with `/etc/sadmin.json` (`sadmin.scalgo.com:443`). When sadmin says it is out of
+  date, run `pkgs/update-sadmin.sh` (sets the newest version and hash in `pkgs/sadmin.nix`),
+  then `nh os switch`. sadmin cannot update itself, the Nix store is read-only.
+- **Scalgo SSH hosts** (`ssh ts01` → `ts01.emu-buri.ts.net`, ...), the work git aliases
+  (`pushmr`, `grepall`, `fixup`, `wiki`, ...), `localstack` and `findimage`.
+- **Work git email:** commits use `mikkel@scalgo.com` in any repo with a remote on
+  `git.i.scalgo.com` (SSH or HTTPS), wherever it is cloned; `m@esmi.dk` everywhere else.
+  A new repo has no remote until `git remote add`, so check `git config user.email` before the
+  first commit there.
+
+Without it the VPN icon in ashell only looks at WireGuard.
 
 ## Light / dark theme
 

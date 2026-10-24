@@ -11,7 +11,11 @@
 
 - [ ] Check monitor descriptions (`hyprctl monitors all`) and keyboard names (`hyprctl devices`)
       in `hosts/<host>/hyprland.lua`. They were translated from sway and are guesses.
-- [ ] esa: check that `DP-1`/`DP-2` in the workspace rules are the right outputs.
+- [ ] esa: check that `DP-1`/`DP-2` in the workspace rules are the right outputs, and that
+      `DP-5` in `vncstart` (`hosts/esa/home.nix`) is the screen to share over VNC.
+- [ ] Work hosts: `sadmin` runs, `git config user.email` in a work repo shows
+      `mikkel@scalgo.com`, and `ssh ts01` (or another work host) connects.
+- [ ] `ssh` between 97 and dongmyo over WireGuard works (their `wg0` addresses).
 - [ ] Check that the `Mod+Space` (tiled ↔ floating focus) bind behaves like sway's `focus mode_toggle`.
 - [ ] Scrolling layout: try every bind in `docs/USAGE.md` ("Hyprland"). The build check cannot
       catch typos in layout messages (`focus`, `swapcol`, `colresize`, `promote`, `consume_or_expel`, ...).
