@@ -35,7 +35,6 @@
       # Scalgo servers
       "git? ts?? ws? cs? c01 c01n?? gpu?? gpuc? management cc run?? ul? backup? ts??.na ts??na" = {
         HostName = "%h.emu-buri.ts.net";
-        ForwardAgent = "yes";
         ServerAliveInterval = 30;
         ServerAliveCountMax = 10;
       };
@@ -44,7 +43,7 @@
         HostName = "127.0.0.1";
         Port = 22;
         ControlMaster = "auto";
-        ControlPath = "/tmp/ssh_mux_%h_%p_%r";
+        ControlPath = "~/.ssh/cm-%C";
         ControlPersist = "1h";
       };
       "*.i.esmi.dk".User = "mikkel";

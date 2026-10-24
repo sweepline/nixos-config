@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   hostName,
   ...
 }:
@@ -30,9 +31,14 @@ in
     LLMNR = false;
   };
 
+  # Over Tailscale only SSH and HTTP(S) are reachable; open more ports here when needed.
   networking.firewall = {
     enable = true;
-    trustedInterfaces = [ "tailscale0" ];
+    interfaces.tailscale0.allowedTCPPorts = [
+      22
+      80
+      443
+    ];
   };
 
   services.tailscale.enable = true;
@@ -63,12 +69,12 @@ in
   };
 
   # The ashell WireGuard popup (modules/home/ashell.nix) reads peer details with `wg show`,
-  # which needs root. Allow exactly that command without a password prompt.
+  # which needs root. Allow exactly that command (same store path) without a password prompt.
   security.polkit.extraConfig = lib.mkIf hasWg ''
     polkit.addRule(function(action, subject) {
       if (action.id == "org.freedesktop.policykit.exec" &&
           subject.user == "mikkel" &&
-          action.lookup("command_line").match(/\/bin\/wg show wg0 dump$/)) {
+          action.lookup("command_line") == "${pkgs.wireguard-tools}/bin/wg show wg0 dump") {
         return polkit.Result.YES;
       }
     });
