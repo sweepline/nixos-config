@@ -17,9 +17,6 @@ hl.device({ name = "at-translated-set-2-keyboard",           kb_options = swappe
 hl.device({ name = "metadot---das-keyboard-das-keyboard",    kb_options = "ctrl:nocaps,compose:ralt",           numlock_by_default = true })
 hl.device({ name = "das-keyboard-das-keyboard-p13",          kb_options = swapped,                              numlock_by_default = true })
 
--- Move the current workspace to the other monitor
-hl.bind("SUPER + M", hl.dsp.workspace.move({ monitor = "r" }))
-
 for i = 1, 4 do hl.workspace_rule({ workspace = tostring(i), monitor = "DP-1" }) end
 for i = 5, 6 do hl.workspace_rule({ workspace = tostring(i), monitor = "DP-2" }) end
 

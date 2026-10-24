@@ -115,6 +115,9 @@ hl.bind(mainMod .. " + comma",  hl.dsp.layout("move -col"))
 hl.bind(mainMod .. " + period", hl.dsp.layout("move +col"))
 hl.bind(mainMod .. " + A",      hl.dsp.layout("center"))
 
+-- Move the current workspace to the next monitor (with two, that is the other one)
+hl.bind(mainMod .. " + M",      hl.dsp.workspace.move({ monitor = "+1" }))
+
 -- Windows
 hl.bind(mainMod .. " + F",             hl.dsp.window.fullscreen())
 hl.bind(mainMod .. " + SHIFT + SPACE", hl.dsp.window.float())

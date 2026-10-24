@@ -26,9 +26,6 @@ hl.device({ name = "ducky-ducky-one-3-mini-rgb",           kb_options = "ctrl:no
 hl.device({ name = "fc750rbt-keyboard",                    kb_options = "compose:ralt" })
 hl.device({ name = "topre-corporation-hhkb-professional",  kb_options = "compose:ralt" })
 
--- Move the current workspace to the other monitor
-hl.bind("SUPER + M", hl.dsp.workspace.move({ monitor = "u" }))
-
 -- GPU Screen Recorder overlay (gsr-ui, see modules/nixos/gaming.nix). Its own hotkeys are not
 -- set up, so it is controlled from here. The overlay also offers screen, region and window
 -- recording, screenshots, streaming and a replay buffer.
