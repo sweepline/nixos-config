@@ -1,7 +1,7 @@
 { ... }:
 {
-  # Colors and font come from stylix. theme-toggle tells running kitty
-  # windows to reload (SIGUSR1) so they follow the light/dark switch.
+  # Font comes from stylix; colors are the light/dark *-theme.auto.conf files
+  # from theme.nix, which kitty switches between live with the color-scheme.
   programs.kitty = {
     enable = true;
     shellIntegration.enableBashIntegration = true;

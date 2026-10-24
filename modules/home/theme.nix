@@ -1,5 +1,42 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 let
+  # Both palettes, rendered from the stylix templates. GTK4 and kitty get both
+  # and pick one from the color-scheme setting themselves, so running windows
+  # switch live (the specialisation switch alone only helps newly started apps).
+  schemeFiles = import ../color-schemes.nix pkgs;
+  schemes = lib.mapAttrs (_: config.stylix.base16.mkSchemeAttrs) schemeFiles;
+  gtkCss = lib.mapAttrs (
+    _: scheme:
+    scheme {
+      template = builtins.readFile "${inputs.stylix}/modules/gtk/gtk.css.mustache";
+      extension = ".css";
+    }
+  ) schemes;
+  kittyTheme = lib.mapAttrs (
+    _: scheme:
+    scheme {
+      templateRepo = inputs.stylix.inputs.tinted-kitty;
+      target = "base16";
+    }
+  ) schemes;
+  gtk4Css = pkgs.runCommandLocal "gtk.css" { } ''
+    {
+      echo '@media (prefers-color-scheme: dark) {'
+      cat ${gtkCss.dark}
+      echo '}'
+      echo '@media (prefers-color-scheme: light) {'
+      cat ${gtkCss.light}
+      echo '}'
+    } > $out
+  '';
+
+
   # Dark is the normal Home Manager generation; light is a specialisation of it.
   # The theme button in ashell activates the other one (no rebuild, both are prebuilt).
   themeToggle = pkgs.writeShellApplication {
@@ -47,18 +84,25 @@ let
         "$base/activate"
         gsettings set "$schema" "$key" prefer-dark
       fi
-
-      # Running kitty windows reload their (stylix) config.
-      pkill -USR1 -x kitty || true
     '';
   };
 in
 {
   home.packages = [ themeToggle ];
 
+  # Same files in both generations, so they never change on a toggle.
+  # GTK3 has no media queries and keeps stylix's single-palette gtk.css.
+  xdg.configFile = {
+    "gtk-4.0/gtk.css".source = lib.mkForce gtk4Css;
+    "kitty/dark-theme.auto.conf".source = kittyTheme.dark;
+    "kitty/light-theme.auto.conf".source = kittyTheme.light;
+    "kitty/no-preference-theme.auto.conf".source = kittyTheme.dark;
+  };
+  stylix.targets.kitty.colors.enable = false;
+
   specialisation.light.configuration = {
     stylix.polarity = lib.mkForce "light";
-    stylix.base16Scheme = lib.mkForce "${pkgs.base16-schemes}/share/themes/gruvbox-material-light-medium.yaml";
+    stylix.base16Scheme = lib.mkForce schemeFiles.light;
     dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-light";
   };
 
