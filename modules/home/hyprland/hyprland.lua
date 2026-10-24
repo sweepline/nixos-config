@@ -21,7 +21,7 @@ hl.config({
     decoration = {
         rounding = 2,
         dim_around = 0.5,
-        shadow   = { enabled = true },
+        shadow   = { enabled = true, color = 0xee1a1a1a },
         blur     = { enabled = true },
     },
 
