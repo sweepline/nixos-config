@@ -13,7 +13,7 @@ let
         done
         if [[ "$state" != "$last" ]]; then
           if [[ "$state" == on ]]; then
-            echo '{"text":"CAPS","alt":"on"}'
+            echo '{"text":"","alt":"on"}'
           else
             echo '{"text":"","alt":"off"}'
           fi
@@ -34,15 +34,12 @@ let
       tailscale
     ];
     text = ''
-      # Usage: vpn-watch wg|ts
-      which="''${1:?wg or ts}"
       last=""
       while true; do
         state=down
-        if [[ "$which" == wg ]]; then
-          [[ -d /sys/class/net/wg0 ]] && state=up
-        else
-          [[ "$(tailscale status --json 2>/dev/null | jq -r '.BackendState // empty')" == Running ]] && state=up
+        if [[ -d /sys/class/net/wg0 ]] &&
+          [[ "$(tailscale status --json 2>/dev/null | jq -r '.BackendState // empty')" == Running ]]; then
+          state=up
         fi
         if [[ "$state" != "$last" ]]; then
           echo "{\"text\":\"\",\"alt\":\"$state\"}"
@@ -66,43 +63,72 @@ let
       wl-clipboard
     ];
     text = ''
+      # Usage: vpn-info [wg|ts]; both when no argument
+      which="''${1:-all}"
       lines=()
 
-      if [[ -d /sys/class/net/wg0 ]]; then
-        # wg needs root; polkit asks for the password.
-        if dump="$(pkexec ${pkgs.wireguard-tools}/bin/wg show wg0 dump 2>/dev/null)"; then
-          now="$(date +%s)"
-          lines+=("WireGuard: up")
-          while read -r endpoint allowed handshake; do
-            if [[ "$handshake" == 0 ]]; then
-              ago="no handshake yet"
-            else
-              ago="handshake $((now - handshake))s ago"
-            fi
-            lines+=("  peer $endpoint, $allowed, $ago")
-          done < <(echo "$dump" | tail -n +2 | awk -F'\t' '{print $3, $4, $5}')
+      if [[ "$which" != ts ]]; then
+        if [[ -d /sys/class/net/wg0 ]]; then
+          # wg needs root; polkit asks for the password. The absolute path is needed because
+          # PATH only holds the tools above.
+          if dump="$(/run/wrappers/bin/pkexec ${pkgs.wireguard-tools}/bin/wg show wg0 dump 2>/dev/null)"; then
+            now="$(date +%s)"
+            lines+=("WireGuard: up")
+            while read -r endpoint allowed handshake; do
+              if [[ "$handshake" == 0 ]]; then
+                ago="no handshake yet"
+              else
+                ago="handshake $((now - handshake))s ago"
+              fi
+              lines+=("  peer $endpoint, $allowed, $ago")
+            done < <(echo "$dump" | tail -n +2 | awk -F'\t' '{print $3, $4, $5}')
+          else
+            lines+=("WireGuard: up (authentication cancelled)")
+          fi
         else
-          lines+=("WireGuard: up (details need authentication)")
+          lines+=("WireGuard: down")
         fi
-      else
-        lines+=("WireGuard: down")
       fi
 
-      status="$(tailscale status --json 2>/dev/null || echo '{}')"
-      if [[ "$(echo "$status" | jq -r '.BackendState // empty')" == Running ]]; then
-        exit_node="$(echo "$status" | jq -r '[.Peer[]? | select(.ExitNode)] | first | .HostName // "none"')"
-        lines+=("Tailscale: running, $(echo "$status" | jq -r '.Self.TailscaleIPs[0]'), exit node: $exit_node")
-        while read -r line; do
-          lines+=("  $line")
-        done < <(echo "$status" | jq -r '.Peer[]? | select(.Online) | "\(.HostName)  \(.TailscaleIPs[0])"')
-      else
-        lines+=("Tailscale: down")
+      if [[ "$which" != wg ]]; then
+        status="$(tailscale status --json 2>/dev/null || echo '{}')"
+        if [[ "$(echo "$status" | jq -r '.BackendState // empty')" == Running ]]; then
+          exit_node="$(echo "$status" | jq -r '[.Peer[]? | select(.ExitNode)] | first | .HostName // "none"')"
+          lines+=("Tailscale: running, $(echo "$status" | jq -r '.Self.TailscaleIPs[0]'), exit node: $exit_node")
+
+          expiry="$(echo "$status" | jq -r '.Self.KeyExpiry // empty')"
+          if [[ -n "$expiry" && "$expiry" != 0001-* ]]; then
+            left=$(($(date -d "$expiry" +%s) - $(date +%s)))
+            if ((left <= 0)); then
+              lines+=("  key expired on $(date -d "$expiry" +%F)")
+            else
+              lines+=("  key expires in $((left / 86400))d $((left % 86400 / 3600))h ($(date -d "$expiry" +%F))")
+            fi
+          else
+            lines+=("  key does not expire")
+          fi
+
+          while read -r line; do
+            lines+=("  $line")
+          done < <(echo "$status" | jq -r '.Peer[]? | select(.Online) | "\(.HostName)  \(.TailscaleIPs[0])"')
+        else
+          lines+=("Tailscale: down")
+        fi
       fi
 
       choice="$(printf '%s\n' "''${lines[@]}" | rofi -dmenu -p vpn)" || exit 0
       ip="$(echo "$choice" | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}' | head -n1 || true)"
       [[ -n "$ip" ]] && wl-copy "$ip"
       exit 0
+    '';
+  };
+
+  # ashell runs as a systemd user service, outside the login session, so polkit cannot find the
+  # graphical agent for anything it starts directly. Let Hyprland start the popup instead.
+  vpnClick = pkgs.writeShellApplication {
+    name = "vpn-click";
+    text = ''
+      ${pkgs.hyprland}/bin/hyprctl eval "hl.dispatch(hl.dsp.exec_cmd(\"${vpnInfo}/bin/vpn-info $*\"))"
     '';
   };
 in
@@ -112,6 +138,8 @@ in
     systemd.enable = true;
     settings = {
       position = "Top";
+      # Above windows (but not fullscreen), so the window resize border does not cover the bar
+      layer = "Top";
       modules = {
         left = [
           "MediaPlayer"
@@ -123,10 +151,9 @@ in
         ];
         right = [
           "SystemInfo"
-          "capslock"
           [
-            "wg"
-            "ts"
+            "capslock"
+            "vpn"
             "theme"
             "Tray"
             "Tempo"
@@ -176,28 +203,26 @@ in
             "light" = "";
           };
         }
-        # WireGuard and Tailscale status (red dot when down); click for details
+        # WireGuard + Tailscale: closed lock when both are up, open lock otherwise; click for details
         {
-          name = "wg";
-          icon = "";
-          command = "${vpnInfo}/bin/vpn-info";
-          listen_cmd = "${vpnWatch}/bin/vpn-watch wg";
-          icons."up|down" = "";
-          alert = "down";
+          name = "vpn";
+          icon = "󱦚";
+          command = "${vpnClick}/bin/vpn-click";
+          listen_cmd = "${vpnWatch}/bin/vpn-watch";
+          icons = {
+            "up" = "󰦝";
+            "down" = "󱦚";
+          };
         }
-        {
-          name = "ts";
-          icon = "󱗼";
-          command = "${vpnInfo}/bin/vpn-info";
-          listen_cmd = "${vpnWatch}/bin/vpn-watch ts";
-          icons."up|down" = "󱗼";
-          alert = "down";
-        }
-        # Shows "CAPS" while caps lock is on, nothing otherwise
+        # Caps lock: always shown, filled key while on
         {
           name = "capslock";
-          type = "Text";
+          icon = "󰜹";
           listen_cmd = "${capsWatch}/bin/capslock-watch";
+          icons = {
+            "on" = "󰜸";
+            "off" = "󰜹";
+          };
         }
       ];
 
