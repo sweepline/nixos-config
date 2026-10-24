@@ -175,6 +175,8 @@ in
 
       window_title.truncate_title_after_length = 100;
 
+      osd.enabled = true;
+
       tempo.clock_format = "%Y-%m-%d %H:%M";
 
       settings = {
@@ -184,6 +186,7 @@ in
         wifi_more_cmd = "kitty -e impala";
         bluetooth_more_cmd = "blueman-manager";
         battery_format = "IconAndPercentage";
+        max_volume = 100;
         indicators = [
           "IdleInhibitor"
           "PowerProfile"
@@ -230,9 +233,6 @@ in
           };
         }
       ];
-
-      # Colors and font come from stylix.
-      appearance.style = "Islands";
     };
   };
 }

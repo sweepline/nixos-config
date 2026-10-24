@@ -167,22 +167,25 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Media
-hl.bind(mainMod .. " + U",           hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"))
-hl.bind(mainMod .. " + I",           hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { repeating = true })
-hl.bind(mainMod .. " + O",           hl.dsp.exec_cmd("wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"), { repeating = true })
-hl.bind(mainMod .. " + Y",           hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"))
+hl.bind(mainMod .. " + U",           hl.dsp.exec_cmd("ashell msg volume-toggle-mute"))
+hl.bind(mainMod .. " + I",           hl.dsp.exec_cmd("ashell msg volume-down"), { repeating = true })
+hl.bind(mainMod .. " + O",           hl.dsp.exec_cmd("ashell msg volume-up"), { repeating = true })
+hl.bind(mainMod .. " + Y",           hl.dsp.exec_cmd("ashell msg microphone-toggle-mute"))
 hl.bind(mainMod .. " + P",           hl.dsp.exec_cmd("playerctl -a play-pause"))
 hl.bind(mainMod .. " + bracketright", hl.dsp.exec_cmd("playerctl -a next"))
 hl.bind(mainMod .. " + bracketleft",  hl.dsp.exec_cmd("playerctl -a previous"))
 
-hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
-hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),        { locked = true, repeating = true })
-hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),       { locked = true })
+hl.bind("XF86AudioRaiseVolume",  hl.dsp.exec_cmd("ashell msg volume-up"),          { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume",  hl.dsp.exec_cmd("ashell msg volume-down"),        { locked = true, repeating = true })
+hl.bind("XF86AudioMute",         hl.dsp.exec_cmd("ashell msg volume-toggle-mute"), { locked = true })
 hl.bind("XF86AudioPlay",         hl.dsp.exec_cmd("playerctl -a play-pause"),                          { locked = true })
 hl.bind("XF86AudioNext",         hl.dsp.exec_cmd("playerctl -a next"),                                { locked = true })
 hl.bind("XF86AudioPrev",         hl.dsp.exec_cmd("playerctl -a previous"),                            { locked = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl s 10%-"),                             { locked = true, repeating = true })
-hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("brightnessctl s 10%+"),                             { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("ashell msg brightness-down"),          { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessUp",   hl.dsp.exec_cmd("ashell msg brightness-up"),            { locked = true, repeating = true })
+
+-- Hide or show the bar
+hl.bind(mainMod .. " + B", hl.dsp.exec_cmd("ashell msg toggle-visibility"))
 
 -- Screenshots and recording
 hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("grimblast --notify copy area"))
