@@ -61,4 +61,16 @@ in
     configFile = config.age.secrets.wg0.path;
     autostart = true;
   };
+
+  # The ashell WireGuard popup (modules/home/ashell.nix) reads peer details with `wg show`,
+  # which needs root. Allow exactly that command without a password prompt.
+  security.polkit.extraConfig = lib.mkIf hasWg ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.policykit.exec" &&
+          subject.user == "mikkel" &&
+          action.lookup("command_line").match(/\/bin\/wg show wg0 dump$/)) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 }
