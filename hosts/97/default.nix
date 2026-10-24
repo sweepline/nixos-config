@@ -17,6 +17,9 @@
     };
   };
 
+  # Console (and Ly) on the ultrawide's native mode; otherwise both screens get 1920x1080.
+  boot.kernelParams = [ "video=DP-1:3440x1440@60" ];
+
   # Overflow swap (16 GB RAM): used only after zram is full. Inside LUKS, so encrypted.
   swapDevices = [
     {

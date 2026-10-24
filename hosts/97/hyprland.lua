@@ -18,12 +18,14 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
 hl.config({
     cursor    = { hide_on_key_press = false },
+    input     = { numlock_by_default = true },
     -- Ultrawide: new columns start at 1/3 (same value as in the Mod+E cycle)
     scrolling = { column_width = 0.333 },
 })
 
 -- Keyboard with the remaps in hardware
 hl.device({ name = "fc750rbt-keyboard", kb_options = "compose:ralt" })
+hl.device({ name = "------fc750r",      kb_options = "compose:ralt" })
 
 -- GPU Screen Recorder overlay (gsr-ui, see modules/nixos/gaming.nix). Its own hotkeys are not
 -- set up, so it is controlled from here. The overlay also offers screen, region and window
