@@ -9,6 +9,9 @@
   ];
 
   my = {
-    gpu = "intel";
+    gpu = "intel"; # dedicated Intel Arc card (the CPU is AMD)
   };
+
+  # wayvnc (vncstart, see home.nix), only over Tailscale.
+  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 5900 ];
 }

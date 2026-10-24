@@ -19,7 +19,6 @@
     zstd
     rsync
     swayimg
-    nh
 
     # Development (see docs/DEVELOPMENT.md)
     rustup

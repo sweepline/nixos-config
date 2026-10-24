@@ -22,10 +22,6 @@
       grep = "grep --color=auto";
       # Work
       localstack = "$HOME/repos/mono/scripts/localstack.py";
-      vncstart = "wayvnc -o DP-5 -g 0.0.0.0";
-    };
-    sessionVariables = {
-      SCCACHE_REDIS = "redis://esa";
     };
     initExtra = ''
       PROMPT_COMMAND="history -a"

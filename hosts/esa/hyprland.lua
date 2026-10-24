@@ -9,7 +9,6 @@ hl.monitor({ output = "", mode = "preferred", position = "auto", scale = 1 })
 
 hl.config({
     cursor = { hide_on_key_press = true },
-    input  = { numlock_by_default = true },
 })
 
 -- Keyboards with the remaps in hardware

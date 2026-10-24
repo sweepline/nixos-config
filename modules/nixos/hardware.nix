@@ -19,9 +19,6 @@ in
       ++ lib.optionals (gpu == "nvidia") [ pkgs.nvidia-vaapi-driver ];
   };
 
-  hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
   services.xserver.videoDrivers = lib.mkIf (gpu == "nvidia") [ "nvidia" ];
 
   hardware.nvidia = lib.mkIf (gpu == "nvidia") {
