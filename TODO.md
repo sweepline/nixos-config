@@ -52,6 +52,7 @@
       `Mod+Shift+g` and check the saved clip. NVENC recording of a game works.
 - [ ] Decide whether the overlay replaces `Mod+Shift+r` (`gsr-ui-cli toggle-record-region`) and
       the `gpu-screen-recorder-gtk` app on 97.
+- [ ] Currently its reporting that only cpu encoding is available
 
 ## Later
 
@@ -66,3 +67,5 @@
       wireless Xbox 360 receiver (Guitar Hero controller); check it works.
 - [ ] ashell: the theme button (light/dark) showed a cogwheel after the switch to unstable.
       Check on dongmyo (`theme-toggle watch`, `fc-list | grep -i "symbols nerd"`).
+- [ ] nvim we should have nix config lsp?
+- [ ] nvim remove the ai cli and nes, but keep the ctrl+space completion.
