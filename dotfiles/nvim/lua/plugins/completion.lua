@@ -35,9 +35,6 @@ return {
 				-- TODO: Maybe add c-n for opening
 				["<Tab>"] = {
 					"snippet_forward",
-					function() -- sidekick next edit suggestion
-						return require("sidekick").nes_jump_or_apply()
-					end,
 					"fallback",
 				},
 			},
