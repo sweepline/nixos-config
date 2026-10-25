@@ -1,5 +1,27 @@
-{ lib, osConfig, ... }:
+{
+  lib,
+  osConfig,
+  pkgs,
+  ...
+}:
+let
+  scalgoRoot = ../../certs/scalgo-root.crt;
+in
 lib.mkIf osConfig.my.work.enable {
+  # Firefox uses its own trust store, not the system one; a policy installs the root CA.
+  programs.firefox.policies.Certificates.Install = [ "${scalgoRoot}" ];
+
+  # Chromium on Linux only trusts extra roots from the NSS db in ~/.pki/nssdb, and has no
+  # policy to add them, so add it there (what mono's `ca.py install-root` does by hand).
+  home.activation.scalgoRootNss = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    db="$HOME/.pki/nssdb"
+    run mkdir -p "$db"
+    if [ ! -f "$db/cert9.db" ]; then
+      run ${pkgs.nssTools}/bin/certutil -d "sql:$db" -N --empty-password
+    fi
+    run ${pkgs.nssTools}/bin/certutil -d "sql:$db" -A -t "C,," -n "SCALGO Root" -i ${scalgoRoot}
+  '';
+
   programs.ssh.settings = {
     # Scalgo servers
     "git? ts?? ws? cs? c01 c01n?? gpu?? gpuc? management cc run?? ul? backup? ts??.na ts??na" = {
