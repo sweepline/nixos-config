@@ -42,6 +42,7 @@
     "$HOME/.cargo/bin"
     "$HOME/.local/bin"
     "$HOME/.local/share/pnpm"
+    "$HOME/.local/share/pnpm/bin"
     "$HOME/.bun/bin"
   ];
 
@@ -49,6 +50,7 @@
     EDITOR = "nvim";
     VISUAL = "nvim";
     PNPM_HOME = "$HOME/.local/share/pnpm";
+    COREPACK_ENABLE_DOWNLOAD_PROMPT = "0";
     BUN_INSTALL = "$HOME/.bun";
   };
 

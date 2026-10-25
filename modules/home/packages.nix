@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}:
 let
   # Workaround for playback stalls over HTTP/2 (libsoup 3.8.0 enables h2 by
   # default and stalls streamed audio). Gelly 1.16.2 sets this itself; nixpkgs
@@ -38,7 +43,9 @@ in
     rustup
     uv
     nodejs
-    pnpm
+    # Provides pnpm/yarn shims that follow each repo's "packageManager" pin. hiPrio because
+    # nodejs also ships a bin/corepack, which would otherwise conflict in the profile.
+    (lib.hiPrio corepack)
     # opencode 2.1+ from upstream's flake (see flake.nix); nixpkgs has 2.0.x
     inputs.opencode.packages.${pkgs.stdenv.hostPlatform.system}.opencode
 
