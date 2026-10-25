@@ -36,7 +36,6 @@ let
     } > $out
   '';
 
-
   # Dark is the normal Home Manager generation; light is a specialisation of it.
   # The theme button in ashell activates the other one (no rebuild, both are prebuilt).
   themeToggle = pkgs.writeShellApplication {

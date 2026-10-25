@@ -25,9 +25,18 @@ in
       };
       # Block AI features (also future ones), except the two that run locally
       AIControls = {
-        Default = { Value = "blocked"; Locked = true; };
-        Translations = { Value = "available"; Locked = true; };
-        PDFAltText = { Value = "available"; Locked = true; };
+        Default = {
+          Value = "blocked";
+          Locked = true;
+        };
+        Translations = {
+          Value = "available";
+          Locked = true;
+        };
+        PDFAltText = {
+          Value = "available";
+          Locked = true;
+        };
       };
       FirefoxSuggest = {
         SponsoredSuggestions = false;
@@ -124,7 +133,9 @@ in
           };
           home-manager = {
             name = "Home Manager options";
-            urls = [ { template = "https://home-manager-options.extranix.com/?release=master&query={searchTerms}"; } ];
+            urls = [
+              { template = "https://home-manager-options.extranix.com/?release=master&query={searchTerms}"; }
+            ];
             definedAliases = [ "@hm" ];
           };
           noogle = {

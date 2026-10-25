@@ -29,8 +29,8 @@ in
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
-  # Early KMS: without it the console only switches from simpledrm to full resolution right
-  # before ly starts, and ly ends up drawn at the old size in the top-left corner.
+  # Load the NVIDIA driver in the initrd so the console is already on the native framebuffer
+  # during boot (and when Ly starts) instead of switching away from simpledrm mid-boot.
   boot.initrd.kernelModules = lib.mkIf (gpu == "nvidia") [
     "nvidia"
     "nvidia_modeset"

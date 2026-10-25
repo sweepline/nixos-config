@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -18,8 +18,11 @@
     };
   };
 
-  # Console (and Ly) on the ultrawide's native mode; otherwise both screens get 1920x1080.
-  boot.kernelParams = [ "video=DP-1:3440x1440@60" ];
+  # fbcon sizes the console to the smallest connected screen (DP-2, 1920x1080), which leaves
+  # the console and Ly in the top-left corner of the 3440x1440 ultrawide. Expand the visible
+  # area to the full framebuffer size once the DRM framebuffer is up.
+  systemd.services.display-manager.serviceConfig.ExecStartPre =
+    "${pkgs.fbset}/bin/fbset -fb /dev/fb0 -xres 3440 -yres 1440";
 
   # Overflow swap (16 GB RAM): used only after zram is full. Inside LUKS, so encrypted.
   swapDevices = [
