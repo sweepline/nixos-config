@@ -318,6 +318,7 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
 - PDFs open in zathura (vim keys: `j`/`k`, `/` to search, `d` for two pages).
 - Opening a folder from another app (e.g. "Show in folder" in Firefox) opens yazi in kitty.
 - Clipboard history: `Mod+Shift+v`. `cliphist wipe` clears it.
+  Plain-text copies from Firefox's URL bar and input fields, and Bitwarden copies, are deliberately not recorded (they can be passwords). Pasting them still works. Copies from a web page are recorded.
 
 ## Gaming (97)
 

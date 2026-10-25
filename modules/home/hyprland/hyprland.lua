@@ -218,16 +218,42 @@ hl.window_rule({ match = { class = "^Godot$" }, float = true })
 hl.window_rule({ match = { class = "^Godot$", title = "^Godot Engine" }, float = false, tile = true })
 hl.window_rule({ match = { class = "^Godot_Engine$" }, float = true })
 hl.window_rule({ match = { class = "^mtgo.exe$" }, float = true })
--- The Bitwarden popup usually opens as plain "Mozilla Firefox" and only gets its title
--- afterwards, so a window rule (evaluated once, on open) cannot match it. Sometimes the title
--- is already set when it opens, so check on both open and title change.
-local function float_bitwarden(w)
-    if w ~= nil and not w.floating and w.class == "firefox" and w.title:find("^Extension: %(Bitwarden") then
-        hl.dispatch(hl.dsp.window.float({ action = "set", window = w }))
-        hl.dispatch(hl.dsp.window.center({ window = w }))
+-- Firefox popups (Bitwarden, MitID) usually open as plain "Mozilla Firefox" and only get their
+-- title afterwards, so a window rule (evaluated once, on open) cannot match them. Sometimes the
+-- title is already set when they open, so check on both open and title change. Title changes only
+-- count shortly after the window opened, so navigating an existing window to e.g. mitid.dk (or
+-- any page titled like a popup) never floats it. Windows are tracked by address, as the event
+-- gives no "is new" flag.
+local firefox_popups = {
+    { title = "^Extension: %(Bitwarden" },
+    { title = "^MitID — Mozilla Firefox$", size = { 447, 676 } },
+}
+local popup_grace_seconds = 5
+local firefox_opened = {}
+local function float_firefox_popup(w)
+    if w == nil or w.floating or w.class ~= "firefox" then return end
+    local opened = firefox_opened[w.address]
+    if opened == nil or os.time() - opened > popup_grace_seconds then return end
+    for _, p in ipairs(firefox_popups) do
+        if w.title:find(p.title) then
+            hl.dispatch(hl.dsp.window.float({ action = "set", window = w }))
+            if p.size then
+                hl.dispatch(hl.dsp.window.resize({ x = p.size[1], y = p.size[2], window = w }))
+            end
+            hl.dispatch(hl.dsp.window.center({ window = w }))
+            return
+        end
     end
 end
-hl.on("window.open", float_bitwarden)
-hl.on("window.title", float_bitwarden)
+hl.on("window.open", function(w)
+    if w == nil or w.class ~= "firefox" then return end
+    local now = os.time()
+    for addr, t in pairs(firefox_opened) do
+        if now - t > popup_grace_seconds then firefox_opened[addr] = nil end
+    end
+    firefox_opened[w.address] = now
+    float_firefox_popup(w)
+end)
+hl.on("window.title", float_firefox_popup)
 hl.window_rule({ match = { class = "^swayimg$" }, float = true, center = true })
 hl.window_rule({ match = { class = "^xdg-desktop-portal-gtk$" }, float = true })

@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   hyprExit = pkgs.writeShellApplication {
     name = "hypr-exit";
@@ -100,4 +105,23 @@ in
     enable = true;
     allowImages = true;
   };
+
+  # Keep passwords copied from Bitwarden out of the history. The Firefox extension sets no
+  # "x-kde-passwordManagerHint" mimetype and its popup is not a window of its own, so neither can
+  # be used to recognise it. What does differ is the offered mimetypes: it offers plain text plus
+  # SAVE_TARGETS and no text/html, unlike a copy from a web page. This also drops copies from
+  # Firefox's URL bar and input fields. Only text is filtered; the image watcher is left alone.
+  systemd.user.services.cliphist.Service.ExecStart = lib.mkForce (
+    let
+      store = pkgs.writeShellScript "cliphist-store" ''
+        types=$(${pkgs.wl-clipboard}/bin/wl-paste -l)
+        case "$types" in
+          *text/html*) ;;
+          *SAVE_TARGETS*) exit 0 ;;
+        esac
+        ${pkgs.cliphist}/bin/cliphist -max-dedupe-search 10 -max-items 500 store
+      '';
+    in
+    "${pkgs.wl-clipboard}/bin/wl-paste --watch ${store}"
+  );
 }
