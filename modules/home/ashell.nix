@@ -78,9 +78,11 @@ let
 
       if [[ "$which" != ts ]]; then
         if [[ -d /sys/class/net/wg0 ]]; then
-          # wg needs root; polkit asks for the password. The absolute path is needed because
-          # PATH only holds the tools above.
-          if dump="$(/run/wrappers/bin/pkexec ${pkgs.wireguard-tools}/bin/wg show wg0 dump 2>/dev/null)"; then
+          # wg needs root; a polkit rule (modules/nixos/networking.nix) allows exactly this
+          # command without a prompt. The absolute path is needed because PATH only holds the
+          # tools above. Keep stderr: pkexec failures used to look like a dismissed prompt.
+          wg_err="$(mktemp)"
+          if dump="$(/run/wrappers/bin/pkexec ${pkgs.wireguard-tools}/bin/wg show wg0 dump 2>"$wg_err")"; then
             now="$(date +%s)"
             lines+=("WireGuard: up")
             while read -r endpoint allowed handshake; do
@@ -92,8 +94,10 @@ let
               lines+=("  peer $endpoint, $allowed, $ago")
             done < <(echo "$dump" | tail -n +2 | awk -F'\t' '{print $3, $4, $5}')
           else
-            lines+=("WireGuard: up (authentication cancelled)")
+            reason="$(head -n1 "$wg_err" | cut -c1-100)"
+            lines+=("WireGuard: up (''${reason:-pkexec failed})")
           fi
+          rm -f "$wg_err"
         else
           lines+=("WireGuard: down")
         fi

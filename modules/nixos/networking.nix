@@ -61,6 +61,11 @@ in
   };
   networking.firewall.interfaces.wg0.allowedTCPPorts = lib.mkIf hasWg [ 22 ];
 
+  # pkexec only runs with polkit's authorization when it is setuid, and NixOS only creates
+  # that wrapper if asked (desktop environments do so via their modules; Hyprland does not).
+  # Without it /run/wrappers/bin/pkexec does not exist at all.
+  security.polkit.enablePkexecWrapper = lib.mkIf hasWg true;
+
   # The ashell WireGuard popup (modules/home/ashell.nix) reads peer details with `wg show`,
   # which needs root. Allow exactly that command (same store path) without a password prompt.
   security.polkit.extraConfig = lib.mkIf hasWg ''
