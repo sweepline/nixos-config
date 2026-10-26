@@ -194,8 +194,7 @@ A host without an `env-<host>.age` simply has no tokens.
 Set per host in `hosts/<host>/default.nix` (all three for now). It adds, from
 `modules/nixos/work.nix` and `modules/home/work.nix`:
 
-- **Tailscale**, with only SSH (22) open on `tailscale0`. esa also opens
-  5900 there for VNC (`vncstart`, used from the meeting room).
+- **Tailscale**, with only SSH (22) open on `tailscale0`.
 - **sadmin** with `/etc/sadmin.json` (`sadmin.scalgo.com:443`). When sadmin says it is out of
   date, run `pkgs/update-sadmin.sh` (sets the newest version and hash in `pkgs/sadmin.nix`),
   then `nh os switch`. sadmin cannot update itself, the Nix store is read-only.

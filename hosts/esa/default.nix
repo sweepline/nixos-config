@@ -12,7 +12,4 @@
     gpu = "intel"; # dedicated Intel Arc card (the CPU is AMD)
     work.enable = true;
   };
-
-  # wayvnc (vncstart, see home.nix) for the meeting room, only over Tailscale (my.work.enable).
-  networking.firewall.interfaces.tailscale0.allowedTCPPorts = [ 5900 ];
 }
