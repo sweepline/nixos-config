@@ -212,6 +212,11 @@ in
         # Follow the light/dark toggle (via the portal color-scheme)
         "layout.css.prefers-color-scheme.content-override" = 2;
         "extensions.autoDisableScopes" = 0;
+        # Toolbar layout, copied from about:config on a machine set up by hand.
+        # user.js re-applies it on every start, so dragging icons only sticks
+        # until restart. Re-copy the value if a Firefox bump resets the layout
+        # (it rejects states whose currentVersion predates its own).
+        "browser.uiCustomization.state" = ''{"placements":{"widget-overflow-fixed-list":[],"unified-extensions-area":["_446900e4-71c2-419f-a6a7-df9c091e268b_-browser-action","sponsorblocker_ajay_app-browser-action","frankerfacez_frankerfacez_com-browser-action","_react-devtools-browser-action","leechblockng_proginosko_com-browser-action","enhancerforyoutube_maximerf_addons_mozilla_org-browser-action","_aecec67f-0d10-4fa7-b7c7-609a2db280cf_-browser-action","_762f9885-5a13-4abd-9c77-433dcd38b8fd_-browser-action"],"nav-bar":["sidebar-button","back-button","forward-button","smartwindow-group-tabs-button","ai-window-toggle","reset-pbm-toolbar-button","urlbar-container","ublock0_raymondhill_net-browser-action","unified-extensions-button","downloads-button","vertical-spacer"],"toolbar-menubar":["menubar-items"],"TabsToolbar":[],"vertical-tabs":["tabbrowser-tabs"],"PersonalToolbar":["personal-bookmarks"]},"seen":["reset-pbm-toolbar-button","frankerfacez_frankerfacez_com-browser-action","_react-devtools-browser-action","leechblockng_proginosko_com-browser-action","enhancerforyoutube_maximerf_addons_mozilla_org-browser-action","_aecec67f-0d10-4fa7-b7c7-609a2db280cf_-browser-action","ublock0_raymondhill_net-browser-action","_446900e4-71c2-419f-a6a7-df9c091e268b_-browser-action","_762f9885-5a13-4abd-9c77-433dcd38b8fd_-browser-action","sponsorblocker_ajay_app-browser-action","developer-button","screenshot-button"],"dirtyAreaCache":["unified-extensions-area","nav-bar","TabsToolbar","vertical-tabs","PersonalToolbar","toolbar-menubar"],"currentVersion":28,"newElementCount":3}'';
       };
     };
   };
