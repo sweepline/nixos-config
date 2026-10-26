@@ -18,6 +18,14 @@ hl.config({
         resize_on_border = true,
     },
 
+    -- No wrap-around anywhere: at the end of the strip or a column, focus and column swaps
+    -- stop (or cross monitors, see the focus keybinds) instead of cycling back.
+    -- Host files add scrolling.column_width per machine.
+    scrolling = {
+        wrap_focus   = false,
+        wrap_swapcol = false,
+    },
+
     decoration = {
         rounding = 2,
         dim_around = 0.5,
@@ -88,9 +96,12 @@ hl.bind(mainMod .. " + SHIFT + W",   hl.dsp.exec_cmd("playerctl -a pause; loginc
 -- Directions for the hjkl and arrow keys
 local dirs = { h = "l", j = "d", k = "u", l = "r", left = "l", down = "d", up = "u", right = "r" }
 
--- Focus: left/right between columns, up/down between the windows of a column
+-- Focus: left/right between columns, up/down between the windows of a column. The
+-- directional dispatcher (unlike `layoutmsg focus`) falls back to the monitor in the pressed
+-- direction when the column or strip is exhausted (binds:window_direction_monitor_fallback),
+-- so Mod+L on the last column jumps to the screen on the right, etc.
 for key, dir in pairs(dirs) do
-    hl.bind(mainMod .. " + " .. key, hl.dsp.layout("focus " .. dir))
+    hl.bind(mainMod .. " + " .. key, hl.dsp.focus({ direction = dir }))
 end
 
 -- Move the window. Left/right: into the neighbouring column, or into a new column at the edge
