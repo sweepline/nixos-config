@@ -11,5 +11,6 @@
   my = {
     gpu = "intel"; # dedicated Intel Arc card (the CPU is AMD)
     work.enable = true;
+    theme = "light";
   };
 }

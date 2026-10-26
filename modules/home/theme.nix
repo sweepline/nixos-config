@@ -7,6 +7,11 @@
   ...
 }:
 let
+  default = osConfig.my.theme;
+  other = if default == "dark" then "light" else "dark";
+  cursorName =
+    theme: "phinger-cursors-gruvbox-material" + lib.optionalString (theme == "light") "-light";
+
   # Both palettes, rendered from the stylix templates. GTK4 and kitty get both
   # and pick one from the color-scheme setting themselves, so running windows
   # switch live (the specialisation switch alone only helps newly started apps).
@@ -37,7 +42,8 @@ let
     } > $out
   '';
 
-  # Dark is the normal Home Manager generation; light is a specialisation of it.
+  # The default theme (my.theme) is the normal Home Manager generation; the other one is a
+  # specialisation of it, named after its theme.
   # The theme button in ashell activates the other one (no rebuild, both are prebuilt).
   themeToggle = pkgs.writeShellApplication {
     name = "theme-toggle";
@@ -80,20 +86,20 @@ let
       fi
 
       gen="$(readlink -f "$current")"
-      if [[ -d "$gen/specialisation/light" ]]; then
-        # On the dark base generation: remember it, switch to light.
+      if [[ -d "$gen/specialisation/${other}" ]]; then
+        # On the base generation: remember it, switch to the other theme.
         echo "$gen" > "$basefile"
-        "$gen/specialisation/light/activate"
-        gsettings set "$schema" "$key" prefer-light
+        "$gen/specialisation/${other}/activate"
+        gsettings set "$schema" "$key" prefer-${other}
         apply_cursor
       else
         base="$(cat "$basefile" 2>/dev/null || true)"
         if [[ -z "$base" || ! -x "$base/activate" ]]; then
-          echo "Do not know the dark generation; run a rebuild first." >&2
+          echo "Do not know the ${default} generation; run a rebuild first." >&2
           exit 1
         fi
         "$base/activate"
-        gsettings set "$schema" "$key" prefer-dark
+        gsettings set "$schema" "$key" prefer-${default}
         apply_cursor
       fi
 
@@ -115,20 +121,22 @@ in
     "gtk-4.0/gtk.css".source = lib.mkForce gtk4Css;
     "kitty/dark-theme.auto.conf".source = kittyTheme.dark;
     "kitty/light-theme.auto.conf".source = kittyTheme.light;
-    "kitty/no-preference-theme.auto.conf".source = kittyTheme.dark;
+    "kitty/no-preference-theme.auto.conf".source = kittyTheme.${default};
   };
   stylix.targets.kitty.colors.enable = false;
 
-  specialisation.light.configuration = {
-    stylix.polarity = lib.mkForce "light";
-    stylix.base16Scheme = lib.mkForce schemeFiles.light;
+  specialisation.${other}.configuration = {
+    stylix.polarity = lib.mkForce other;
+    stylix.base16Scheme = lib.mkForce schemeFiles.${other};
     # Setting only the name would leave package and size null in this config.
     stylix.cursor = lib.mkForce {
       inherit (osConfig.stylix.cursor) package size;
-      name = "phinger-cursors-gruvbox-material-light";
+      name = cursorName other;
     };
-    dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-light";
+    dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-${other}";
   };
 
-  dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkDefault "prefer-dark";
+  # Beats stylix, which writes "default" for light (not "prefer-light"), but loses to the
+  # specialisation's mkForce.
+  dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkOverride 60 "prefer-${default}";
 }

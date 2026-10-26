@@ -35,6 +35,14 @@
       ];
       description = "Which GPU driver stack the host uses.";
     };
+    theme = lib.mkOption {
+      type = lib.types.enum [
+        "dark"
+        "light"
+      ];
+      default = "dark";
+      description = "Theme a rebuild starts in; the ashell button switches to the other one at runtime.";
+    };
     laptop.enable = lib.mkEnableOption "laptop features (power profiles, hibernate, brightness)";
     gaming.enable = lib.mkEnableOption "Steam, Proton-GE, Lutris and friends";
     work.enable = lib.mkEnableOption "Scalgo work setup (Tailscale, sadmin, SSH hosts, git aliases and email)";

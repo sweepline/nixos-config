@@ -1,11 +1,16 @@
-{ pkgs, ... }:
 {
-  # Dark is the default. The light variant is a Home Manager specialisation,
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  # my.theme is the default. The other variant is a Home Manager specialisation,
   # switched at runtime by the theme button in ashell (see modules/home/theme.nix).
   stylix = {
     enable = true;
-    polarity = "dark";
-    base16Scheme = (import ../color-schemes.nix pkgs).dark;
+    polarity = config.my.theme;
+    base16Scheme = (import ../color-schemes.nix pkgs).${config.my.theme};
 
     fonts = {
       monospace = {
@@ -34,7 +39,8 @@
 
     cursor = {
       package = pkgs.callPackage ../../pkgs/phinger-cursors-gruvbox-material.nix { };
-      name = "phinger-cursors-gruvbox-material";
+      name =
+        "phinger-cursors-gruvbox-material" + lib.optionalString (config.my.theme == "light") "-light"; # variant matching my.theme; modules/home/theme.nix switches it
       size = 32;
     };
 

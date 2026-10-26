@@ -209,10 +209,10 @@ Without it the VPN icon in ashell only looks at WireGuard.
 
 ## Light / dark theme
 
-The sun/moon button in ashell switches between dark (default) and light. Both themes are
-built in advance as a Home Manager **specialisation**, so switching takes a second or two
-and needs no rebuild. kitty, GTK apps and Firefox follow along. A rebuild always goes back
-to dark.
+The sun/moon button in ashell switches between dark and light. The default is `my.theme`
+(dark everywhere, except light on `esa`); the other theme is built in advance as a Home
+Manager **specialisation**, so switching takes a second or two and needs no rebuild. kitty,
+GTK apps and Firefox follow along. A rebuild always goes back to the host default.
 
 ## Hyprland
 
