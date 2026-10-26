@@ -33,9 +33,9 @@
     };
 
     cursor = {
-      package = pkgs.adwaita-icon-theme;
-      name = "Adwaita";
-      size = 24;
+      package = pkgs.callPackage ../../pkgs/phinger-cursors-gruvbox-material.nix { };
+      name = "phinger-cursors-gruvbox-material";
+      size = 32;
     };
 
     icons = {

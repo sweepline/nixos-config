@@ -1,5 +1,6 @@
 {
   config,
+  osConfig,
   inputs,
   lib,
   pkgs,
@@ -44,6 +45,7 @@ let
       glib
       coreutils
       procps
+      hyprland
     ];
     text = ''
       # gsettings needs the schema files; a systemd user service does not have them in XDG_DATA_DIRS.
@@ -53,6 +55,14 @@ let
       state="''${XDG_STATE_HOME:-$HOME/.local/state}"
       current="$state/home-manager/gcroots/current-home"
       basefile="$state/theme-base-generation"
+
+      # Running apps only re-read the cursor theme when told to, so push it live
+      # (the activated generation has already written the new name to dconf).
+      apply_cursor() {
+        name="$(gsettings get "$schema" cursor-theme | tr -d "'")"
+        size="$(gsettings get "$schema" cursor-size)"
+        hyprctl setcursor "$name" "$size" >/dev/null || true
+      }
 
       # Output for the ashell custom module ("alt" selects the icon).
       show() {
@@ -74,6 +84,7 @@ let
         echo "$gen" > "$basefile"
         "$gen/specialisation/light/activate"
         gsettings set "$schema" "$key" prefer-light
+        apply_cursor
       else
         base="$(cat "$basefile" 2>/dev/null || true)"
         if [[ -z "$base" || ! -x "$base/activate" ]]; then
@@ -82,6 +93,7 @@ let
         fi
         "$base/activate"
         gsettings set "$schema" "$key" prefer-dark
+        apply_cursor
       fi
     '';
   };
@@ -102,6 +114,11 @@ in
   specialisation.light.configuration = {
     stylix.polarity = lib.mkForce "light";
     stylix.base16Scheme = lib.mkForce schemeFiles.light;
+    # Setting only the name would leave package and size null in this config.
+    stylix.cursor = lib.mkForce {
+      inherit (osConfig.stylix.cursor) package size;
+      name = "phinger-cursors-gruvbox-material-light";
+    };
     dconf.settings."org/gnome/desktop/interface".color-scheme = lib.mkForce "prefer-light";
   };
 
