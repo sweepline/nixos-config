@@ -87,10 +87,18 @@
       libxkbcommon
       wayland
       libx11
+      libxcb
+      libxcomposite
+      libxcursor
+      libxdamage
       libxext
-      libxrender
+      libxfixes
       libxi
       libxrandr
+      libxrender
+      libxscrnsaver
+      libxshmfence
+      libxtst
       fontconfig
       freetype
       dbus
@@ -101,6 +109,7 @@
       pango
       cairo
       mesa
+      libgbm
       libdrm
     ];
   };
