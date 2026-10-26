@@ -1,5 +1,7 @@
 # agenix recipients: who can decrypt which secret. The keys themselves are in keys.nix.
 # After changing keys, re-encrypt everything: `agenix -r` (in this folder).
+#
+# User keys can edit all files, but host keys can only edit their devices files.
 let
   inherit (import ./keys.nix) users hosts;
   allUsers = builtins.attrValues users;
