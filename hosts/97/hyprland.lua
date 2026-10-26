@@ -1,7 +1,5 @@
 -- Host-specific Hyprland config for 97, appended after modules/home/hyprland/hyprland.lua.
 -- Translated from the old sway config.d/97.
--- TODO: check monitor descriptions with `hyprctl monitors all` and device names with
--- `hyprctl devices` after the first login.
 
 hl.monitor({
     output   = "desc:Lenovo Group Limited LEN G34w-10 UGW05532",
@@ -31,6 +29,14 @@ for i = 1, 4 do
 end
 for i = 5, 6 do
     hl.workspace_rule({ workspace = tostring(i), monitor = "desc:Invalid Vendor Codename - RTK ZZX-FHD-HDR demoset-1" })
+end
+
+-- Per-screen scrolling column width. Window rules cannot match monitors in Hyprland
+-- 0.56 (no match property for it), so key off the workspace pins above: 1-4 live on the
+-- ultrawide (global column_width), 5-6 on the 1080p, which gets 3/4 columns since
+-- 0.333 of 1920 is only ~640px. Widths apply to newly mapped windows; adjust here.
+for _, ws in ipairs({ "5", "6" }) do
+    hl.window_rule({ name = "colw-1080p-" .. ws, match = { workspace = ws }, scrolling_width = 0.667 })
 end
 
 hl.window_rule({ match = { class = "^firefox$" },              workspace = "3 silent" })
