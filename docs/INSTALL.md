@@ -41,6 +41,12 @@ NixOS machines run it inside `nix-shell -p gnupg zstd rsync`.
 **Also copy the `.gpg` archive to a USB stick.** During the install there is no SSH key on
 the machine yet (it is inside the archive), so it is easiest to restore from USB.
 
+**Also copy the host's WireGuard config to `<usb>/<host>/wg0.conf.gpg`**
+(`sudo wg-quick show wg0 > /tmp/wg0.conf && gpg -c /tmp/wg0.conf`, or copy the existing
+`/etc/wireguard/wg0.conf`): `/etc/wireguard` is deliberately **not** in the backup path
+lists, so a `wg0.conf` that is not on the USB is lost with the old install (esa's was, in
+October 2026, and required a new keypair plus a hub `[Peer]` swap).
+
 Things that are not files:
 
 - **Signal:** chats are encrypted with a key from the old keyring and cannot be copied.
@@ -226,9 +232,25 @@ Each host has its own WireGuard config: `secrets/wg0-<host>.age`.
    From an encrypted copy on a USB stick instead:
    ```sh
    gpg -d /run/media/mikkel/<usb>/<host>/wg0.conf.gpg > /tmp/wg0.conf
-   EDITOR="cp /tmp/wg0.conf" agenix -e wg0-<host>.age
+   cat /tmp/wg0.conf | agenix -e wg0-<host>.age
    shred -u /tmp/wg0.conf
    ```
+   Always verify the encrypted contents before rebuilding: a secret can encrypt
+   *successfully* with empty input, and wg-quick then brings up a silent, empty `wg0`
+   instead of failing.
+   ```sh
+   agenix -d wg0-<host>.age | diff - /tmp/wg0.conf   # must print nothing
+   ```
+   Never feed the file via `EDITOR="cp /tmp/wg0.conf" agenix -e ...` from a script:
+   when stdin is not a terminal, agenix >= 0.15 ignores `$EDITOR` entirely (piped
+   stdin is its documented non-interactive interface) and encrypts the empty stdin,
+   exiting 0. This bit us on esa's reinstall in October 2026; the recipient list of the
+   resulting file looked perfectly valid, only the diff above caught it.
+
+   If the host's `wg0.conf` is lost (its private key exists nowhere else): generate a
+   new keypair (`wg genkey`), rebuild the config around it (addresses, DNS and the hub
+   `[Peer]` are unchanged), and replace that host's `[Peer]` entry in the hub config on
+   wireguard.esmi.dk with the new public key — the hub is the only peer.
 5. Add, rebuild, check:
    ```sh
    cd .. && git add -A
