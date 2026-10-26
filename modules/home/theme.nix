@@ -46,6 +46,7 @@ let
       coreutils
       procps
       hyprland
+      systemd
     ];
     text = ''
       # gsettings needs the schema files; a systemd user service does not have them in XDG_DATA_DIRS.
@@ -95,11 +96,18 @@ let
         gsettings set "$schema" "$key" prefer-dark
         apply_cursor
       fi
+
+      # Last step: this script runs in ashell's cgroup (started from its theme module),
+      # so the restart kills it.
+      systemctl --user restart --no-block ashell.service
     '';
   };
 in
 {
   home.packages = [ themeToggle ];
+
+  # ashell is restarted by theme-toggle: it watches its config file, but the
+  # switch only re-points a symlink into the store, which did not trigger a reload.
 
   # Same files in both generations, so they never change on a toggle.
   # GTK3 has no media queries and keeps stylix's single-palette gtk.css.
