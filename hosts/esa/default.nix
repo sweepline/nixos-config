@@ -4,7 +4,7 @@
     ./hardware-configuration.nix
     (import ../disk-layout.nix {
       # TODO: `ls -l /dev/disk/by-id/` on the installer
-      device = "/dev/disk/by-id/CHANGE-ME";
+      device = "/dev/disk/by-id/nvme-SAMSUNG_MZVL21T0HCLR-00B00_S676NU0W123595";
     })
   ];
 
