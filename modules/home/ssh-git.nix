@@ -49,10 +49,26 @@
         autoSetupRemote = true;
       };
       core.editor = "nvim";
-      diff.tool = "nvimdiff";
-      merge.tool = "nvimdiff";
-      difftool.nvimdiff.cmd = "nvim -n -d \"$LOCAL\" \"$REMOTE\"";
-      mergetool.keepBackup = false;
+      diff = {
+        algorithm = "histogram";
+        tool = "nvimdiff";
+      };
+      difftool = {
+        prompt = false;
+        nvimdiff.cmd = "nvim -n -d \"$LOCAL\" \"$REMOTE\"";
+      };
+      merge = {
+        # Include the common ancestor in conflict markers; required by
+        # diffview.nvim's conflict_choose("base") action (<leader>cb).
+        conflictStyle = "zdiff3";
+        tool = "diffview";
+      };
+      mergetool = {
+        keepBackup = false;
+        prompt = false;
+        diffview.cmd = "nvim -n -c \"DiffviewOpen\" \"$MERGED\"";
+      };
+      rerere.enabled = true;
       pull = {
         ff = "only";
         rebase = true;
@@ -64,6 +80,7 @@
         s = "status";
         diffw = "diff --color-words --word-diff-regex='[a-zA-Z]+|[^[:space:]]' -b -U10";
         amend = "commit --amend --no-edit";
+        dv = "!f() { nvim -c \"DiffviewOpen $*\"; }; f";
       };
     };
   };

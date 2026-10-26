@@ -53,6 +53,7 @@ vim.opt.cursorline = true
 -- Show invisible characters
 vim.opt.list = true
 vim.opt.listchars = "tab:▷ ,trail:·,extends:◣,precedes:◢,nbsp:○"
+vim.opt.fillchars:append({ diff = "╱" })
 
 -- Highlight yank
 vim.cmd("au TextYankPost * lua vim.hl.on_yank {on_visual = false}")
