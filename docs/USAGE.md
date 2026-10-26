@@ -198,6 +198,7 @@ Set per host in `hosts/<host>/default.nix` (all three for now). It adds, from
 - **sadmin** with `/etc/sadmin.json` (`sadmin.scalgo.com:443`). When sadmin says it is out of
   date, run `pkgs/update-sadmin.sh` (sets the newest version and hash in `pkgs/sadmin.nix`),
   then `nh os switch`. sadmin cannot update itself, the Nix store is read-only.
+- **Vanta scans:** a daily `simpleadmin-vanta` timer, once the machine is registered (below).
 - **Scalgo SSH hosts** (`ssh ts01` → `ts01.emu-buri.ts.net`, ...), the work git aliases
   (`pushmr`, `grepall`, `fixup`, `wiki`, ...), `localstack` and `findimage`.
 - **Work git email:** commits use `mikkel@scalgo.com` in any repo with a remote on
@@ -206,6 +207,16 @@ Set per host in `hosts/<host>/default.nix` (all three for now). It adds, from
   first commit there.
 
 Without it the VPN icon in ashell only looks at WireGuard.
+
+### Vanta
+
+Register once with `sadmin vanta-setup`. Its error about writing to `/etc/systemd/system` is
+expected, NixOS provides the units. Then:
+
+```sh
+sudo systemctl start simpleadmin-vanta.service   # scan now
+sadmin vanta-status
+```
 
 ## Light / dark theme
 
