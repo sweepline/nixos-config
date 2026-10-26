@@ -120,6 +120,10 @@ Without a `rust-toolchain.toml`, use `pkgs.rust-bin.stable.latest.default` inste
 
 ### Python + uv
 
+A global `python3` (also on `python`) is installed for ad-hoc scripts only;
+projects should still go through uv, which with `UV_PYTHON_PREFERENCE=only-managed`
+ignores the Nix interpreter and downloads its own.
+
 ```nix
 {
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

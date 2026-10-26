@@ -41,6 +41,9 @@ in
 
     # Development (see docs/DEVELOPMENT.md)
     rustup
+    # Ships a python -> python3 symlink itself, so bare `python` works too.
+    # Projects should still use uv-managed interpreters (UV_PYTHON_PREFERENCE below).
+    python3
     uv
     nodejs
     # Provides pnpm/yarn shims that follow each repo's "packageManager" pin. hiPrio because
