@@ -63,6 +63,11 @@ hl.config({
 
 hl.device({ name = "topre-corporation-hhkb-professional", kb_options = "compose:ralt" })
 
+-- Kensington Expert Mouse trackball: the top buttons are remapped to back/forward by
+-- udev hwdb (modules/nixos/input.nix), which removes the physical middle button; libinput's
+-- middle emulation brings it back as the left+right chord.
+hl.device({ name = "kensington-expert-mouse", middle_button_emulation = true })
+
 ---------------------------------------------------------------------------
 -- Animations
 ---------------------------------------------------------------------------

@@ -12,6 +12,7 @@
     ./desktop.nix
     ./env-secrets.nix
     ./hardware.nix
+    ./input.nix
     ./networking.nix
     ./gaming.nix
     ./laptop.nix
