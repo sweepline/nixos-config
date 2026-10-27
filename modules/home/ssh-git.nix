@@ -49,6 +49,7 @@
         autoSetupRemote = true;
       };
       core.editor = "nvim";
+      init.defaultBranch = "main";
       diff = {
         algorithm = "histogram";
         tool = "nvimdiff";
