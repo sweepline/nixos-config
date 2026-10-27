@@ -43,6 +43,13 @@
         384000
       ];
     };
+    # Bluetooth absolute volume (AVRCP) hands volume to the headset, whose few
+    # coarse steps (e.g. Bose QC45) are too loud even at ~5%. Software volume
+    # gives fine control; trade-off is headset buttons no longer sync with the
+    # system volume, so leave the headset itself at max.
+    wireplumber.extraConfig."10-bluez-sw-volume" = {
+      "monitor.bluez.properties"."bluez5.enable-hw-volume" = false;
+    };
   };
 
   hardware.bluetooth = {
