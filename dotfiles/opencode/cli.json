@@ -8,12 +8,13 @@
   "session": {
     "sidebar": "hide",
     "scrollbar": false,
-    "thinking": "hide",
+    "thinking": "show",
     "verbosity": "medium",
     "permissions": "prompt"
   },
   "diffs": {
-    "view": "auto"
+    "view": "auto",
+    "fullscreen": true
   },
   "attention": {
     "notifications": true

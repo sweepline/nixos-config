@@ -63,8 +63,6 @@
 - [ ] 97: once NixOS/nixpkgs#575192 is fixed, remove `hardware.xpad-noone.enable = false` and the
       `load-xpad` service in `modules/nixos/gaming.nix`. Until then the stock `xpad` drives the
       wireless Xbox 360 receiver (Guitar Hero controller); check it works.
-- [ ] ashell: the theme button (light/dark) showed a cogwheel after the switch to unstable.
-      Check on dongmyo (`theme-toggle watch`, `fc-list | grep -i "symbols nerd"`).
 - [ ] nvim we should have nix config lsp?
 - [ ] nvim remove the ai cli and nes, but keep the ctrl+space completion.
 - [ ] A button to toggle the orange overlay tempoarily

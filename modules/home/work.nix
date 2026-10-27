@@ -52,8 +52,8 @@ lib.mkIf osConfig.my.work.enable {
   };
 
   programs.git = {
-    # Work email in every repo with a remote on Scalgo's GitLab.
     includes = [
+      # Work email in every repo with a remote on Scalgo's GitLab.
       {
         condition = "hasconfig:remote.*.url:git@git.i.scalgo.com:**";
         contents.user.email = "mikkel@scalgo.com";
@@ -61,6 +61,15 @@ lib.mkIf osConfig.my.work.enable {
       {
         condition = "hasconfig:remote.*.url:https://git.i.scalgo.com/**";
         contents.user.email = "mikkel@scalgo.com";
+      }
+      # git mr alias in mono
+      {
+        condition = "hasconfig:remote.*.url:git@git.i.scalgo.com:scalgo/mono*";
+        contents.alias.mr = "!scripts/git_mr.py";
+      }
+      {
+        condition = "hasconfig:remote.*.url:https://git.i.scalgo.com/scalgo/mono*";
+        contents.alias.mr = "!scripts/git_mr.py";
       }
     ];
 
