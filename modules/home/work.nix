@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   osConfig,
   pkgs,
@@ -8,6 +9,17 @@ let
   scalgoRoot = ../../certs/scalgo-root.crt;
 in
 lib.mkIf osConfig.my.work.enable {
+  # Rootless buildah (used by mono's deploy scripts) re-execs into a user namespace and then
+  # picks up the system storage.conf (/var/lib, /run/containers) and fails with "mkdir
+  # /run/containers: permission denied". Podman doesn't have this problem. Pinning the
+  # rootless graphroot here fixes buildah, and podman already uses this path, so both
+  # share the same images.
+  xdg.configFile."containers/storage.conf".text = ''
+    [storage]
+    driver = "overlay"
+    graphroot = "${config.xdg.dataHome}/containers/storage"
+  '';
+
   # Firefox uses its own trust store, not the system one; a policy installs the root CA.
   programs.firefox.policies.Certificates.Install = [ "${scalgoRoot}" ];
 

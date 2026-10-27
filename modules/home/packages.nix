@@ -1,6 +1,7 @@
 {
   inputs,
   lib,
+  osConfig,
   pkgs,
   ...
 }:
@@ -43,7 +44,15 @@ in
     rustup
     # Ships a python -> python3 symlink itself, so bare `python` works too.
     # Projects should still use uv-managed interpreters (UV_PYTHON_PREFERENCE below).
-    python3
+    # Work: mono's deploy scripts (scripts/sadmin_deploy2.py) run on this interpreter and
+    # need requests and yaml; `pip install --user` doesn't work against the read-only Nix store.
+    (python3.withPackages (
+      ps:
+      lib.optionals osConfig.my.work.enable [
+        ps.pyyaml
+        ps.requests
+      ]
+    ))
     uv
     nodejs
     # Provides pnpm/yarn shims that follow each repo's "packageManager" pin. hiPrio because

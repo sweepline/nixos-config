@@ -28,7 +28,12 @@ lib.mkIf config.my.work.enable {
   '';
 
   # sadmin (simple-admin client); it reads its server from /etc/sadmin.json.
-  environment.systemPackages = [ sadmin ];
+  # mono's deploy scripts prefer buildah when present: they read the pushed image digest
+  # from `buildah push --digestfile`, while podman's docker shim prints no digest to parse.
+  environment.systemPackages = [
+    sadmin
+    pkgs.buildah
+  ];
   environment.etc."sadmin.json".text = builtins.toJSON {
     server_host = "sadmin.scalgo.com";
     server_port = 443;
