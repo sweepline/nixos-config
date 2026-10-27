@@ -24,7 +24,7 @@
     laptop = {
       enable = true;
       chargeLimit = 80; # BAT0 supports charge_control_end_threshold
-      # TODO: check for a reader with `nix-shell -p usbutils --run lsusb`; set false if none
+      # TODO: check for a reader with `nix shell nixpkgs#usbutils -c lsusb`; set false if none
       fingerprint.enable = true;
     };
   };
