@@ -32,7 +32,9 @@
       fi
 
       source ${config.programs.git.package}/share/bash-completion/completions/git-prompt.sh
-      export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(__git_ps1)\[\033[00m\] $ "
+      # IN_NIX_SHELL is what `nix develop` (and legacy `nix-shell`) export inside the shell,
+      # so the (nix) marker shows whenever a nix dev env is active.
+      export PS1="\u@\h \[\033[32m\]\w\[\033[33m\]\$(__git_ps1)\[\033[00m\]\''${IN_NIX_SHELL:+ \[\033[35m\](nix)\[\033[00m\]} $ "
 
       ${builtins.readFile ./gut.sh}
     '';
