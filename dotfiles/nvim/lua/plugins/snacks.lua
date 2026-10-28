@@ -114,7 +114,7 @@ return {
 			{ "<leader>sb",      function() Snacks.picker.lines() end,                                   desc = "Buffer Lines" },
 			{ "<leader>sc",      function() Snacks.picker.command_history() end,                         desc = "Command History" },
 			{ "<leader>sC",      function() Snacks.picker.commands() end,                                desc = "Commands" },
-			{ "<leader>d",       vim.diagnostic.open_float,                                              desc = "Open diagnostic" },
+			{ "<leader>k",       vim.diagnostic.open_float,                                              desc = "Open diagnostic" },
 			{ "<leader>sD",      function() Snacks.picker.diagnostics() end,                             desc = "Diagnostics" },
 			{ "<leader>sd",      function() Snacks.picker.diagnostics_buffer() end,                      desc = "Buffer Diagnostics" },
 			{ "<leader>sh",      function() Snacks.picker.help() end,                                    desc = "Help Pages" },

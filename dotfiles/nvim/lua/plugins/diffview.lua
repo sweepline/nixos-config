@@ -11,8 +11,9 @@ return {
 			"DiffviewRefresh",
 		},
 		keys = {
+			{ "<leader>d", group = "Diffview" },
 			{
-				"<leader>gv",
+				"<leader>dd",
 				function()
 					if next(require("diffview.lib").views) == nil then
 						vim.cmd("DiffviewOpen")
@@ -20,24 +21,46 @@ return {
 						vim.cmd("DiffviewClose")
 					end
 				end,
-				desc = "Toggle Diffview",
+				desc = "Toggle Diffview (working tree)",
+			},
+			{ "<leader>dc", "<cmd>DiffviewClose<cr>", desc = "Close Diffview" },
+			{ "<leader>dr", "<cmd>DiffviewRefresh<cr>", desc = "Refresh Diffview" },
+			{ "<leader>de", "<cmd>DiffviewToggleFiles<cr>", desc = "Toggle file panel" },
+			{ "<leader>df", "<cmd>DiffviewFocusFiles<cr>", desc = "Focus file panel" },
+			{ "<leader>dh", "<cmd>DiffviewFileHistory %<cr>", desc = "File history (current file)" },
+			{ "<leader>dh", ":'<,'>DiffviewFileHistory<cr>", mode = "x", desc = "File history (selection)" },
+			{ "<leader>dH", "<cmd>DiffviewFileHistory<cr>", desc = "Repo history" },
+			{ "<leader>dm", "<cmd>DiffviewOpen origin/HEAD...HEAD --imply-local<cr>", desc = "Diff against origin/HEAD (PR view)" },
+			{ "<leader>ds", "<cmd>DiffviewOpen --staged<cr>", desc = "Staged changes" },
+			{
+				"<leader>db",
+				function()
+					Snacks.picker.git_branches({
+						title = "Diffview against branch",
+						confirm = function(picker, item)
+							picker:close()
+							if item then
+								vim.cmd("DiffviewOpen " .. (item.branch or item.text) .. "...HEAD")
+							end
+						end,
+					})
+				end,
+				desc = "Diff against branch (picker)",
 			},
 			{
-				"<leader>gh",
-				"<cmd>DiffviewFileHistory %<cr>",
-				mode = "n",
-				desc = "Diffview File History (current file)",
-			},
-			{
-				"<leader>gh",
-				":'<,'>DiffviewFileHistory<cr>",
-				mode = "x",
-				desc = "Diffview File History (selection)",
-			},
-			{
-				"<leader>gH",
-				"<cmd>DiffviewFileHistory<cr>",
-				desc = "Diffview Repo History",
+				"<leader>dl",
+				function()
+					Snacks.picker.git_log({
+						title = "Diffview commit",
+						confirm = function(picker, item)
+							picker:close()
+							if item then
+								vim.cmd("DiffviewOpen " .. (item.commit or item.text) .. "^!")
+							end
+						end,
+					})
+				end,
+				desc = "Diff a commit (picker)",
 			},
 		},
 		opts = {
