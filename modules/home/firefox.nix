@@ -163,6 +163,12 @@ in
             urls = [ { template = "https://www.youtube.com/results?search_query={searchTerms}"; } ];
             definedAliases = [ "@yt" ];
           };
+          # /prompt takes ?q= and redirects to the chat; /app ignores it
+          gemini = {
+            name = "Gemini";
+            urls = [ { template = "https://gemini.google.com/prompt?q={searchTerms}"; } ];
+            definedAliases = [ "@g" ];
+          };
           bing.metaData.hidden = true;
           perplexity.metaData.hidden = true;
         };
