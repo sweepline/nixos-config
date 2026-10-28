@@ -1,6 +1,12 @@
 { pkgs, ... }:
 let
   addons = pkgs.nur.repos.rycee.firefox-addons;
+
+  # hunspell dictionaries offered to Firefox; add languages here.
+  spellDicts = {
+    da_DK = pkgs.hunspellDicts.da-dk;
+    en_GB = pkgs.hunspellDicts.en-gb-ize;
+  };
 in
 {
   programs.firefox = {
@@ -215,6 +221,9 @@ in
         "browser.newtabpage.activity-stream.feeds.section.topstories" = false;
         "extensions.pocket.enabled" = false;
         "browser.shell.checkDefaultBrowser" = false;
+        # Spell-check languages, checked together (comma-separated); the
+        # dictionaries themselves are provided below
+        "spellchecker.dictionary" = "da-DK,en-GB";
         # Follow the light/dark toggle (via the portal color-scheme)
         "layout.css.prefers-color-scheme.content-override" = 2;
         "extensions.autoDisableScopes" = 0;
@@ -227,6 +236,23 @@ in
       };
     };
   };
+
+  # Firefox scans ~/.mozilla/dictionaries for hunspell dictionaries. NixOS has
+  # no world-writable /usr/share/hunspell for it to find instead, and the
+  # in-browser "Add Dictionary" download lands inside the profile (unsynced,
+  # lost when the profile is recreated), so symlink the store files here.
+  home.file = builtins.listToAttrs (
+    builtins.concatMap (lang: [
+      {
+        name = ".mozilla/dictionaries/${lang}.dic";
+        value.source = "${spellDicts.${lang}}/share/hunspell/${lang}.dic";
+      }
+      {
+        name = ".mozilla/dictionaries/${lang}.aff";
+        value.source = "${spellDicts.${lang}}/share/hunspell/${lang}.aff";
+      }
+    ]) (builtins.attrNames spellDicts)
+  );
 
   stylix.targets.firefox.profileNames = [ "mikkel" ];
 }
