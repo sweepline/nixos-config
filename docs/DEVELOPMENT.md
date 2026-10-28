@@ -50,7 +50,7 @@ then add that package to `programs.nix-ld.libraries` in `modules/nixos/base.nix`
 | `rustup` | `rustup default stable`, then `cargo` works as usual. Binaries go to `~/.cargo/bin` (on `PATH`). |
 | `uv` | `UV_PYTHON_PREFERENCE=only-managed` is set, so uv always uses its own downloaded Python (works via nix-ld) instead of the Nix one. |
 | `node`, `pnpm` | `corepack` provides `pnpm`/`yarn` and automatically uses the version in `package.json`. `PNPM_HOME=~/.local/share/pnpm` is on `PATH`, so `pnpm add -g` works. |
-| `gcc`, `make` | Available through Neovim's tool list. For C libraries in builds (openssl, pkg-config), use a devShell. |
+| `gcc`, `make` | `gcc` (as `cc`) is installed globally so cargo can link. `make` is only on Neovim's PATH. For C libraries in builds (openssl, pkg-config), use a devShell. |
 
 Things that often need a devShell instead: crates/packages that compile against system
 libraries (`openssl-sys`, `pkg-config`, `libpq`, ...), because there is no global

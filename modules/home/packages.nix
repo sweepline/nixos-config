@@ -42,10 +42,12 @@ in
 
     # Development (see docs/DEVELOPMENT.md)
     rustup
-    # Ships a python -> python3 symlink itself, so bare `python` works too.
+    # rustc links through `cc`; the gcc in neovim.nix is only on Neovim's PATH.
+    gcc
     # Projects should still use uv-managed interpreters (UV_PYTHON_PREFERENCE below).
     # Work: mono's deploy scripts (scripts/sadmin_deploy2.py) run on this interpreter and
     # need requests and yaml; `pip install --user` doesn't work against the read-only Nix store.
+    # Ships a python -> python3 symlink itself, so bare `python` works too.
     (python3.withPackages (
       ps:
       lib.optionals osConfig.my.work.enable [
