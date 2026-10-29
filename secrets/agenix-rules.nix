@@ -11,6 +11,7 @@ in
   "wg0-97.age" = forHost "97";
   "wg0-dongmyo.age" = forHost "dongmyo";
   "wg0-esa.age" = forHost "esa";
+  "wg0-homebox.age" = forHost "homebox";
   # API tokens (KEY=value lines), one set per host
   "env-97.age" = forHost "97";
   "env-dongmyo.age" = forHost "dongmyo";

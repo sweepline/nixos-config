@@ -7,13 +7,18 @@ NixOS + Home Manager flake for my machines.
 | `dongmyo` | Laptop | AMD | power profiles, hibernate |
 | `97` | Desktop (dual boot Windows) | NVIDIA | gaming (Steam, Proton-GE, Lutris, Heroic) |
 | `esa` | Work PC | Intel | three monitors |
+| `homebox` | Home server | AMD (iGPU) | nixos-stable, ZFS, rootless Podman containers, no desktop |
 
-All hosts share the same desktop: **ly** (black hole animation) → **Hyprland** (scrolling layout, sway-style hjkl keys),
+The desktops share the same desktop: **ly** (black hole animation) → **Hyprland** (scrolling layout, sway-style hjkl keys),
 ashell, mako, rofi, kitty, Firefox and Neovim, themed with **stylix** (gruvbox-material, light/dark
-toggle in the bar). Disks are **LUKS2** encrypted and unlocked with **TPM2 + PIN**, booted
+toggle in the bar). Their disks are **LUKS2** encrypted and unlocked with **TPM2 + PIN**, booted
 through **Limine** with **Secure Boot**. Every host joins a **WireGuard** network
 (`wg0`, config encrypted with **agenix**); hosts with `my.work.enable` also join **Tailscale**
 and get the work setup (sadmin, SSH hosts, git aliases and email).
+
+`homebox` runs nixos-stable without the desktop modules: an SSD ZFS pool for the OS and
+app data, the existing `storage` pool for media and photos, sanoid snapshots, and is
+deployed from a desktop with `nh os switch -H homebox --target-host mikkel@x.i.esmi.dk`.
 
 ## Docs
 
@@ -25,7 +30,7 @@ and get the work setup (sadmin, SSH hosts, git aliases and email).
 ## Layout
 
 ```
-flake.nix                 inputs and the three hosts
+flake.nix                 inputs and the hosts (desktops on nixos-unstable, homebox on nixos-stable)
 hosts/<host>/             host settings, disk device, hardware config, monitors (home.nix)
 hosts/disk-layout.nix     shared disko layout (EFI + LUKS2 + ext4)
 modules/nixos/common/     system modules for every host (nix, locale, boot, networking, ssh, wg0, users)

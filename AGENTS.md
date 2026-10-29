@@ -1,6 +1,6 @@
 # Agent notes
 
-NixOS + Home Manager flake for three machines. See `README.md` for the layout and `docs/` for usage.
+NixOS + Home Manager flake for three desktops and a home server. See `README.md` for the layout and `docs/` for usage.
 
 ## Applying changes
 
@@ -19,6 +19,7 @@ NixOS + Home Manager flake for three machines. See `README.md` for the layout an
 | `97` | Desktop (dual boot Windows) | NVIDIA | gaming, ultrawide on DP-1 + 1080p on DP-2 |
 | `dongmyo` | Laptop | AMD | power profiles, hibernate |
 | `esa` | Work PC | Intel | three monitors, work setup |
+| `homebox` | Home server | AMD iGPU | nixos-stable, ZFS, rootless Podman; no desktop modules. Deployed from a desktop: `nh os switch -H homebox --target-host mikkel@x.i.esmi.dk`. Never run anything on it that changes it (no sudo, writes, restarts); read-only inspection over SSH is fine. |
 
 - Host-specific settings go in `hosts/<host>/` (`default.nix` system, `home.nix` Home Manager, `hyprland.lua` monitors and rules).
 - Shared settings go in `modules/nixos/common/` (system, every host), `modules/nixos/desktop/` (system, desktop hosts only) and `modules/home/` (Home Manager, desktop hosts).

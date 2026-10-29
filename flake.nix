@@ -1,15 +1,28 @@
 {
-  description = "NixOS configuration for dongmyo, 97 and esa";
+  description = "NixOS configuration for dongmyo, 97, esa and the home server homebox";
 
   inputs = {
     # Rolling: nixos-unstable only advances when the channel's tests pass, so what it points
     # to is built and cached. flake.lock pins the exact revision; update with `nh os switch --update`.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # The server (homebox) runs the stable release: fewer, smaller updates, and a kernel that
+    # ZFS supports. Update it on its own with `nix flake update nixpkgs-stable home-manager-stable`.
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-26.05";
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Home Manager must match the nixpkgs release it runs on.
+    home-manager-stable = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
+
+    # Podman quadlets from Nix (homebox's rootless containers). Has no inputs of its own.
+    quadlet-nix.url = "github:SEIAROTg/quadlet-nix";
 
     stylix = {
       url = "github:nix-community/stylix";
@@ -52,10 +65,10 @@
   };
 
   outputs =
-    { nixpkgs, ... }@inputs:
+    { nixpkgs, nixpkgs-stable, ... }@inputs:
     let
       mkHost =
-        hostName: modules:
+        hostName: nixpkgs: modules:
         nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs hostName; };
           modules = [
@@ -64,13 +77,15 @@
           ]
           ++ modules;
         };
-      mkDesktop = hostName: mkHost hostName [ ./modules/nixos/desktop ];
+      mkDesktop = hostName: mkHost hostName nixpkgs [ ./modules/nixos/desktop ];
     in
     {
       nixosConfigurations = {
         dongmyo = mkDesktop "dongmyo";
         "97" = mkDesktop "97";
         esa = mkDesktop "esa";
+        # Everything server-specific is in hosts/homebox.
+        homebox = mkHost "homebox" nixpkgs-stable [ ];
       };
 
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
