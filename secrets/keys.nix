@@ -1,4 +1,4 @@
-# Public SSH keys, shared by agenix-rules.nix (who can decrypt) and modules/nixos/users.nix
+# Public SSH keys, shared by agenix-rules.nix (who can decrypt) and modules/nixos/common/users.nix
 # (which user keys may log in as mikkel).
 #   - host keys (/etc/ssh/ssh_host_ed25519_key.pub) decrypt secrets at boot
 #   - user keys (~/.ssh/id_ed25519.pub) edit secrets with `agenix -e` and log in over SSH

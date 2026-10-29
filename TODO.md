@@ -61,7 +61,7 @@
 - [ ] Home folder backups to the home server with restic or borg (a systemd timer).
 - [ ] CI: a GitHub Action that evaluates/builds all hosts on every push.
 - [ ] 97: once NixOS/nixpkgs#575192 is fixed, remove `hardware.xpad-noone.enable = false` and the
-      `load-xpad` service in `modules/nixos/gaming.nix`. Until then the stock `xpad` drives the
+      `load-xpad` service in `modules/nixos/desktop/gaming.nix`. Until then the stock `xpad` drives the
       wireless Xbox 360 receiver (Guitar Hero controller); check it works.
 - [ ] nvim we should have nix config lsp?
 - [ ] nvim remove the ai cli and nes, but keep the ctrl+space completion.

@@ -24,7 +24,7 @@
     initExtra = ''
       PROMPT_COMMAND="history -a"
 
-      # Per-host API tokens from agenix (modules/nixos/env-secrets.nix)
+      # Per-host API tokens from agenix (modules/nixos/desktop/env-secrets.nix)
       if [[ -r /run/agenix/env ]]; then
         set -a
         source /run/agenix/env

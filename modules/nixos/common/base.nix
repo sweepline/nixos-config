@@ -1,12 +1,10 @@
 {
-  config,
   inputs,
   pkgs,
   ...
 }:
 {
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [ inputs.nur.overlays.default ];
 
   nix.settings = {
     experimental-features = [
@@ -16,9 +14,10 @@
     auto-optimise-store = true;
   };
 
+  # Desktops also set programs.nh.flake (../desktop/base.nix). The server is deployed from a
+  # desktop (`nh os switch -H homebox --target-host ...`), so it has no checkout to point at.
   programs.nh = {
     enable = true;
-    flake = config.my.configDir;
     clean = {
       enable = true;
       extraArgs = "--keep 10 --keep-since 14d";
@@ -30,8 +29,6 @@
   # Limine entry's comment) gets the short one.
   system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
   system.nixos.tags = [ "cfg.${inputs.self.shortRev or inputs.self.dirtyShortRev or "unknown"}" ];
-
-  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   time.timeZone = "Europe/Copenhagen";
   i18n = {
@@ -61,59 +58,6 @@
   services.fwupd.enable = true;
   hardware.enableRedistributableFirmware = true;
 
-  services.printing.enable = true;
-  services.avahi = {
-    enable = true;
-    nssmdns4 = true;
-    openFirewall = true;
-  };
-
-  # Prebuilt binaries downloaded by uv, pnpm, rustup etc. See docs/DEVELOPMENT.md.
-  programs.nix-ld = {
-    enable = true;
-    libraries = with pkgs; [
-      stdenv.cc.cc.lib
-      zlib
-      zstd
-      openssl
-      curl
-      glib
-      libxml2
-      icu
-      nss
-      nspr
-      expat
-      libGL
-      libxkbcommon
-      wayland
-      libx11
-      libxcb
-      libxcomposite
-      libxcursor
-      libxdamage
-      libxext
-      libxfixes
-      libxi
-      libxrandr
-      libxrender
-      libxscrnsaver
-      libxshmfence
-      libxtst
-      fontconfig
-      freetype
-      dbus
-      alsa-lib
-      at-spi2-atk
-      cups
-      gtk3
-      pango
-      cairo
-      mesa
-      libgbm
-      libdrm
-    ];
-  };
-
   environment.systemPackages = with pkgs; [
     git
     vim
@@ -124,9 +68,7 @@
     zip
     pciutils
     usbutils
-    sbctl
     efibootmgr
-    inputs.agenix.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 
   system.stateVersion = "26.05";

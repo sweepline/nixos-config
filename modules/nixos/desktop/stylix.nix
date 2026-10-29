@@ -10,7 +10,7 @@
   stylix = {
     enable = true;
     polarity = config.my.theme;
-    base16Scheme = (import ../color-schemes.nix pkgs).${config.my.theme};
+    base16Scheme = (import ../../color-schemes.nix pkgs).${config.my.theme};
 
     fonts = {
       monospace = {
@@ -38,7 +38,7 @@
     };
 
     cursor = {
-      package = pkgs.callPackage ../../pkgs/phinger-cursors-gruvbox-material.nix { };
+      package = pkgs.callPackage ../../../pkgs/phinger-cursors-gruvbox-material.nix { };
       name =
         "phinger-cursors-gruvbox-material" + lib.optionalString (config.my.theme == "light") "-light"; # variant matching my.theme; modules/home/theme.nix switches it
       size = 32;

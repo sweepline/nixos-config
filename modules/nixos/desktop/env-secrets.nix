@@ -1,6 +1,6 @@
 { lib, hostName, ... }:
 let
-  envSecret = ../../secrets/env-${hostName}.age;
+  envSecret = ../../../secrets/env-${hostName}.age;
 in
 {
   # Per-host API tokens as KEY=value lines (each host has its own tokens, so one can be

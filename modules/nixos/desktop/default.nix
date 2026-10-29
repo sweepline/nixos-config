@@ -1,23 +1,22 @@
+# Desktop hosts (97, dongmyo, esa): Hyprland session, Home Manager, stylix, and the
+# per-machine options below.
 { inputs, lib, ... }:
 {
   imports = [
     inputs.home-manager.nixosModules.home-manager
     inputs.stylix.nixosModules.stylix
-    inputs.agenix.nixosModules.default
-    inputs.disko.nixosModules.disko
 
     ./base.nix
-    ./boot.nix
     ./checks.nix
-    ./desktop.nix
     ./env-secrets.nix
-    ./hardware.nix
-    ./input.nix
-    ./networking.nix
     ./gaming.nix
+    ./hardware.nix
+    ./home.nix
+    ./input.nix
     ./laptop.nix
+    ./networking.nix
+    ./session.nix
     ./stylix.nix
-    ./users.nix
     ./work.nix
   ];
 
@@ -46,13 +45,5 @@
     laptop.enable = lib.mkEnableOption "laptop features (power profiles, hibernate, brightness)";
     gaming.enable = lib.mkEnableOption "Steam, Proton-GE, Lutris and friends";
     work.enable = lib.mkEnableOption "Scalgo work setup (Tailscale, sadmin, SSH hosts, git aliases and email)";
-    windowsDualBoot = {
-      enable = lib.mkEnableOption "a boot menu entry for Windows on another disk";
-      efiPartUuid = lib.mkOption {
-        type = lib.types.str;
-        default = "";
-        description = "PARTUUID of the Windows EFI partition (blkid -s PARTUUID -o value /dev/...).";
-      };
-    };
   };
 }

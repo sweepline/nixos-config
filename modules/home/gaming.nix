@@ -20,7 +20,7 @@ lib.mkIf osConfig.my.gaming.enable {
     };
   };
 
-  # GPU Screen Recorder overlay (gsr-ui, see modules/nixos/gaming.nix). Its own hotkeys are not
+  # GPU Screen Recorder overlay (gsr-ui, see modules/nixos/desktop/gaming.nix). Its own hotkeys are not
   # set up, so it is controlled from here. The overlay also offers screen, region and window
   # recording, screenshots, streaming and a replay buffer.
   my.hyprland.hostConfig = ''

@@ -28,7 +28,8 @@ and get the work setup (sadmin, SSH hosts, git aliases and email).
 flake.nix                 inputs and the three hosts
 hosts/<host>/             host settings, disk device, hardware config, monitors (home.nix)
 hosts/disk-layout.nix     shared disko layout (EFI + LUKS2 + ext4)
-modules/nixos/            system modules (boot, desktop, networking, gaming, ...)
+modules/nixos/common/     system modules for every host (nix, locale, boot, networking, ssh, wg0, users)
+modules/nixos/desktop/    desktop-only system modules (session, Home Manager, stylix, gaming, laptop, work, ...)
 modules/home/             Home Manager modules (Hyprland, ashell, Firefox, ...)
 modules/home/hyprland/    plain hyprland.lua; hosts/<host>/hyprland.lua holds monitors and rules
 dotfiles/nvim/            Neovim Lua config (lazy.nvim), symlinked into ~/.config/nvim

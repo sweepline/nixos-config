@@ -5,7 +5,7 @@ let
 in
 lib.mkIf cfg.enable {
   # Docked (another monitor connected): turn the laptop screen off when the lid closes.
-  # Not docked: do nothing here, logind suspends (modules/nixos/laptop.nix). Opening the lid
+  # Not docked: do nothing here, logind suspends (modules/nixos/desktop/laptop.nix). Opening the lid
   # always turns the laptop screen back on.
   my.hyprland.hostConfig = ''
     hl.bind("switch:on:Lid Switch", function()

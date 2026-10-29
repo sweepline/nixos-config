@@ -1,6 +1,6 @@
 { osConfig, pkgs, ... }:
 let
-  # Tailscale only runs with my.work.enable (modules/nixos/work.nix); without it the VPN icon
+  # Tailscale only runs with my.work.enable (modules/nixos/desktop/work.nix); without it the VPN icon
   # and popup only look at WireGuard.
   useTs = if osConfig.services.tailscale.enable then "1" else "";
   # Caps lock state from the keyboard LEDs. sysfs has no change events for them, so this polls,
@@ -78,7 +78,7 @@ let
 
       if [[ "$which" != ts ]]; then
         if [[ -d /sys/class/net/wg0 ]]; then
-          # wg needs root; a polkit rule (modules/nixos/networking.nix) allows exactly this
+          # wg needs root; a polkit rule (modules/nixos/desktop/networking.nix) allows exactly this
           # command without a prompt. The absolute path is needed because PATH only holds the
           # tools above. Keep stderr: pkexec failures used to look like a dismissed prompt.
           wg_err="$(mktemp)"

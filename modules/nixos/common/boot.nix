@@ -3,13 +3,23 @@ let
   cfg = config.my;
 in
 {
-  options.my.secureBoot.enable = lib.mkOption {
-    type = lib.types.bool;
-    default = true;
-    description = ''
-      Sign Limine with sbctl. Keys are generated and enrolled automatically when
-      the bootloader is installed, if the firmware is in Setup Mode (see docs/INSTALL.md).
-    '';
+  options.my = {
+    secureBoot.enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = ''
+        Sign Limine with sbctl. Keys are generated and enrolled automatically when
+        the bootloader is installed, if the firmware is in Setup Mode (see docs/INSTALL.md).
+      '';
+    };
+    windowsDualBoot = {
+      enable = lib.mkEnableOption "a boot menu entry for Windows on another disk";
+      efiPartUuid = lib.mkOption {
+        type = lib.types.str;
+        default = "";
+        description = "PARTUUID of the Windows EFI partition (blkid -s PARTUUID -o value /dev/...).";
+      };
+    };
   };
 
   config = {

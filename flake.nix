@@ -55,20 +55,22 @@
     { nixpkgs, ... }@inputs:
     let
       mkHost =
-        hostName:
+        hostName: modules:
         nixpkgs.lib.nixosSystem {
           specialArgs = { inherit inputs hostName; };
           modules = [
             ./hosts/${hostName}
-            ./modules/nixos
-          ];
+            ./modules/nixos/common
+          ]
+          ++ modules;
         };
+      mkDesktop = hostName: mkHost hostName [ ./modules/nixos/desktop ];
     in
     {
       nixosConfigurations = {
-        dongmyo = mkHost "dongmyo";
-        "97" = mkHost "97";
-        esa = mkHost "esa";
+        dongmyo = mkDesktop "dongmyo";
+        "97" = mkDesktop "97";
+        esa = mkDesktop "esa";
       };
 
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;

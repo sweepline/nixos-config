@@ -101,7 +101,7 @@ Old generations are removed so the disk does not fill up:
 - `auto-optimise-store` makes identical files in `/nix/store` share disk space. That runs on
   its own.
 
-Settings: `modules/nixos/base.nix` (`programs.nh.clean`) and `modules/nixos/boot.nix`.
+Settings: `modules/nixos/common/base.nix` (`programs.nh.clean`) and `modules/nixos/common/boot.nix`.
 
 Clean by hand. A plain `nh clean all` does **not** use the timer's rules: its defaults are to
 keep only the current generation, so it removes every rollback option. Pass the same limits
@@ -192,7 +192,7 @@ A host without an `env-<host>.age` simply has no tokens.
 ## Work (`my.work.enable`)
 
 Set per host in `hosts/<host>/default.nix` (all three for now). It adds, from
-`modules/nixos/work.nix` and `modules/home/work.nix`:
+`modules/nixos/desktop/work.nix` and `modules/home/work.nix`:
 
 - **Tailscale**, with only SSH (22) open on `tailscale0`.
 - **sadmin** with `/etc/sadmin.json` (`sadmin.scalgo.com:443`). When sadmin says it is out of
@@ -310,7 +310,7 @@ hyprsunset makes the screen warmer (4000 K) from 21:00 to 07:00. Change the time
 ## Laptop (dongmyo)
 
 - **Lid:** closing it suspends (not suspend-then-hibernate: an aborted hibernate left amdgpu
-  broken, see `modules/nixos/laptop.nix`). With an external monitor connected, closing the
+  broken, see `modules/nixos/desktop/laptop.nix`). With an external monitor connected, closing the
   lid only turns off the laptop screen.
 - **Power button:** hibernates. Waking from hibernate asks for the disk PIN, then shows the
   lock screen (fingerprint works there). Opening the lid of a hibernated laptop powers it on

@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 {
-  # The agent is gcr-ssh-agent (modules/nixos/desktop.nix): the key passphrase
+  # The agent is gcr-ssh-agent (modules/nixos/desktop/session.nix): the key passphrase
   # is saved in the login keyring the first time, then never asked again.
   home.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gcr/ssh";
   systemd.user.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gcr/ssh";

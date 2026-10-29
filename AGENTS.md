@@ -9,7 +9,7 @@ NixOS + Home Manager flake for three machines. See `README.md` for the layout an
   - `nh os boot` to activate on next boot
   - `nh os test` to activate without adding a boot entry
   - `nh os switch --update` to update flake inputs and switch
-- `nh` already knows where this flake lives (`programs.nh` in `modules/nixos/base.nix`), so no path or `--flake` flag is needed.
+- `nh` already knows where this flake lives (`programs.nh.flake` in `modules/nixos/desktop/base.nix`), so no path or `--flake` flag is needed.
 - Do not run `nh os switch/boot/test`, `sudo` or reboots yourself. Tell the user what to run.
 
 ## Hosts
@@ -21,14 +21,14 @@ NixOS + Home Manager flake for three machines. See `README.md` for the layout an
 | `esa` | Work PC | Intel | three monitors, work setup |
 
 - Host-specific settings go in `hosts/<host>/` (`default.nix` system, `home.nix` Home Manager, `hyprland.lua` monitors and rules).
-- Shared settings go in `modules/nixos/` (system) and `modules/home/` (Home Manager).
-- Shared modules switch on `my.*` options (`my.gpu`, `my.gaming.enable`, `my.work.enable`, `my.laptop`, `my.secureBoot.enable`, ...), not on hostnames. Prefer adding or reusing such an option over host checks. Options are declared in `modules/nixos/default.nix` and the modules that use them.
+- Shared settings go in `modules/nixos/common/` (system, every host), `modules/nixos/desktop/` (system, desktop hosts only) and `modules/home/` (Home Manager, desktop hosts).
+- Shared modules switch on `my.*` options (`my.gpu`, `my.gaming.enable`, `my.work.enable`, `my.laptop`, `my.secureBoot.enable`, ...), not on hostnames. Prefer adding or reusing such an option over host checks. Options are declared in `modules/nixos/desktop/default.nix` and the modules that use them.
 
 ## Checking changes
 
 - New files must be `git add`ed: flakes ignore untracked files, so an unstaged module is silently missing.
 - `nix eval .#nixosConfigurations.<host>.config.<option>` to check a single value.
-- `nh os build` (current host) or `nix flake check` (all hosts) to build without activating. The build also verifies the Hyprland config (`modules/nixos/checks.nix`).
+- `nh os build` (current host) or `nix flake check` (all hosts) to build without activating. The build also verifies the Hyprland config (`modules/nixos/desktop/checks.nix`).
 - `nix fmt` to format (nixfmt-tree).
 
 ## Don't touch

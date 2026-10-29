@@ -5,7 +5,7 @@
   ...
 }:
 let
-  sadmin = pkgs.callPackage ../../pkgs/sadmin.nix { };
+  sadmin = pkgs.callPackage ../../../pkgs/sadmin.nix { };
 in
 lib.mkIf config.my.work.enable {
   # Scalgo's network is reached over Tailscale.
@@ -17,7 +17,7 @@ lib.mkIf config.my.work.enable {
   # Scalgo's root CA (copied from mono/scripts/ca/root.crt), so https://localhost.scalgo.com
   # dev servers and internal hosts are trusted by curl, OpenSSL, Python etc. Replaces
   # `pnpm run certinstall`, which only writes to NSS dbs. Browsers: see modules/home/work.nix.
-  security.pki.certificateFiles = [ ../../certs/scalgo-root.crt ];
+  security.pki.certificateFiles = [ ../../../certs/scalgo-root.crt ];
 
   # Pin the work web UI to its Tailscale address: public DNS also returns a
   # public IPv4 and an IPv6 address whose path fails (bypassing tailscale0).

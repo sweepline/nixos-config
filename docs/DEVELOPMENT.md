@@ -30,7 +30,7 @@ even though the file is right there. The "missing file" is the dynamic loader.
 
 ## nix-ld: what makes it work
 
-`programs.nix-ld` (in `modules/nixos/base.nix`) installs a fake `/lib64/ld-linux-x86-64.so.2`
+`programs.nix-ld` (in `modules/nixos/desktop/base.nix`) installs a fake `/lib64/ld-linux-x86-64.so.2`
 that runs these binaries with a set of common libraries (`NIX_LD_LIBRARIES`): libc++,
 zlib, openssl, curl, glib, X11/Wayland/GL, GTK and more. Most downloaded binaries just work.
 
@@ -41,7 +41,7 @@ ldd ./some-binary | grep "not found"     # e.g. libfoo.so.1 => not found
 nix-locate libfoo.so.1                   # which package has it (needs nix-index)
 ```
 
-then add that package to `programs.nix-ld.libraries` in `modules/nixos/base.nix` and rebuild.
+then add that package to `programs.nix-ld.libraries` in `modules/nixos/desktop/base.nix` and rebuild.
 
 ## The global tools
 
