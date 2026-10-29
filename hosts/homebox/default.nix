@@ -8,6 +8,7 @@
     ./disk-layout.nix
     ./zfs.nix
     ./users.nix
+    ./caddy.nix
   ];
 
   # Not signed: the server boots unattended and has no Windows or TPM unlock to protect.
