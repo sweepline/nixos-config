@@ -54,8 +54,9 @@ lib.mkIf osConfig.my.work.enable {
   programs.git = {
     includes = [
       # Work email in every repo with a remote on Scalgo's GitLab.
+      # `**` only matches across `/` next to a slash, so after the `:` it must be `*/**`.
       {
-        condition = "hasconfig:remote.*.url:git@git.i.scalgo.com:**";
+        condition = "hasconfig:remote.*.url:git@git.i.scalgo.com:*/**";
         contents.user.email = "mikkel@scalgo.com";
       }
       {
