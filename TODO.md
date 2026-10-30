@@ -15,7 +15,7 @@ the repo. Never write the new domain in this repo (it is only in agenix).
       `DB_PASSWORD` from `~/immich/.env`.
 - [x] `secrets/smtp-homebox.age`: only a Fastmail app password with SMTP access, no newline
       (`printf '%s' ... `), for the email alerts (hosts/homebox/alerts.nix).
-- [ ] On the server now: `sudo zfs destroy -r storage/joplin` (unused, 14 old snapshots).
+- [x] On the server now: `sudo zfs destroy -r storage/joplin` (unused, 14 old snapshots).
 - [ ] Offline list of passwords (HOMEBOX.md, "Passwords to keep outside the server").
 - [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
       `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
@@ -23,6 +23,12 @@ the repo. Never write the new domain in this repo (it is only in agenix).
 - [ ] WireGuard: `vpn.<domain>` as the endpoint in every client (`wg0-*.age`, phones).
 - [ ] esmi.dk: website to Fastmail hosting, remove the A records that point home, then move
       its DNS to Fastmail.
+- [ ] After the migration: new database passwords for Joplin and Immich (today the defaults
+      `joplin` and `postgres`). The database keeps its own copy, so change both together:
+      `podman exec immich-postgres psql -U postgres -c "ALTER USER postgres PASSWORD '<new>'"`
+      (Joplin: `podman exec joplin-db psql -U <POSTGRES_USER> -c "ALTER USER ..."`), then
+      the same value in `immich-homebox.age` / `joplin-homebox.age`, deploy, and check that
+      the apps still connect.
 - [ ] After the migration: update app logins and bookmarks to the new names; maybe ask the ISP
       for a new IP (DNS history still links esmi.dk to the current one).
 - [ ] Server VLAN in UniFi: LAN/WireGuard → server allowed; server → LAN, other VLANs and
