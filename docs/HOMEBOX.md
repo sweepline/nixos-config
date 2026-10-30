@@ -3,7 +3,8 @@
 Plan and decisions for moving the home server from Ubuntu + podman-compose to this flake.
 Status at the bottom. See AGENTS.md for what may be run on the server.
 
-**The new domain is a secret.** It is only stored in agenix (`DOMAIN=...`), never in Nix code,
+**The new domain is a secret.** It is only stored in agenix (`secrets/domain-homebox.age`,
+`hosts/homebox/domain.nix`), never in Nix code,
 docs or commit messages: the repo may be public, and the domain resolves to the home IP.
 Below it is written as `<domain>`. Nothing may read a decrypted secret at evaluation time
 (e.g. `builtins.readFile`), as that copies it into the Nix store.
@@ -48,9 +49,12 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
   (`sonarr.i.`, `navidrome.i.`, ...).
 - Wildcard certificates for `*.<domain>` and `*.i.<domain>` (DNS challenge), so the CT logs
   only show the wildcards. The Cloudflare token is limited to the new zone.
-- Things that contain the domain read it at runtime from agenix: Caddy (`{$DOMAIN}` in site
-  addresses), Vaultwarden `DOMAIN`, Joplin `APP_BASE_URL`, Jellyfin `PublishedServerUrl`
-  (container env files). Immich's external domain (`https://photos.<domain>`) is set in its UI.
+- Things that contain the domain read it at runtime from `secrets/domain-homebox.age`
+  (one line, `DOMAIN=example.net`: the full domain including the TLD, nothing else; owned by
+  mikkel so the rootless containers can read it): Caddy (`{$DOMAIN}` in site addresses),
+  Vaultwarden `DOMAIN`, Joplin `APP_BASE_URL`, Jellyfin `PublishedServerUrl` (env files made
+  from it just before the container starts). Immich's external domain
+  (`https://photos.<domain>`) is set in its UI.
 - Afterwards: the WireGuard `Endpoint` in every client (the `wg0-*.age` files, phones), the
   app logins (Bitwarden, Jellyfin, Immich, Joplin) and bookmarks. Optional: ask the ISP for a
   new IP, since DNS history services already link `esmi.dk` to the current one.
@@ -93,9 +97,9 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
   `external-backup-*` snapshots.
 
 ### Caddy (`hosts/homebox/caddy.nix`)
-- Caddy 2.11 + `caddy-dns/cloudflare` v0.2.4 (needed for `cfut_` tokens), token and domain
-  from `secrets/caddy-homebox.age` (`CF_API_TOKEN=...`, `DOMAIN=...`). `DOMAIN` is the full
-  domain including the TLD, nothing else (like `DOMAIN=example.net`); names are built from it
+- Caddy 2.11 + `caddy-dns/cloudflare` v0.2.4 (needed for `cfut_` tokens). Token from
+  `secrets/caddy-homebox.age` (`CF_API_TOKEN=...`, root only, so the containers never see
+  it), domain from `secrets/domain-homebox.age`; names are built from it
   (`stream.{$DOMAIN}`, `vaultwarden.i.{$DOMAIN}`).
 - `*.i.<domain>` is internal only: `abort` unless `remote_ip private_ranges` (LAN, WireGuard,
   hairpin NAT, also the server VLAN). Apps register with

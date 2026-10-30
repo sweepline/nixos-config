@@ -8,6 +8,7 @@
     ./disk-layout.nix
     ./zfs.nix
     ./users.nix
+    ./domain.nix
     ./caddy.nix
   ];
 

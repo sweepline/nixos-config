@@ -3,9 +3,8 @@
 # internal *.i. names (Caddy >= 2.10 uses a matching wildcard instead of getting a certificate
 # per name, so the CT logs only show the two wildcards).
 #
-# The domain is a secret (docs/HOMEBOX.md): it only exists in secrets/caddy-homebox.age as
-# DOMAIN=example.net, and Caddy substitutes {$DOMAIN} when it reads the Caddyfile (start and
-# reload). Names in this repo never contain it.
+# The domain is a secret (docs/HOMEBOX.md, domain.nix): Caddy substitutes {$DOMAIN} when it
+# reads the Caddyfile (start and reload). Names in this repo never contain it.
 #
 # Apps add themselves with my.proxy, keyed by the name without the domain (usually next to
 # their container):
@@ -101,8 +100,9 @@ in
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
         hash = "sha256-tubXIDCJnO2mvdnPlZclwDhNGaeeYLSt7lnni3+pXDo=";
       };
-      # CF_API_TOKEN=... (Zone:Read + DNS:Edit for the new zone only) and DOMAIN=...
-      # Without the secret Caddy still runs, but on .invalid names and without certificates.
+      # CF_API_TOKEN=... (Zone:Read + DNS:Edit for the new zone only). DOMAIN comes from the
+      # domain secret (domain.nix), added below. Without them Caddy still runs, but on
+      # .invalid names and without certificates.
       environmentFile = lib.mkIf hasSecret config.age.secrets.caddy.path;
       globalConfig = ''
         acme_dns cloudflare {env.CF_API_TOKEN}
@@ -132,6 +132,11 @@ in
     age.secrets.caddy = lib.mkIf hasSecret {
       file = secret;
     };
+
+    # The module only takes one environment file; systemd merges this list with it.
+    systemd.services.caddy.serviceConfig.EnvironmentFile = lib.mkIf (config.age.secrets ? domain) [
+      config.age.secrets.domain.path
+    ];
 
     networking.firewall = {
       allowedTCPPorts = [
