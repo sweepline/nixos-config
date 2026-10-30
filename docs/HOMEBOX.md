@@ -137,10 +137,10 @@ primary group to be `mikkel` (1000), not `users`. Tested with linuxserver/prowla
 | rsgain | not a container: a systemd timer as mikkel, group music; every 15 min only album folders with new or moved audio files (found by ctime, metadata only, so the drives stay quiet), plus a monthly full pass | mikkel |
 | Vaultwarden, Immich, Joplin server | unchanged (container root = mikkel) | mikkel |
 | Postgres (Immich, Joplin) | unchanged | 100998 |
-| **Jellyfin** | `user=3001:3001`, media read-only, `keep-groups` (render) | 103000 |
-| **Jellyseerr** | `user=3002:3002` | 103001 |
+| **Jellyfin** | `user=3001:3001`, media read-only, GPU via the `jellyfin-gpu` group (below) | 103000 |
+| **Jellyseerr** | the image's own user `node` (1000), no keep-id | 100999 (as today) |
 | **Immich public proxy** | `user=3003:3003`, no files, only reaches Immich | – |
-| **slskd** | `PUID=3004`, `PGID=2002` (music), `UMASK=002` | 103003 |
+| **slskd** | `user=3004:2002` (music), `SLSKD_UMASK=0002` (the image's entrypoint sets the umask itself); tested | 103003 |
 
 The public ones (bold) also get read-only mounts where possible, `NoNewPrivileges` and
 dropped capabilities where the image allows, and only the network access they need.
@@ -170,10 +170,14 @@ mikkel is a member of `media` and `music` on the host.
   httpd, the `dn_*` and anonymous volumes. Caches (`jellyfin_cache`, `immich_model-cache`) are
   not migrated.
 - Jellyfin GPU: device passed by its fixed path `/dev/dri/by-path/pci-…-render`, mapped to
-  `/dev/dri/renderD128` in the container. AMD iGPU (VAAPI) first; an **Intel Arc A380**
-  (i915) is added after the migration: read the new PCI addresses (they may shift), change the
-  option, switch Jellyfin to QSV. BIOS: Above 4G Decoding + Resizable BAR. Host gets
-  `intel-gpu-tools`.
+  `/dev/dri/renderD128` in the container. A udev rule gives that render node the group
+  `jellyfin-gpu` (GID 103000 = Jellyfin's container group 3001), so only Jellyfin can use it.
+  Not `--group-add keep-groups`: that passes all of mikkel's groups (media and music too) into
+  the container, so a breakout could write to those trees. AMD iGPU (VAAPI) first; an **Intel
+  Arc A380** (i915) is added after the migration: read the new PCI addresses (they may shift),
+  change `gpu` in `apps/jellyfin.nix`, switch Jellyfin to QSV. BIOS: Above 4G Decoding +
+  Resizable BAR. Host gets `intel-gpu-tools`. Check after the migration: play something that
+  needs transcoding and look at Jellyfin's transcode log.
 
 | App | Host port | Container port | Name(s) |
 |---|---|---|---|
@@ -250,7 +254,7 @@ requested).
 Next in the repo:
 1. The other apps on the container framework (done: datasets, groups, run-as presets, domain
    env files, the `apps` network, Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr,
-   Lidarr, Aurral, Navidrome, rsgain): Jellyfin (GPU), Jellyseerr, slskd, Joplin, Immich,
+   Lidarr, Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr): Joplin, Immich,
    immich-public-proxy, cgit and `storage/git`.
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
 3. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot

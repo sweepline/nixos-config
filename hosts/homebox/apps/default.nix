@@ -4,12 +4,15 @@
   imports = [
     ./aurral.nix
     ./bazarr.nix
+    ./jellyfin.nix
+    ./jellyseerr.nix
     ./lidarr.nix
     ./navidrome.nix
     ./prowlarr.nix
     ./radarr.nix
     ./rsgain.nix
     ./sabnzbd.nix
+    ./slskd.nix
     ./sonarr.nix
     ./vaultwarden.nix
   ];

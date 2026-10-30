@@ -53,8 +53,10 @@ rec {
     };
     # Internet-facing apps: their own UID, so a container breakout does not land as mikkel
     # (who owns all other app data). Their files on the host belong to hostId uid.
-    isolated = uid: {
-      user = "${toString uid}:${toString uid}";
+    isolated = uid: isolatedGroup uid uid;
+    # The same with another group, e.g. groups.music for slskd's downloads.
+    isolatedGroup = uid: gid: {
+      user = "${toString uid}:${toString gid}";
       noNewPrivileges = true;
     };
   };
@@ -98,6 +100,8 @@ rec {
       runAs ? { },
       # "HOSTPORT:CONTAINERPORT", published on 127.0.0.1 only (Caddy proxies to them).
       ports ? [ ],
+      # The same, but on all interfaces (forwarded by the router; open them in the firewall).
+      publicPorts ? [ ],
       volumes ? [ ],
       environments ? { },
       # Env vars that contain the domain, as "...@DOMAIN@..." (see domainEnvScript).
@@ -127,7 +131,7 @@ rec {
           # The container's own name, which is also how the others on its network reach it.
           # (SABnzbd, for one, only answers to host names it knows.)
           hostname = name;
-          publishPorts = map (p: "127.0.0.1:${p}") ports;
+          publishPorts = map (p: "127.0.0.1:${p}") ports ++ publicPorts;
           timezone = "local";
           autoUpdate = lib.mkIf autoUpdate "registry";
           environmentFiles = lib.optional (domainEnv != { }) envFile ++ environmentFiles;
