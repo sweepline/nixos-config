@@ -18,8 +18,10 @@ the other disks are the five pool HDDs and the two NVMe drives of the pool's spe
 2. **DNS** for the new domain (TODO.md), any time before: the wildcard A record (UniFi DDNS)
    and the TXT on `i.` on Cloudflare, `*.i.<domain>` on the router, the WireGuard endpoint.
    Caddy needs the Cloudflare part on the first boot to get certificates.
-3. **Build** on a desktop, so nothing is compiled on the day, and push the repo (the
-   installer clones it):
+3. **Build** on a desktop, to find any error in the config now and not in the installer, and
+   push the repo (the installer clones it from GitHub). The installer does not reuse this
+   build: it downloads from cache.nixos.org and builds the few custom parts itself (Caddy
+   with its plugin, scripts), a few minutes.
    ```sh
    nix build .#nixosConfigurations.homebox.config.system.build.toplevel .#homebox-restore
    git push
