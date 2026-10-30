@@ -148,6 +148,7 @@ dropped capabilities where the image allows, and only the network access they ne
 | `/storage/media` | `mikkel:media` (host GID 102000 = container 2001) | setgid dirs, group-writable, world-readable |
 | `/storage/music` | `mikkel:music` (host GID 102001 = container 2002) | setgid dirs, group-writable, world-readable |
 | `/storage/immich` | `mikkel:mikkel` | `750` on the top dir |
+| `/storage/backup` | `mikkel:mikkel` | `750` (laptop backups, the app data copy) |
 | `/storage/git` | `mikkel:mikkel` | `750` (cgit gets read access separately) |
 | `/srv/appdata` | `mikkel:mikkel` | `750` (each app sees only its own mount) |
 

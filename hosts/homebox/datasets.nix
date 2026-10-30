@@ -20,26 +20,32 @@ let
   inherit (config.users.users.mikkel) uid;
 
   # ensure <dataset> <create: 1|0> <owner:group> <mode> [-o property=value ...]
+  # Returns non-zero when the dataset is missing, not mounted or cannot be set up. The caller
+  # carries on with the next dataset (one problem, like the storage pool not being imported,
+  # must not leave the others unhandled) and the service fails at the end, so it shows up in
+  # `systemctl --failed`. Explicit `|| return 1`: set -e does not apply inside a function that
+  # is called with `||`.
   ensureFunction = ''
     ensure() {
       ds=$1 create=$2 own=$3 mode=$4
       shift 4
       if ! zfs list -H -o name "$ds" >/dev/null 2>&1; then
         if [ "$create" != 1 ]; then
-          echo "skipping $ds: does not exist" >&2
-          return 0
+          echo "$ds: does not exist" >&2
+          return 1
         fi
-        echo "creating $ds"
-        zfs create -p "$@" "$ds"
+        echo "$ds: creating"
+        zfs create -p "$@" "$ds" || return 1
       fi
-      mnt=$(zfs get -H -o value mountpoint "$ds")
+      mnt=$(zfs get -H -o value mountpoint "$ds") || return 1
       if [ ! -d "$mnt" ]; then
-        echo "skipping $ds: not mounted ($mnt)" >&2
-        return 0
+        echo "$ds: not mounted ($mnt)" >&2
+        return 1
       fi
-      chown "$own" "$mnt"
-      chmod "$mode" "$mnt"
+      chown "$own" "$mnt" || return 1
+      chmod "$mode" "$mnt" || return 1
     }
+    failed=0
   '';
 
   ensureCall =
@@ -58,7 +64,8 @@ let
           "${k}=${v}"
         ]) ds.properties
       )
-    );
+    )
+    + " || failed=1";
 in
 {
   options.my.datasets = lib.mkOption {
@@ -116,6 +123,8 @@ in
       # From disko (disk-layout.nix). Each app sees only its own child through its mount.
       "ssd/appdata".create = false;
       "storage/immich".create = false;
+      # Laptop backups (encrypted) and the nightly copy of the app data.
+      "storage/backup".create = false;
       "storage/media" = {
         create = false;
         group = "media";
@@ -149,7 +158,9 @@ in
         Type = "oneshot";
         RemainAfterExit = true;
       };
-      script = lib.concatLines ([ ensureFunction ] ++ lib.mapAttrsToList ensureCall cfg);
+      script = lib.concatLines (
+        [ ensureFunction ] ++ lib.mapAttrsToList ensureCall cfg ++ [ "exit $failed" ]
+      );
     };
   };
 }

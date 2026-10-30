@@ -7,8 +7,10 @@
 
   home-manager.users.mikkel.virtualisation.quadlet.autoUpdate = {
     enable = true;
-    # After the nightly copy of the app data (syncoid at 03:30, zfs.nix), so an update that
-    # breaks an app's data can be rolled back to a fresh snapshot.
+    # Half an hour after sanoid's 04:00 snapshot of ssd/appdata (zfs.nix), so rolling back an
+    # update that breaks an app's data loses at most 30 minutes. (The nightly syncoid copy
+    # only matters if the SSD dies.) If an updated container does not start, podman
+    # auto-update already goes back to the previous image by itself.
     calendar = "*-*-* 04:30:00";
   };
 }
