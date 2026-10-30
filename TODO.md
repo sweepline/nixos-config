@@ -5,6 +5,9 @@
 - [ ] move domains
 - [ ] setup old domain on fastmail
 - [ ] personal website on fastmail
+- [ ] use wildcard dns cert for *.newdomain.xyz and *.i.newdomain.xyz
+- [ ] https://github.com/alangrainger/immich-public-proxy for public immich.
+- [ ] change to generic names maybe? music.domain vpn.domain flix.domain?
 
 ## Before installing
 
