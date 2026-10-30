@@ -257,7 +257,21 @@ Next in the repo:
    Lidarr, Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr): Joplin, Immich,
    immich-public-proxy, cgit and `storage/git`.
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
-3. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot
-   cleanup, AirVPN for slskd.
+3. After the migration: Arc A380 (below), `homebox-backup` on esa, restic to Hetzner,
+   snapshot cleanup, AirVPN for slskd.
+
+### Arc A380 (after the migration)
+- BIOS: Above 4G Decoding + Resizable BAR. Read the new PCI addresses with `lspci` (adding
+  the card can shift the iGPU's).
+- Replace the `jellyfin-gpu` group with a shared `gpu` group: a container GID in mikkel's
+  subordinate range (e.g. 3010 = host 103009) that the udev rule gives the Arc's render node,
+  added to each container that uses it with `GroupAdd` (not `keep-groups`, which would also
+  pass media and music).
+- Jellyfin: `gpu` = the Arc's address, Intel QSV in Dashboard → Playback → Transcoding.
+- Immich machine learning on the Arc: the `-openvino` image tag, the render node, the `gpu`
+  group. Gains most when the whole library is reprocessed (new search model, face
+  recognition from scratch); new photos are fine on the CPU. ROCm (AMD) does not support the
+  5600GT's Vega iGPU, so ML on the iGPU is not an option.
+- Immich video transcoding: Arc (QSV) or the AMD iGPU (VAAPI).
 
 Outside the repo (user): see the homebox section in TODO.md.
