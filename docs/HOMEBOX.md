@@ -98,7 +98,8 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 - Later: restic to a Hetzner Storage Box (BX11, 1 TB): `immich`, `backup/appdata`,
   `music/library`, `git`, daily, from a snapshot. restic over SFTP is not append-only (the
   server's key can delete the repository), so turn on automatic Storage Box snapshots in the
-  Hetzner console: a few are enough (e.g. 3 daily, 1 weekly). The server cannot delete them.
+  Hetzner console: 3 daily, 1 weekly and 1 monthly (the monthly one covers an attack that
+  goes unnoticed for a while, e.g. while away). The server cannot delete them.
   Caveats: they count against the 1 TB quota (data pruned by restic stays until its snapshot
   expires), the number per box is limited, they cover the whole box, and the Hetzner account
   (2FA, never on the server) becomes what protects them.
