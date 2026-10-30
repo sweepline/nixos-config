@@ -25,6 +25,7 @@ deployed from a desktop with `nh os switch -H homebox --target-host mikkel@x.i.e
 - [docs/INSTALL.md](docs/INSTALL.md): installing a machine from the NixOS ISO (including backup and restore)
 - [docs/USAGE.md](docs/USAGE.md): everyday use: rebuilding, updating, rollbacks, secrets, keybinds, testing in a VM
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): uv, pnpm, rustup and devShells on NixOS
+- [docs/HOMEBOX.md](docs/HOMEBOX.md): the home server's migration plan, decisions and status
 - [TODO.md](TODO.md): open items
 
 ## Layout
