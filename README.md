@@ -26,6 +26,7 @@ deployed from a desktop with `nh os switch -H homebox --target-host mikkel@192.1
 - [docs/USAGE.md](docs/USAGE.md): everyday use: rebuilding, updating, rollbacks, secrets, keybinds, testing in a VM
 - [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md): uv, pnpm, rustup and devShells on NixOS
 - [docs/HOMEBOX.md](docs/HOMEBOX.md): the home server's migration plan, decisions and status
+- [docs/HOMEBOX-MIGRATION.md](docs/HOMEBOX-MIGRATION.md): the home server's migration runbook
 - [TODO.md](TODO.md): open items
 
 ## Layout

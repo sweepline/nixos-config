@@ -65,7 +65,12 @@
   };
 
   outputs =
-    { nixpkgs, nixpkgs-stable, ... }@inputs:
+    {
+      self,
+      nixpkgs,
+      nixpkgs-stable,
+      ...
+    }@inputs:
     let
       mkHost =
         hostName: nixpkgs: modules:
@@ -87,6 +92,11 @@
         # Everything server-specific is in hosts/homebox.
         homebox = mkHost "homebox" nixpkgs-stable [ ];
       };
+
+      # homebox's migration from Ubuntu, run from the installer (docs/HOMEBOX-MIGRATION.md):
+      # nix run .#homebox-restore -- --dry-run /mnt/storage/backup/migration
+      packages.x86_64-linux.homebox-restore =
+        self.nixosConfigurations.homebox.config.system.build.homeboxRestore;
 
       formatter.x86_64-linux = nixpkgs.legacyPackages.x86_64-linux.nixfmt-tree;
     };

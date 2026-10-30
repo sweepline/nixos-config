@@ -221,27 +221,17 @@ settings change once (in the web UIs):
 | Aurral | Lidarr, Navidrome, Prowlarr, SABnzbd, slskd | `http://<name>:<container port>` |
 | SABnzbd | Config → Special → `host_whitelist` | add `sabnzbd` and `sabnzbd.i.<domain>` |
 
-## Migration day (outline; the full runbook and restore script are still to be written)
+## Migration day
 
-Two USB sticks: the NixOS installer, and a second copy of the migration set.
-
-1. Ubuntu: stop every compose project (volumes are kept). As root, rsync all volumes with
-   `--numeric-ids` to `/storage/backup/migration/<volume>/`, plus the SSH host key, compose
-   dirs and `/etc/caddy` for reference. Copy the set to the data USB stick.
-2. Image `sda` to `/storage/backup/` (rollback: write it back and Ubuntu boots as before; too
-   big for the USB sticks).
-3. Installer: disko (wipes `sda` only), import `storage`, run the restore script:
-   - create the app datasets and rsync into `/mnt/srv/appdata/<app>`, mapping owners per app
-     to the table above (`--usermap/--groupmap`; databases unchanged)
-   - create `storage/music` and `storage/git`, move the music folders
-   - owners and modes: media `mikkel:media` + setgid + `g+w`, music `mikkel:music` likewise,
-     `750` on immich, git and appdata
-   Data is in place before any container starts (an app started with an empty config would
-   create a fresh one).
-4. Generate `hardware-configuration.nix`, put the host key in `/mnt/etc/ssh/`,
-   `nixos-install --flake .#homebox`, reboot, check every app, reboot once more.
-5. Rollback: write the image back and undo the ownership changes (media and music back to
-   `101000`, not Immich); the restore script gets an `--undo`.
+The runbook with every command is [HOMEBOX-MIGRATION.md](HOMEBOX-MIGRATION.md). In short:
+stop the apps on Ubuntu and copy the volumes, the SSH host key and the old config to
+`storage/backup/migration` (plus a USB stick), snapshot `storage@pre-migration`, then from the
+installer: image the Ubuntu SSD to `storage/backup`, disko, and the restore tool
+(`hosts/homebox/migration.nix`, `nix run .#homebox-restore`). It creates the app datasets,
+copies each volume in with its owners mapped to the table above, copies the music into
+`storage/music`, and sets owners and modes on the storage trees. Data is in place before any
+container starts (an app started with an empty config would create a fresh one). The way
+back is the SSD image plus `zfs rollback` to `storage@pre-migration`.
 
 Cleanup on the server (the user runs it, any time): destroy `storage/joplin`, the never
 pruned snapshots (`frequent` from July, the Sept hourly media run, `zfs-auto-snap-2026-01-27`)
@@ -260,9 +250,11 @@ Next in the repo:
    files, the `apps` network; Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr, Lidarr,
    Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr, Joplin, Immich,
    immich-public-proxy, cgit and `storage/git`).
-2. Migration runbook + restore script (with `--undo`), VM test of the host. The VM test must
-   also check what could not be tested on a desktop: cgit inside its systemd sandbox (system
-   service with socket activation), and that the Immich proxy cannot reach `immich-postgres`.
+2. Done: migration runbook (HOMEBOX-MIGRATION.md) and restore tool (dry run tested with a
+   simulated pool). Next: VM test of the host (needs KVM: SVM is off in 97's BIOS). It runs
+   the restore tool for real on a fake migration set, and checks what could not be tested on
+   a desktop: cgit inside its systemd sandbox (system service with socket activation), and
+   that the Immich proxy cannot reach `immich-postgres`.
 3. After the migration: Arc A380 (below), Immich 3 (below), `homebox-backup` on esa, restic to
    Hetzner, snapshot cleanup, AirVPN for slskd.
 
