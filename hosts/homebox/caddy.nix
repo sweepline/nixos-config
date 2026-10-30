@@ -38,9 +38,15 @@ let
     abort @external
   '';
 
+  # Everything in a `route` block: there Caddy runs the directives in the order written.
+  # Outside of one it sorts them by type, and `handle` (e.g. cgit's site) comes before
+  # `abort`, so the internal-only check would never run and the site would be public.
   siteConfig = site: ''
-    ${lib.optionalString (!site.public) internalOnly}
-    reverse_proxy localhost:${toString site.port}
+    route {
+      ${lib.optionalString (!site.public) internalOnly}
+      ${lib.optionalString (site.port != null) "reverse_proxy localhost:${toString site.port}"}
+      ${site.extraConfig}
+    }
     ${lib.optionalString site.maintenance ''
       # Shown while the app is down or restarting (it does not answer), with the upstream's
       # error status so clients and monitoring still see the outage.
@@ -65,8 +71,14 @@ in
       lib.types.submodule {
         options = {
           port = lib.mkOption {
-            type = lib.types.port;
-            description = "Port the app listens on at 127.0.0.1.";
+            type = lib.types.nullOr lib.types.port;
+            default = null;
+            description = "Port the app listens on at 127.0.0.1. Null for sites set up with extraConfig only.";
+          };
+          extraConfig = lib.mkOption {
+            type = lib.types.lines;
+            default = "";
+            description = "Further Caddy directives for the site, e.g. instead of a port (cgit's FastCGI).";
           };
           public = lib.mkOption {
             type = lib.types.bool;
@@ -84,12 +96,20 @@ in
   };
 
   config = {
-    assertions = lib.mapAttrsToList (name: site: {
-      # Catches a public site under the internal names (or an internal one outside them),
-      # which would put it under the wrong wildcard certificate and expectations.
-      assertion = site.public == !(lib.hasSuffix ".i" name);
-      message = "my.proxy.\"${name}\": names ending in \".i\" are internal, all others must set public = true.";
-    }) config.my.proxy;
+    assertions = lib.concatLists (
+      lib.mapAttrsToList (name: site: [
+        {
+          # Catches a public site under the internal names (or an internal one outside them),
+          # which would put it under the wrong wildcard certificate and expectations.
+          assertion = site.public == !(lib.hasSuffix ".i" name);
+          message = "my.proxy.\"${name}\": names ending in \".i\" are internal, all others must set public = true.";
+        }
+        {
+          assertion = site.port != null || site.extraConfig != "";
+          message = "my.proxy.\"${name}\": set port or extraConfig.";
+        }
+      ]) config.my.proxy
+    );
 
     services.caddy = {
       enable = true;

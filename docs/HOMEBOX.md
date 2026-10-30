@@ -103,7 +103,9 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
   it), domain from `secrets/domain-homebox.age`; names are built from it
   (`stream.{$DOMAIN}`, `vaultwarden.i.{$DOMAIN}`).
 - `*.i.<domain>` is internal only: `abort` unless `remote_ip private_ranges` (LAN, WireGuard,
-  hairpin NAT, also the server VLAN). Apps register with
+  hairpin NAT, also the server VLAN). Every site's handlers sit in a `route` block, so the
+  check always runs first: outside of one Caddy sorts directives by type and `handle` comes
+  before `abort` (tested: a site with `handle` was reachable from outside without it). Apps register with
   `my.proxy."<name>" = { port; public; maintenance; }`.
 - The maintenance page (`hosts/homebox/www/maintenance`) is shown on 502/503/504 for
   `stream.` and `request.` (and their internal names). The esmi.dk test page goes to Fastmail.
@@ -252,10 +254,10 @@ users, Home Manager + quadlet-nix); `wg0-homebox.age` (IPv6 DNS typo fixed); Cad
 requested).
 
 Next in the repo:
-1. The other apps on the container framework (done: datasets, groups, run-as presets, domain
-   env files, the `apps` network, Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr,
-   Lidarr, Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr, Joplin, Immich,
-   immich-public-proxy): cgit and `storage/git`.
+1. Done: all apps on the container framework (datasets, groups, run-as presets, domain env
+   files, the `apps` network; Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr, Lidarr,
+   Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr, Joplin, Immich,
+   immich-public-proxy, cgit and `storage/git`).
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
 3. After the migration: Arc A380 (below), Immich 3 (below), `homebox-backup` on esa, restic to
    Hetzner, snapshot cleanup, AirVPN for slskd.

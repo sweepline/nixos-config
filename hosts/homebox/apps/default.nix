@@ -4,6 +4,7 @@
   imports = [
     ./aurral.nix
     ./bazarr.nix
+    ./git.nix
     ./immich.nix
     ./jellyfin.nix
     ./jellyseerr.nix

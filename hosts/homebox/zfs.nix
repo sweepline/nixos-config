@@ -83,6 +83,8 @@ in
         recursive = true;
       };
       "storage/immich".useTemplate = [ "photos" ];
+      # Own repos, some only here: same history as the photos.
+      "storage/git".useTemplate = [ "photos" ];
       "storage/music".useTemplate = [ "music" ];
       "storage/media".useTemplate = [ "media" ];
       "storage/backup".useTemplate = [ "backup" ];
