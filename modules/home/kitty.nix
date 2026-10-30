@@ -32,7 +32,7 @@
       "ctrl+plus" = "change_font_size all +1.0";
       "ctrl+minus" = "change_font_size all -1.0";
       "ctrl+0" = "change_font_size all 0";
-      "--allow-fallback=shifted,ascii ctrl+shift+t" = "new_tab_with_cwd";
+      "ctrl+shift+t" = "new_tab_with_cwd";
     };
   };
 }
