@@ -1,5 +1,11 @@
 # TODO
 
+## homebox
+
+- [ ] move domains
+- [ ] setup old domain on fastmail
+- [ ] personal website on fastmail
+
 ## Before installing
 
 - [ ] esa: set the disk by-id in `hosts/esa/default.nix`. Check that work allows its own OS,
