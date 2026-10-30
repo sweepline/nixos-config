@@ -8,6 +8,8 @@ the repo. Never write the new domain in this repo (it is only in agenix).
 - [ ] `secrets/caddy-homebox.age`: only `CF_API_TOKEN=...` (token for the new zone only).
 - [ ] `secrets/domain-homebox.age`: only `DOMAIN=...` (the full domain with TLD, like
       `DOMAIN=example.net`).
+- [ ] `secrets/navidrome-homebox.age`: `ND_LASTFM_APIKEY=...` and `ND_LASTFM_SECRET=...` (from
+      `~/music_control/compose.yml` on the server).
 - [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
       `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
 - [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).

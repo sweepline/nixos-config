@@ -16,8 +16,14 @@ rec {
   # Caddy, TLS, DNS or the domain.
   network = "apps.network";
 
+  # Container GIDs of the shared groups; on the host they are hostId of these (datasets.nix).
+  groups = {
+    media = 2001;
+    music = 2002;
+  };
+
   # Who a container runs as (docs/HOMEBOX.md, "Ownership and permissions").
-  runAs = {
+  runAs = rec {
     # Images that run as root inside: rootless Podman maps container root to mikkel, so
     # their files are mikkel's without any options.
     root = { };
@@ -25,13 +31,17 @@ rec {
     # keep-id, container 1000 is mikkel; user=0:0 is needed because keep-id otherwise starts
     # the init as 1000 too, which puts linuxserver into its less supported non-root mode.
     # Container root is then mikkel's first subordinate UID, not mikkel and not host root.
-    # PGID must be mikkel's primary group (1000): keep-id maps only that group to itself.
-    linuxserver = {
+    # PGID 1000 is mikkel's primary group (keep-id maps only that group to itself).
+    linuxserver = linuxserverGroup 1000;
+    # The same with another primary group, e.g. groups.music for apps that must change files
+    # other users wrote in the shared music tree. (GroupAdd does not work here: the init
+    # drops supplementary groups when it switches to the app user.)
+    linuxserverGroup = gid: {
       userns = "keep-id";
       user = "0:0";
       environments = {
         PUID = "1000";
-        PGID = "1000";
+        PGID = toString gid;
         # Group-writable files in the shared media/music trees.
         UMASK = "002";
       };
@@ -92,6 +102,8 @@ rec {
       environments ? { },
       # Env vars that contain the domain, as "...@DOMAIN@..." (see domainEnvScript).
       domainEnv ? { },
+      # Further env files, e.g. agenix secrets owned by mikkel.
+      environmentFiles ? [ ],
       # Quadlet networks to join, e.g. [ apps.network ]: apps on the same network reach each
       # other by container name (http://sonarr:8989).
       networks ? [ ],
@@ -118,7 +130,7 @@ rec {
           publishPorts = map (p: "127.0.0.1:${p}") ports;
           timezone = "local";
           autoUpdate = lib.mkIf autoUpdate "registry";
-          environmentFiles = lib.optional (domainEnv != { }) envFile;
+          environmentFiles = lib.optional (domainEnv != { }) envFile ++ environmentFiles;
         }
       ];
       serviceConfig = {

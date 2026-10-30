@@ -132,8 +132,9 @@ primary group to be `mikkel` (1000), not `users`. Tested with linuxserver/prowla
 | Apps | Container settings | Host owner |
 |---|---|---|
 | Sonarr, Radarr, Prowlarr, Bazarr, SABnzbd | `userns=keep-id`, `user=0:0`, `PUID=PGID=1000`, `UMASK=002` | mikkel |
-| Lidarr, Aurral | same, plus `GroupAdd=2002` (music) | mikkel |
-| Navidrome, rsgain | `userns=keep-id`, `user=1000:1000`, `GroupAdd=2002` | mikkel |
+| Lidarr, Aurral | same, but `PGID=2002` (music) as primary group; `GroupAdd` would not survive the init switching to the app user | mikkel |
+| Navidrome | `userns=keep-id`, `user=1000:1000`; music read-only | mikkel |
+| rsgain | not a container: a systemd timer (every 6 h) as mikkel, group music | mikkel |
 | Vaultwarden, Immich, Joplin server | unchanged (container root = mikkel) | mikkel |
 | Postgres (Immich, Joplin) | unchanged | 100998 |
 | **Jellyfin** | `user=3001:3001`, media read-only, `keep-groups` (render) | 103000 |
@@ -248,8 +249,8 @@ requested).
 
 Next in the repo:
 1. The other apps on the container framework (done: datasets, groups, run-as presets, domain
-   env files, the `apps` network, Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr):
-   Jellyfin (GPU), Jellyseerr, Lidarr, slskd, Aurral, Navidrome, rsgain, Joplin, Immich,
+   env files, the `apps` network, Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr,
+   Lidarr, Aurral, Navidrome, rsgain): Jellyfin (GPU), Jellyseerr, slskd, Joplin, Immich,
    immich-public-proxy, cgit and `storage/git`.
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
 3. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot

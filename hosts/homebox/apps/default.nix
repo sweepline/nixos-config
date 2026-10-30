@@ -2,9 +2,13 @@
 { ... }:
 {
   imports = [
+    ./aurral.nix
     ./bazarr.nix
+    ./lidarr.nix
+    ./navidrome.nix
     ./prowlarr.nix
     ./radarr.nix
+    ./rsgain.nix
     ./sabnzbd.nix
     ./sonarr.nix
     ./vaultwarden.nix
