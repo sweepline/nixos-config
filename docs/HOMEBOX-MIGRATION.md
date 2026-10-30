@@ -137,7 +137,7 @@ SSH in over the LAN (`ssh mikkel@192.168.10.2`) or WireGuard (`192.168.3.2`).
      name sent to the public IP is dropped:
      `curl -sv --resolve sonarr.i.<domain>:443:<public IP> https://sonarr.i.<domain>/`
 7. Backups: `sudo systemctl start sanoid` then `zfs list -t snapshot | grep autosnap`;
-   `sudo systemctl start syncoid-appdata` then `zfs list -r storage/backup/appdata`.
+   `sudo systemctl start syncoid-appdata` then `zfs list -r storage/backup/appdata` (the unit fails if a copy is behind).
 8. Reboot once more and repeat 1–2.
 9. On a desktop: commit `hardware-configuration.nix` (from `/storage/backup/migration/`) and
    push. From now on: `nh os switch -H homebox --target-host mikkel@192.168.3.2`.

@@ -13,10 +13,17 @@
     ./caddy.nix
     ./apps
     ./migration.nix
+    ./vm.nix
   ];
 
   # Not signed: the server boots unattended and has no Windows or TPM unlock to protect.
   my.secureBoot.enable = false;
+
+  # /home is its own dataset (disk-layout.nix). NixOS creates home directories early in the
+  # boot, before systemd mounts the other filesystems, so without this /home/mikkel would be
+  # created on the hidden root underneath, and Home Manager (with every container) would fail.
+  # Found in the VM test.
+  fileSystems."/home".neededForBoot = true;
 
   # LAN only: the router forwards 443 and 50300 to this machine, never 22. From outside,
   # SSH goes through WireGuard (wg0, opened in modules/nixos/common/networking.nix).

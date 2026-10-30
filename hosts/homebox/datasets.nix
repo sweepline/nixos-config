@@ -38,6 +38,10 @@ let
         zfs create -p "$@" "$ds" || return 1
       fi
       mnt=$(zfs get -H -o value mountpoint "$ds") || return 1
+      case "$mnt" in
+        # Never mounted on purpose (e.g. the parent of the nightly copy): no directory.
+        none | legacy) return 0 ;;
+      esac
       if [ ! -d "$mnt" ]; then
         echo "$ds: not mounted ($mnt)" >&2
         return 1

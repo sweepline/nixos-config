@@ -187,10 +187,16 @@ let
     ];
     text = ''
       dry=0
-      if [ "''${1:-}" = "--dry-run" ]; then
-        dry=1
+      any_mount=0
+      while [ $# -gt 0 ]; do
+        case "$1" in
+          --dry-run) dry=1 ;;
+          # VM test only: the pools are mounted as on the running system, not under /mnt.
+          --any-mount) any_mount=1 ;;
+          *) break ;;
+        esac
         shift
-      fi
+      done
       if [ $# -ne 1 ]; then
         echo "usage: homebox-restore [--dry-run] MIGRATION_SET   (e.g. /mnt/storage/backup/migration)" >&2
         exit 2
@@ -232,7 +238,12 @@ let
       storage=$(mountpoint_of storage)
       case "$storage" in
         /mnt/*) ;;
-        *) echo "storage is mounted at $storage, expected under /mnt (zpool import -R /mnt)" >&2; exit 1 ;;
+        *)
+          if [ "$any_mount" != 1 ]; then
+            echo "storage is mounted at $storage, expected under /mnt (zpool import -R /mnt)" >&2
+            exit 1
+          fi
+          ;;
       esac
       echo "ok: migration set $src, storage at $storage"
 
