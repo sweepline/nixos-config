@@ -2,21 +2,26 @@
 
 ## homebox
 
-- [ ] move domains
-- [ ] setup old domain on fastmail
-- [ ] personal website on fastmail
-- [ ] use wildcard dns cert for *.newdomain.xyz and *.i.newdomain.xyz
-- [ ] https://github.com/alangrainger/immich-public-proxy for public immich.
-- [ ] change to generic names maybe? music.domain vpn.domain flix.domain?
-- [ ] move git to /storage/git and setup cgit on git.i.newdomain
-- [ ] Maybe setup soulseek with airvpn
-- [ ] Server VLAN in unifi. others can establish connection in, but server cannot establish out.
-- [ ] server secrets only for server host key maybe?
-- [ ] think about segregating permissions for the public services (slskd, jellyfin, ipp).
-  - [ ] All containers should use their own user, and then groups for shared files.
-  - [ ] music group
-  - [ ] media group
-  - [ ] all others use their own user group.
+Plan, decisions and repo work: [docs/HOMEBOX.md](docs/HOMEBOX.md). Here: what happens outside
+the repo. Never write the new domain in this repo (it is only in agenix).
+
+- [ ] `secrets/caddy-homebox.age`: `CF_API_TOKEN=...` (token for the new zone only) and
+      `DOMAIN=...`.
+- [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
+      `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
+- [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).
+- [ ] WireGuard: `vpn.<domain>` as the endpoint in every client (`wg0-*.age`, phones).
+- [ ] esmi.dk: website to Fastmail hosting, remove the A records that point home, then move
+      its DNS to Fastmail.
+- [ ] After the migration: update app logins and bookmarks to the new names; maybe ask the ISP
+      for a new IP (DNS history still links esmi.dk to the current one).
+- [ ] Server VLAN in UniFi: LAN/WireGuard → server allowed; server → LAN, other VLANs and
+      WireGuard devices only replies; server → router only DNS and WireGuard (no admin UI, also
+      not over the tunnel); server → internet allowed.
+- [ ] Maybe: the TV on its own VLAN too.
+- [ ] Decide: server secrets for host key + a separate admin key (offline/YubiKey) instead of
+      the desktop keys.
+- [ ] Future: AirVPN (port forwarding) for slskd, then drop the 50300 forward.
 
 
 ## Before installing

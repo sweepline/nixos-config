@@ -19,7 +19,7 @@ NixOS + Home Manager flake for three desktops and a home server. See `README.md`
 | `97` | Desktop (dual boot Windows) | NVIDIA | gaming, ultrawide on DP-1 + 1080p on DP-2 |
 | `dongmyo` | Laptop | AMD | power profiles, hibernate |
 | `esa` | Work PC | Intel | three monitors, work setup |
-| `homebox` | Home server | AMD iGPU | nixos-stable, ZFS, rootless Podman; no desktop modules. Deployed from a desktop: `nh os switch -H homebox --target-host mikkel@x.i.esmi.dk`. Never run anything on it that changes it (no sudo, writes, restarts); read-only inspection over SSH is fine. |
+| `homebox` | Home server | AMD iGPU | nixos-stable, ZFS, rootless Podman; no desktop modules. Deployed from a desktop: `nh os switch -H homebox --target-host mikkel@192.168.3.2`. Never run anything on it that changes it (no sudo, writes, restarts); read-only inspection over SSH is fine. |
 
 - Host-specific settings go in `hosts/<host>/` (`default.nix` system, `home.nix` Home Manager, `hyprland.lua` monitors and rules).
 - Shared settings go in `modules/nixos/common/` (system, every host), `modules/nixos/desktop/` (system, desktop hosts only) and `modules/home/` (Home Manager, desktop hosts).
@@ -38,6 +38,10 @@ NixOS + Home Manager flake for three desktops and a home server. See `README.md`
 - `secrets/*.age`: agenix-encrypted. Ask before changing `secrets/keys.nix` or `secrets/agenix-rules.nix`.
 - `flake.lock`: only update when asked (`nh os switch --update`).
 - `backup/`: backup and restore scripts and path lists.
+- homebox's domain and the home IP: never write them in the repo (code, docs, commit messages).
+  The domain only lives in agenix and is read at runtime (`{$DOMAIN}`, env files); see
+  `docs/HOMEBOX.md`. Never read a decrypted secret at evaluation time (it would end up in the
+  Nix store).
 
 ## Style
 

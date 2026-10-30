@@ -18,7 +18,7 @@ and get the work setup (sadmin, SSH hosts, git aliases and email).
 
 `homebox` runs nixos-stable without the desktop modules: an SSD ZFS pool for the OS and
 app data, the existing `storage` pool for media and photos, sanoid snapshots, and is
-deployed from a desktop with `nh os switch -H homebox --target-host mikkel@x.i.esmi.dk`.
+deployed from a desktop with `nh os switch -H homebox --target-host mikkel@192.168.3.2`.
 
 ## Docs
 
