@@ -94,7 +94,9 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 
 ### Caddy (`hosts/homebox/caddy.nix`)
 - Caddy 2.11 + `caddy-dns/cloudflare` v0.2.4 (needed for `cfut_` tokens), token and domain
-  from `secrets/caddy-homebox.age` (`CF_API_TOKEN=...`, `DOMAIN=...`).
+  from `secrets/caddy-homebox.age` (`CF_API_TOKEN=...`, `DOMAIN=...`). `DOMAIN` is the full
+  domain including the TLD, nothing else (like `DOMAIN=example.net`); names are built from it
+  (`stream.{$DOMAIN}`, `vaultwarden.i.{$DOMAIN}`).
 - `*.i.<domain>` is internal only: `abort` unless `remote_ip private_ranges` (LAN, WireGuard,
   hairpin NAT, also the server VLAN). Apps register with
   `my.proxy."<name>" = { port; public; maintenance; }`.

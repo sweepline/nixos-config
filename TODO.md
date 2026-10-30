@@ -6,7 +6,7 @@ Plan, decisions and repo work: [docs/HOMEBOX.md](docs/HOMEBOX.md). Here: what ha
 the repo. Never write the new domain in this repo (it is only in agenix).
 
 - [ ] `secrets/caddy-homebox.age`: `CF_API_TOKEN=...` (token for the new zone only) and
-      `DOMAIN=...`.
+      `DOMAIN=...` (the full domain with TLD, like `DOMAIN=example.net`).
 - [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
       `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
 - [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).
