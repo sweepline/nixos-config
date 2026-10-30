@@ -5,11 +5,14 @@
 Plan, decisions and repo work: [docs/HOMEBOX.md](docs/HOMEBOX.md). Here: what happens outside
 the repo. Never write the new domain in this repo (it is only in agenix).
 
-- [ ] `secrets/caddy-homebox.age`: only `CF_API_TOKEN=...` (token for the new zone only).
-- [ ] `secrets/domain-homebox.age`: only `DOMAIN=...` (the full domain with TLD, like
+- [x] `secrets/caddy-homebox.age`: only `CF_API_TOKEN=...` (token for the new zone only).
+- [x] `secrets/domain-homebox.age`: only `DOMAIN=...` (the full domain with TLD, like
       `DOMAIN=example.net`).
-- [ ] `secrets/navidrome-homebox.age`: `ND_LASTFM_APIKEY=...` and `ND_LASTFM_SECRET=...` (from
+- [x] `secrets/navidrome-homebox.age`: `ND_LASTFM_APIKEY=...` and `ND_LASTFM_SECRET=...` (from
       `~/music_control/compose.yml` on the server).
+- [ ] `secrets/joplin-homebox.age`: `POSTGRES_PASSWORD=...` (from `~/joplin/compose.yaml`).
+- [ ] `secrets/immich-homebox.age`: `DB_PASSWORD=...` and `POSTGRES_PASSWORD=...`, both the
+      `DB_PASSWORD` from `~/immich/.env`.
 - [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
       `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
 - [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).

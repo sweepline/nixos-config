@@ -18,6 +18,10 @@ in
   "domain-homebox.age" = forHost "homebox";
   # homebox: ND_LASTFM_APIKEY=... and ND_LASTFM_SECRET=... for Navidrome
   "navidrome-homebox.age" = forHost "homebox";
+  # homebox: POSTGRES_PASSWORD=... for Joplin's server and database
+  "joplin-homebox.age" = forHost "homebox";
+  # homebox: DB_PASSWORD=... and POSTGRES_PASSWORD=... (same value) for Immich
+  "immich-homebox.age" = forHost "homebox";
   # API tokens (KEY=value lines), one set per host
   "env-97.age" = forHost "97";
   "env-dongmyo.age" = forHost "dongmyo";

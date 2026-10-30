@@ -184,7 +184,7 @@ mikkel is a member of `media` and `music` on the host.
 | Vaultwarden | 8000 | 80 | vaultwarden.i |
 | Jellyfin | 8096 | 8096 | jellyfin.i, stream. (public), maintenance |
 | Immich | 2283 | 2283 | immich.i |
-| Immich public proxy | (new) | 3000 | photos. (public) |
+| Immich public proxy | 8300 (new) | 3000 | photos. (public) |
 | Joplin | 22300 | 22300 | joplin.i |
 | Jellyseerr | 8100 | 5055 | jellyseerr.i, request. (public), maintenance |
 | Sonarr / Radarr / Prowlarr | 8101 / 8102 / 8103 | 8989 / 7878 / 9696 | sonarr.i / radarr.i / prowlarr.i |
@@ -254,11 +254,18 @@ requested).
 Next in the repo:
 1. The other apps on the container framework (done: datasets, groups, run-as presets, domain
    env files, the `apps` network, Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr,
-   Lidarr, Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr): Joplin, Immich,
-   immich-public-proxy, cgit and `storage/git`.
+   Lidarr, Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr, Joplin, Immich,
+   immich-public-proxy): cgit and `storage/git`.
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
-3. After the migration: Arc A380 (below), `homebox-backup` on esa, restic to Hetzner,
-   snapshot cleanup, AirVPN for slskd.
+3. After the migration: Arc A380 (below), Immich 3 (below), `homebox-backup` on esa, restic to
+   Hetzner, snapshot cleanup, AirVPN for slskd.
+
+### Immich 3 (after the migration)
+- Immich is pinned to 2.7.5 (`apps/immich.nix`) so the migration does not also upgrade it.
+  Upgrade on purpose afterwards, following Immich's release notes (server and machine
+  learning together; the Postgres image only if the notes say so).
+- immich-public-proxy is on major version 3, which works with Immich 2.x; 4.x requires
+  Immich 3 and exits against an older one. Switch it to 4 together with the upgrade.
 
 ### Arc A380 (after the migration)
 - BIOS: Above 4G Decoding + Resizable BAR. Read the new PCI addresses with `lspci` (adding

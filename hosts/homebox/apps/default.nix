@@ -4,8 +4,10 @@
   imports = [
     ./aurral.nix
     ./bazarr.nix
+    ./immich.nix
     ./jellyfin.nix
     ./jellyseerr.nix
+    ./joplin.nix
     ./lidarr.nix
     ./navidrome.nix
     ./prowlarr.nix
