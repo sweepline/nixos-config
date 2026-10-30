@@ -77,6 +77,7 @@ in
       joplin.file = testSecret "joplin";
       immich.file = testSecret "immich";
       wg0.file = testSecret "wg0";
+      smtp.file = testSecret "smtp";
     };
 
     # Caddy's own CA instead of Let's Encrypt via Cloudflare (no real domain here).

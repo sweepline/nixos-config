@@ -91,9 +91,36 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 - External drive (manual, from esa): replace the old script with a `homebox-backup` command
   in this repo: syncoid pull of `storage` with `--no-sync-snap`, excluding media, then sanoid
   pruning on the drive. Server side only needs `zfs allow mikkel send storage`.
+  `storage/backup` has `special_small_blocks=0` (set at boot by `storage-properties`), so
+  the copy lies on the HDDs; otherwise its 16K/64K blocks would all go to the NVMe special
+  mirror. Caveats: small blocks use more space on raidz2 (parity and padding, about 1.5× for
+  16K), and a restore reads from the HDDs; both are fine for a few GB.
 - Later: restic to a Hetzner Storage Box (BX11, 1 TB): `immich`, `backup/appdata`,
-  `music/library`, `git`, daily, from a snapshot; Storage Box snapshots on (protects against
-  a compromised server).
+  `music/library`, `git`, daily, from a snapshot. restic over SFTP is not append-only (the
+  server's key can delete the repository), so turn on automatic Storage Box snapshots in the
+  Hetzner console: a few are enough (e.g. 3 daily, 1 weekly). The server cannot delete them.
+  Caveats: they count against the 1 TB quota (data pruned by restic stays until its snapshot
+  expires), the number per box is limited, they cover the whole box, and the Hetzner account
+  (2FA, never on the server) becomes what protects them.
+- Restore test, once after the migration and then about yearly: clone one app's copy and
+  check that it holds its data, e.g.
+  `sudo zfs clone storage/backup/appdata/vaultwarden@<snapshot> storage/restore-test -o mountpoint=/mnt/restore-test`,
+  look inside, then `sudo zfs destroy storage/restore-test`. Same for a file from restic.
+
+### Alerts (`hosts/homebox/alerts.nix`)
+- Emails to `m@esmi.dk` through Fastmail SMTP (app password in `secrets/smtp-homebox.age`,
+  only the password): smartd (failing disks; short self-test nightly 02:00, long test on the
+  15th), ZED (degraded pool, checksum errors, every finished scrub) and failed system services
+  (nightly copy, sanoid, scrub, rsgain, datasets, Caddy, Home Manager). Inactive until the
+  secret exists.
+- Scrub: first Monday of the month, 05:00 (about 4 h; after the copy and auto-update, and not
+  on the weekend, when the services are used most).
+
+### Passwords to keep outside the server
+Vaultwarden runs on this server, so keep these offline too (paper, with the external drive):
+the Hetzner login and its 2FA recovery codes, the restic repository password, the Fastmail
+login and 2FA recovery, the GitHub login, and an admin SSH/age key that can decrypt
+`secrets/` (keys.nix). Without the age key, the secrets in this repo cannot be re-created.
 - Retired: `backup.sh`, `joplin/backup-db.sh`, zfs-auto-snapshot, the manual
   `external-backup-*` snapshots.
 

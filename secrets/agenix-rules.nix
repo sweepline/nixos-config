@@ -22,6 +22,8 @@ in
   "joplin-homebox.age" = forHost "homebox";
   # homebox: DB_PASSWORD=... and POSTGRES_PASSWORD=... (same value) for Immich
   "immich-homebox.age" = forHost "homebox";
+  # homebox: Fastmail app password (SMTP) for email alerts, only the password (hosts/homebox/alerts.nix)
+  "smtp-homebox.age" = forHost "homebox";
   # API tokens (KEY=value lines), one set per host
   "env-97.age" = forHost "97";
   "env-dongmyo.age" = forHost "dongmyo";

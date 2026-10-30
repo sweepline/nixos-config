@@ -7,6 +7,7 @@
     ./hardware-configuration.nix
     ./disk-layout.nix
     ./zfs.nix
+    ./alerts.nix
     ./users.nix
     ./domain.nix
     ./datasets.nix

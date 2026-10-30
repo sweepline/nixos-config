@@ -13,6 +13,10 @@ the repo. Never write the new domain in this repo (it is only in agenix).
 - [ ] `secrets/joplin-homebox.age`: `POSTGRES_PASSWORD=...` (from `~/joplin/compose.yaml`).
 - [ ] `secrets/immich-homebox.age`: `DB_PASSWORD=...` and `POSTGRES_PASSWORD=...`, both the
       `DB_PASSWORD` from `~/immich/.env`.
+- [ ] `secrets/smtp-homebox.age`: only a Fastmail app password with SMTP access, no newline
+      (`printf '%s' ... `), for the email alerts (hosts/homebox/alerts.nix).
+- [ ] On the server now: `sudo zfs destroy -r storage/joplin` (unused, 14 old snapshots).
+- [ ] Offline list of passwords (HOMEBOX.md, "Passwords to keep outside the server").
 - [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
       `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
 - [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).

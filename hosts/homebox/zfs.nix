@@ -54,9 +54,34 @@ in
   # The existing data pool (raidz2 of the five HDDs + the NVMe mirror as special vdev).
   boot.zfs.extraPools = [ "storage" ];
 
+  # A scrub takes about 4 hours on the HDDs and slows streaming. First Monday of the month at
+  # 05:00: after the nightly copy (03:30) and auto-update (04:30), and on a weekday morning,
+  # when the services are used least (weekends are the busy time).
   services.zfs.autoScrub = {
     enable = true;
-    interval = "monthly";
+    interval = "Mon *-*-01..07 05:00";
+  };
+
+  # Properties of the existing storage pool (it is not managed by disko). Set on every boot;
+  # `zfs set` with an unchanged value does nothing, and only newly written blocks are affected.
+  #  - storage/backup: special_small_blocks=0 keeps the backups' data on the raidz2 HDDs.
+  #    Otherwise the nightly copy would land on the NVMe special mirror: a receive keeps the
+  #    source's block sizes (64K app data, 16K Postgres), all below the pool's 128K limit.
+  #  - dnodesize=auto: recommended with xattr=sa (stores the xattrs in larger dnodes).
+  systemd.services.storage-properties = {
+    description = "Set ZFS properties on the storage pool";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "zfs-import.target" ];
+    before = [ "syncoid-appdata.service" ];
+    path = [ config.boot.zfs.package ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      zfs set dnodesize=auto storage
+      zfs set special_small_blocks=0 storage/backup
+    '';
   };
   services.zfs.trim.enable = true;
 
