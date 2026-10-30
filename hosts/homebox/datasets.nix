@@ -136,6 +136,9 @@ in
       };
       "storage/music" = {
         create = false;
+        # Created by the restore tool from the installer, before storage-properties (zfs.nix)
+        # has raised the pool to 1M; set here so the music copy is written with 1M blocks.
+        properties.recordsize = "1M";
         group = "music";
         mode = "2775";
       };

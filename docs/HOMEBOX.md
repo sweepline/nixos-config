@@ -80,6 +80,14 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
     and downloads share one dataset so Lidarr's imports stay moves, not copies. (No separate
     downloads dataset for media: every *arr import would become a copy.)
   - `storage/git`: bare repos (below).
+- Block sizes on `storage` (set at boot by `storage-properties`, `hosts/homebox/zfs.nix`, which
+  has the reasons): `recordsize=1M` and `special_small_blocks=512K` for the whole pool, so
+  files up to 512K (covers, subtitles, thumbnails) go to the NVMe special mirror and the rest
+  to the HDDs in 1M blocks. `storage/music` is created with 1M by the restore tool. Only new
+  writes use new values; the existing media stays at 512K.
+  **Rule: `special_small_blocks` must stay below every dataset's recordsize.** If it is equal
+  or larger, all of that dataset's data goes to the 232 GB NVMe mirror. Check before giving
+  a dataset a smaller recordsize: `zfs get -r recordsize,special_small_blocks storage`.
 
 ### Snapshots and backups
 - sanoid (`hosts/homebox/zfs.nix`), every period set explicitly:

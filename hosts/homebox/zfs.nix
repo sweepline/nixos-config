@@ -64,10 +64,19 @@ in
 
   # Properties of the existing storage pool (it is not managed by disko). Set on every boot;
   # `zfs set` with an unchanged value does nothing, and only newly written blocks are affected.
+  #  - recordsize=1M, special_small_blocks=512K (were 512K/128K on Ubuntu): files up to 512K
+  #    (covers, subtitles, Immich thumbnails; ~2 GB) go to the NVMe special mirror, everything
+  #    else is stored in 1M blocks on the HDDs. Above 1M nothing got measurably faster, while
+  #    tag scans (Navidrome, Lidarr), seeking and in-place tag edits read or rewrite whole
+  #    blocks; 2M/1M was considered and rejected for that. Same values for music and media:
+  #    a split gained too little. Never set special_small_blocks >= a dataset's recordsize:
+  #    then ALL of that dataset's data goes to the NVMe mirror (232 GB).
   #  - storage/backup: special_small_blocks=0 keeps the backups' data on the raidz2 HDDs.
   #    Otherwise the nightly copy would land on the NVMe special mirror: a receive keeps the
-  #    source's block sizes (64K app data, 16K Postgres), all below the pool's 128K limit.
+  #    source's block sizes (64K app data, 16K Postgres), all below the 512K limit.
   #  - dnodesize=auto: recommended with xattr=sa (stores the xattrs in larger dnodes).
+  # Order matters: the record size is raised before the small-block limit, so the rule above
+  # holds at every step.
   systemd.services.storage-properties = {
     description = "Set ZFS properties on the storage pool";
     wantedBy = [ "multi-user.target" ];
@@ -81,6 +90,8 @@ in
     script = ''
       zfs set dnodesize=auto storage
       zfs set special_small_blocks=0 storage/backup
+      zfs set recordsize=1M storage
+      zfs set special_small_blocks=512K storage
     '';
   };
   services.zfs.trim.enable = true;
