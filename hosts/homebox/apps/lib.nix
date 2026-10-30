@@ -11,6 +11,11 @@ rec {
   # (100000:65536). The same with and without keep-id (docs/HOMEBOX.md).
   hostId = n: toString (100000 + n - 1);
 
+  # The shared network for apps that talk to each other (apps/default.nix). By container
+  # name instead of through Caddy and the domain, so these connections do not depend on
+  # Caddy, TLS, DNS or the domain.
+  network = "apps.network";
+
   # Who a container runs as (docs/HOMEBOX.md, "Ownership and permissions").
   runAs = {
     # Images that run as root inside: rootless Podman maps container root to mikkel, so
@@ -87,6 +92,9 @@ rec {
       environments ? { },
       # Env vars that contain the domain, as "...@DOMAIN@..." (see domainEnvScript).
       domainEnv ? { },
+      # Quadlet networks to join, e.g. [ apps.network ]: apps on the same network reach each
+      # other by container name (http://sonarr:8989).
+      networks ? [ ],
       # podman auto-update pulls a new image for the same tag. Off for pinned versions.
       autoUpdate ? true,
     }:
@@ -98,7 +106,15 @@ rec {
       containerConfig = lib.mkMerge [
         runAs
         {
-          inherit image volumes environments;
+          inherit
+            image
+            volumes
+            environments
+            networks
+            ;
+          # The container's own name, which is also how the others on its network reach it.
+          # (SABnzbd, for one, only answers to host names it knows.)
+          hostname = name;
           publishPorts = map (p: "127.0.0.1:${p}") ports;
           timezone = "local";
           autoUpdate = lib.mkIf autoUpdate "registry";

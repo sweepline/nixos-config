@@ -74,10 +74,11 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 - App data lives on the SSD, not on `storage`: every ZFS commit on `storage` makes the hard
   drives seek, which is audible every few seconds.
 - New datasets on `storage`:
-  - `storage/music` with `library/`, `unmapped/`, `downloads/` (from `media/music`,
-    `media/unmapped_music`, music downloads). Library and downloads share one dataset so
-    Lidarr's imports stay moves, not copies. (No separate downloads dataset for media: every
-    *arr import would become a copy.)
+  - `storage/music`: `library/` (was `media/music`), `unmapped/` (was
+    `media/unmapped_music`) and `downloads/` with `usenet/music`, `slsk`, `bandcamp`, `aurral`
+    (were `media/downloads/usenet/music`, `media/downloads/{slsk,bandcamp,aurral}`). Library
+    and downloads share one dataset so Lidarr's imports stay moves, not copies. (No separate
+    downloads dataset for media: every *arr import would become a copy.)
   - `storage/git`: bare repos (below).
 
 ### Snapshots and backups
@@ -187,9 +188,29 @@ mikkel is a member of `media` and `music` on the host.
 | Lidarr / Aurral / Navidrome | 8202 / 8203 / 8204 | 8686 / 3001 / 4533 | lidarr.i / aurral.i / navidrome.i |
 | cgit | (new) | – | git.i |
 
-Paths inside the containers stay as today (`/media`, `/media/music`, `/media/downloads/...`)
-so the apps keep their settings; only host paths change. SABnzbd's music category moves to
-`/storage/music/downloads/usenet`; Lidarr's download-client path mapping may need one update.
+Paths inside the containers stay exactly as today (`/media`, `/media/music`,
+`/media/downloads/...`), so no path setting in any app changes; only the host side moves.
+SABnzbd keeps `media/downloads/usenet` and gets `music/downloads/usenet/music` mounted over its
+`music` category folder (the empty `media/downloads/usenet/music` stays as the mount point);
+Lidarr gets `music/downloads` as `/media/downloads`, so both see
+`/media/downloads/usenet/music/...` and no path mapping is needed.
+
+Apps reach each other on the `apps` Podman network by container name (`http://sonarr:8989`),
+not through Caddy and the domain, so these connections do not depend on Caddy, TLS, DNS or
+the domain. Today they all use `https://<app>.i.esmi.dk`, so after the migration these
+settings change once (in the web UIs):
+
+| App | Setting | New value |
+|---|---|---|
+| Sonarr | Download clients "SABnzbd", "SABnzbd - Anime" | host `sabnzbd`, port 8080, no SSL |
+| Radarr | Download client "SABnzbd" | host `sabnzbd`, port 8080, no SSL |
+| Lidarr | Download clients "SABnzbd", "Slskd" | `sabnzbd:8080`, `http://slskd:5030` |
+| Prowlarr | Apps Sonarr, Radarr, Lidarr | Prowlarr server `http://prowlarr:9696`, app `http://sonarr:8989`, `http://radarr:7878`, `http://lidarr:8686` |
+| Prowlarr | Download client "SABnzbd" | `sabnzbd:8080`, no SSL |
+| Bazarr | Sonarr, Radarr | `sonarr` 8989, `radarr` 7878, no SSL |
+| Jellyseerr | Jellyfin, Sonarr, Radarr | `jellyfin:8096`, `sonarr:8989`, `radarr:7878`, no SSL; external Jellyfin URL `https://stream.<domain>` |
+| Aurral | Lidarr, Navidrome, Prowlarr, SABnzbd, slskd | `http://<name>:<container port>` |
+| SABnzbd | Config → Special → `host_whitelist` | add `sabnzbd` and `sabnzbd.i.<domain>` |
 
 ## Migration day (outline; the full runbook and restore script are still to be written)
 
@@ -227,9 +248,9 @@ requested).
 
 Next in the repo:
 1. The other apps on the container framework (done: datasets, groups, run-as presets, domain
-   env files, Vaultwarden): the *arr apps and SABnzbd, Jellyfin (GPU), Jellyseerr, Lidarr,
-   slskd, Aurral, Navidrome, rsgain, Joplin, Immich, immich-public-proxy, cgit and
-   `storage/git`.
+   env files, the `apps` network, Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr):
+   Jellyfin (GPU), Jellyseerr, Lidarr, slskd, Aurral, Navidrome, rsgain, Joplin, Immich,
+   immich-public-proxy, cgit and `storage/git`.
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
 3. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot
    cleanup, AirVPN for slskd.
