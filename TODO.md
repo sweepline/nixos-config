@@ -9,6 +9,15 @@
 - [ ] https://github.com/alangrainger/immich-public-proxy for public immich.
 - [ ] change to generic names maybe? music.domain vpn.domain flix.domain?
 - [ ] move git to /storage/git and setup cgit on git.i.newdomain
+- [ ] Maybe setup soulseek with airvpn
+- [ ] Server VLAN in unifi. others can establish connection in, but server cannot establish out.
+- [ ] server secrets only for server host key maybe?
+- [ ] think about segregating permissions for the public services (slskd, jellyfin, ipp).
+  - [ ] All containers should use their own user, and then groups for shared files.
+  - [ ] music group
+  - [ ] media group
+  - [ ] all others use their own user group.
+
 
 ## Before installing
 
