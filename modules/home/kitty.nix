@@ -28,7 +28,6 @@
     };
     keybindings = {
       "ctrl+shift+n" = "new_window";
-      "ctrl+t" = "new_tab";
       "ctrl+plus" = "change_font_size all +1.0";
       "ctrl+minus" = "change_font_size all -1.0";
       "ctrl+0" = "change_font_size all 0";
