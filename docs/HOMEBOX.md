@@ -111,6 +111,9 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
   Caveats: they count against the 1 TB quota (data pruned by restic stays until its snapshot
   expires), the number per box is limited, they cover the whole box, and the Hetzner account
   (2FA, never on the server) becomes what protects them.
+  Access: the main account has 97's SSH key (admin, from the desktop). homebox gets a
+  sub-account with base dir `/homebox/` and logs in with its own SSH key (agenix); the
+  sub-account's password is only for installing that key and stays off the server.
 - Restore test, once after the migration and then about yearly: clone one app's copy and
   check that it holds its data, e.g.
   `sudo zfs clone storage/backup/appdata/vaultwarden@<snapshot> storage/restore-test -o mountpoint=/mnt/restore-test`,
