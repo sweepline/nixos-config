@@ -9,11 +9,11 @@
 # run pkgs/update-sadmin.sh, which sets the newest version and hash here.
 stdenv.mkDerivation rec {
   pname = "sadmin";
-  version = "0.1.13";
+  version = "0.1.15";
 
   src = fetchurl {
     url = "https://github.com/antialize/simple-admin/releases/download/v${version}/sadmin-client.zip";
-    hash = "sha256-XI3lLxcnB0dwy0F+LTLtNkhf+IT4mpLu4ROh57CbBxU=";
+    hash = "sha256-xJjYiUmzFYnJVjGC4oWdw3NKw0kJfHSPDdmE58xfaAs=";
   };
   sourceRoot = ".";
 
