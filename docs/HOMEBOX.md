@@ -41,9 +41,11 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 - Everything moves from `esmi.dk` to a new `.net` on Cloudflare (registrar + DNS), internal
   names included. `esmi.dk` keeps only mail: its DNS moves to Fastmail, and the website moves
   to Fastmail's hosting (remove the A records that point home first).
-- Public DNS (Cloudflare, DNS only): one inconspicuous name updated by UniFi DDNS,
-  `*.<domain>` CNAME to it, and a TXT record on `i.<domain>` so the wildcard does not answer for
-  the internal names. Internal `*.i.<domain>` records only on the router's DNS.
+- Public DNS (Cloudflare, DNS only): a wildcard A record `*.<domain>` updated directly by
+  UniFi DDNS, and a TXT record on `i.<domain>` so the wildcard does not answer for the
+  internal names. Internal `*.i.<domain>` records only on the router's DNS. If UniFi ever
+  adds a second `*` record instead of updating it (seen once, unconfirmed), switch to a
+  normal DDNS name (e.g. `gw.<domain>`) with `*.<domain>` as a CNAME to it.
 - Public names are generic: `stream.` (Jellyfin), `request.` (Jellyseerr), `photos.` (Immich
   public proxy), `vpn.` (WireGuard endpoint, DNS only). Internal names keep the product name
   (`sonarr.i.`, `navidrome.i.`, ...).

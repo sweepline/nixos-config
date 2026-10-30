@@ -17,8 +17,9 @@ the repo. Never write the new domain in this repo (it is only in agenix).
       (`printf '%s' ... `), for the email alerts (hosts/homebox/alerts.nix).
 - [x] On the server now: `sudo zfs destroy -r storage/joplin` (unused, 14 old snapshots).
 - [ ] Offline list of passwords (HOMEBOX.md, "Passwords to keep outside the server").
-- [ ] Cloudflare DNS for the new domain (DNS only): an inconspicuous name updated by UniFi DDNS,
-      `*.<domain>` CNAME to it, a TXT record on `i.<domain>`.
+- [x] Cloudflare: wildcard A record `*.<domain>` (DNS only), updated by UniFi DDNS.
+- [ ] Cloudflare: TXT record on `i.<domain>` (e.g. `internal`), so internal names don't
+      resolve publicly.
 - [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).
 - [ ] WireGuard: `vpn.<domain>` as the endpoint in every client (`wg0-*.age`, phones).
 - [ ] esmi.dk: website to Fastmail hosting, remove the A records that point home, then move

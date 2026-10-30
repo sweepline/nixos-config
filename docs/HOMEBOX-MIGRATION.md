@@ -15,8 +15,8 @@ the other disks are the five pool HDDs and the two NVMe drives of the pool's spe
 1. **Secrets** in `secrets/` (TODO.md): `caddy`, `domain`, `wg0`, `navidrome`, `joplin`,
    `immich` (`*-homebox.age`). Check that each decrypts to the expected keys:
    `cd secrets && for f in *-homebox.age; do echo "$f: $(agenix -d $f | cut -d= -f1 | tr '\n' ' ')"; done`
-2. **DNS** for the new domain (TODO.md), any time before: the DDNS name and the wildcard
-   CNAME on Cloudflare, `*.i.<domain>` on the router, UniFi's DDNS, the WireGuard endpoint.
+2. **DNS** for the new domain (TODO.md), any time before: the wildcard A record (UniFi DDNS)
+   and the TXT on `i.` on Cloudflare, `*.i.<domain>` on the router, the WireGuard endpoint.
    Caddy needs the Cloudflare part on the first boot to get certificates.
 3. **Build** on a desktop, so nothing is compiled on the day, and push the repo (the
    installer clones it):
