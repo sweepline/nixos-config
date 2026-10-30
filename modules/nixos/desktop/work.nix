@@ -19,14 +19,6 @@ lib.mkIf config.my.work.enable {
   # `pnpm run certinstall`, which only writes to NSS dbs. Browsers: see modules/home/work.nix.
   security.pki.certificateFiles = [ ../../../certs/scalgo-root.crt ];
 
-  # Pin the work web UI to its Tailscale address: public DNS also returns a
-  # public IPv4 and an IPv6 address whose path fails (bypassing tailscale0).
-  # resolved suppresses the DNS A/AAAA lookups for names in /etc/hosts, so
-  # this entry also keeps the name off IPv6.
-  networking.extraHosts = ''
-    100.79.163.123 i.scalgo.com
-  '';
-
   # sadmin (simple-admin client); it reads its server from /etc/sadmin.json.
   # mono's deploy scripts prefer buildah when present: they read the pushed image digest
   # from `buildah push --digestfile`, while podman's docker shim prints no digest to parse.
