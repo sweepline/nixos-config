@@ -141,7 +141,7 @@ primary group to be `mikkel` (1000), not `users`. Tested with linuxserver/prowla
 | Postgres (Immich, Joplin) | unchanged | 100998 |
 | **Jellyfin** | `user=3001:3001`, media read-only, GPU via the `jellyfin-gpu` group (below) | 103000 |
 | **Jellyseerr** | the image's own user `node` (1000), no keep-id | 100999 (as today) |
-| **Immich public proxy** | `user=3003:3003`, no files, only reaches Immich | – |
+| **Immich public proxy** | `user=3003:3003`, no files; only on the `immich-public` network with the server, so it cannot reach Immich's database, Redis or ML | – |
 | **slskd** | `user=3004:2002` (music), `SLSKD_UMASK=0002` (the image's entrypoint sets the umask itself); tested | 103003 |
 
 The public ones (bold) also get read-only mounts where possible, `NoNewPrivileges` and
@@ -165,7 +165,9 @@ mikkel is a member of `media` and `music` on the host.
 - New: **immich-public-proxy** on `photos.<domain>` (only shared links are public; Immich
   itself stays internal). **cgit** on `git.i.<domain>`: lists every bare repo in
   `/storage/git`, served through Caddy via FastCGI; repos are used over SSH as mikkel
-  (`mikkel@<server>:/storage/git/foo.git`), GitHub mirrors via a second push URL.
+  (`mikkel@<server>:/storage/git/foo.git`), GitHub mirrors via a second push URL. Native, not a
+  container: as its own `cgit` user it can only read the repos (a rootless container would
+  need mikkel's UID, i.e. write access); a systemd sandbox on fcgiwrap gives the isolation.
 - Future: slskd behind gluetun + AirVPN (port forwarding), then the 50300 router forward and
   firewall rule go away.
 - Dropped: droppedneedle, gluetun/Privado (`compose.vpn.yml`), `jellyfin_down`, the esmi.dk
@@ -258,7 +260,9 @@ Next in the repo:
    files, the `apps` network; Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr, Lidarr,
    Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr, Joplin, Immich,
    immich-public-proxy, cgit and `storage/git`).
-2. Migration runbook + restore script (with `--undo`), VM test of the host.
+2. Migration runbook + restore script (with `--undo`), VM test of the host. The VM test must
+   also check what could not be tested on a desktop: cgit inside its systemd sandbox (system
+   service with socket activation), and that the Immich proxy cannot reach `immich-postgres`.
 3. After the migration: Arc A380 (below), Immich 3 (below), `homebox-backup` on esa, restic to
    Hetzner, snapshot cleanup, AirVPN for slskd.
 

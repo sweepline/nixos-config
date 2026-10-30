@@ -63,6 +63,37 @@ in
     };
   };
 
+  # Native instead of a container: cgit is internal only, comes with NixOS, and as its own
+  # user it can only read the repos (a rootless container would see mikkel's files as root's
+  # and need his UID, i.e. write access). This sandbox gives the process isolation a
+  # container would: a cgit bug can at most read the repos, which cgit does anyway.
+  systemd.services.fcgiwrap-cgit.serviceConfig = {
+    ProtectSystem = "strict";
+    ProtectHome = true;
+    PrivateTmp = true;
+    PrivateDevices = true;
+    NoNewPrivileges = true;
+    CapabilityBoundingSet = "";
+    # Only the socket from systemd; no network.
+    RestrictAddressFamilies = [ "AF_UNIX" ];
+    PrivateNetwork = true;
+    ProtectKernelTunables = true;
+    ProtectKernelModules = true;
+    ProtectKernelLogs = true;
+    ProtectControlGroups = true;
+    ProtectClock = true;
+    ProtectHostname = true;
+    ProtectProc = "invisible";
+    RestrictNamespaces = true;
+    RestrictRealtime = true;
+    RestrictSUIDSGID = true;
+    LockPersonality = true;
+    RemoveIPC = true;
+    SystemCallArchitectures = "native";
+    SystemCallFilter = [ "@system-service" ];
+    # Not MemoryDenyWriteExecute: the Python filters (README, highlighting) may need it.
+  };
+
   my.proxy."git.i".extraConfig = ''
     @static path /cgit.css /cgit.png /cgit.js /favicon.ico /robots.txt
     handle @static {

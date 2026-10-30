@@ -10,8 +10,13 @@ let
   secret = ../../../secrets/immich-homebox.age;
   passwordFile = lib.optional (config.age.secrets ? immich) config.age.secrets.immich.path;
   # Immich's own network: database, Redis and machine learning are only reachable from the
-  # Immich server (and the public proxy reaches the server).
+  # Immich server.
   network = "immich.network";
+  # Between the server and the public proxy only. The proxy faces the internet, so it must not
+  # reach the database (with the password it would have all of Immich's data), Redis or
+  # machine learning. Podman has no per-container rules within one network, but the server
+  # being on both networks gives exactly that: the proxy cannot even resolve the others.
+  publicNetwork = "immich-public.network";
 
   # Pinned to the version running before the migration (2.7.5), so moving to NixOS does not
   # also upgrade Immich. Upgrade afterwards on purpose, following Immich's release notes
@@ -47,6 +52,7 @@ in
 
   home-manager.users.mikkel.virtualisation.quadlet = {
     networks.immich = { };
+    networks.immich-public = { };
 
     containers.immich-postgres = lib.mkMerge [
       (apps.container {
@@ -92,7 +98,10 @@ in
         image = "ghcr.io/immich-app/immich-server:${version}";
         autoUpdate = false;
         ports = [ "2283:2283" ];
-        networks = [ network ];
+        networks = [
+          network
+          publicNetwork
+        ];
         # Photos and videos, thumbnails, encoded videos and Immich's own database dumps.
         volumes = [ "/storage/immich:/data" ];
         environments = {
@@ -123,7 +132,8 @@ in
       # Isolated: reachable from the internet, and it needs no files at all.
       runAs = apps.runAs.isolated proxyUid;
       ports = [ "8300:3000" ];
-      networks = [ network ];
+      # Only the network with the server, not Immich's internal one.
+      networks = [ publicNetwork ];
       environments.IMMICH_URL = "http://immich-server:2283";
       domainEnv.PUBLIC_BASE_URL = "https://photos.@DOMAIN@";
     };
