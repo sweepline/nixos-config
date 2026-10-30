@@ -210,17 +210,16 @@ and the `external-backup-*` snapshots. Later: the old `zfs-auto-snap_*` snapshot
 ## Status
 
 Done (committed): common/desktop module split; `hosts/homebox` (disko, ZFS, sanoid/syncoid,
-users, Home Manager + quadlet-nix); `wg0-homebox.age` (IPv6 DNS typo fixed); Caddy (still with
-esmi.dk names).
+users, Home Manager + quadlet-nix); `wg0-homebox.age` (IPv6 DNS typo fixed); Caddy with
+`{$DOMAIN}` (tested with `caddy adapt/validate`: only the two wildcard certificates are
+requested).
 
 Next in the repo:
-1. Caddy: `{$DOMAIN}` from agenix, public wildcard, generic public names; drop the esmi.dk
-   site.
-2. Container framework: dataset/permission service, `media`/`music` groups, a quadlet helper
+1. Container framework: dataset/permission service, `media`/`music` groups, a quadlet helper
    for both trust levels, proxy entries. Vaultwarden first, then the other apps,
    immich-public-proxy, cgit and `storage/git`.
-3. Migration runbook + restore script (with `--undo`), VM test of the host.
-4. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot
+2. Migration runbook + restore script (with `--undo`), VM test of the host.
+3. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot
    cleanup, AirVPN for slskd.
 
 Outside the repo (user): see the homebox section in TODO.md.

@@ -1,9 +1,16 @@
 # Reverse proxy and TLS for everything on the server. Certificates come from Let's Encrypt
-# through the Cloudflare DNS challenge, including a wildcard for *.i.esmi.dk that every
-# internal site uses (Caddy >= 2.10 picks the wildcard over per-name certificates).
+# through the Cloudflare DNS challenge: one wildcard for the public names and one for the
+# internal *.i. names (Caddy >= 2.10 uses a matching wildcard instead of getting a certificate
+# per name, so the CT logs only show the two wildcards).
 #
-# Apps add themselves with my.proxy (usually next to their container):
-#   my.proxy."sonarr.i.esmi.dk".port = 8101;
+# The domain is a secret (docs/HOMEBOX.md): it only exists in secrets/caddy-homebox.age as
+# DOMAIN=example.net, and Caddy substitutes {$DOMAIN} when it reads the Caddyfile (start and
+# reload). Names in this repo never contain it.
+#
+# Apps add themselves with my.proxy, keyed by the name without the domain (usually next to
+# their container):
+#   my.proxy."sonarr.i".port = 8101;                                         # internal
+#   my.proxy."stream" = { port = 8096; public = true; maintenance = true; }; # public
 {
   config,
   lib,
@@ -14,14 +21,19 @@ let
   secret = ../../secrets/caddy-homebox.age;
   hasSecret = builtins.pathExists secret;
 
+  # Without the secret the names end in the reserved .invalid TLD, so Caddy still starts
+  # (and the VM test works) instead of failing on addresses like "stream.".
+  domain = "{$DOMAIN:invalid}";
+  host = name: "${name}.${domain}";
+
   maintenancePage = ./www/maintenance;
 
   # Port 443 is forwarded from the internet, so every site is reachable from outside by
-  # sending its name (SNI/Host) to the public IP; hiding the names from public DNS is not
-  # enough (the wildcard certificate is in public CT logs). Internal sites therefore drop
-  # connections that do not come from a private address: LAN (192.168.10.0/24), WireGuard
-  # (192.168.3.0/24, fd0c:d4ed:7945:ddd9::/64) and the router's hairpin NAT. A list of
-  # subnets would miss the LAN's IPv6 prefix, which comes from the ISP and can change.
+  # sending its name (SNI/Host) to the public IP; leaving the internal names out of public DNS
+  # is not enough. Internal sites therefore drop connections that do not come from a private
+  # address: LAN, the server VLAN, WireGuard (192.168.3.0/24, fd0c:d4ed:7945:ddd9::/64) and the
+  # router's hairpin NAT. A list of subnets would miss the LAN's IPv6 prefix, which comes from
+  # the ISP and can change.
   internalOnly = ''
     @external not remote_ip private_ranges
     abort @external
@@ -45,7 +57,10 @@ let
 in
 {
   options.my.proxy = lib.mkOption {
-    description = "Sites served by Caddy, by host name, proxied to a port on localhost.";
+    description = ''
+      Sites served by Caddy, proxied to a port on localhost. Keyed by the host name without
+      the domain ("stream", "sonarr.i"); internal names end in ".i".
+    '';
     default = { };
     type = lib.types.attrsOf (
       lib.types.submodule {
@@ -57,7 +72,7 @@ in
           public = lib.mkOption {
             type = lib.types.bool;
             default = false;
-            description = "Reachable from the internet. Otherwise only from LAN and WireGuard.";
+            description = "Reachable from the internet. Otherwise only from private addresses (LAN, WireGuard).";
           };
           maintenance = lib.mkOption {
             type = lib.types.bool;
@@ -70,6 +85,13 @@ in
   };
 
   config = {
+    assertions = lib.mapAttrsToList (name: site: {
+      # Catches a public site under the internal names (or an internal one outside them),
+      # which would put it under the wrong wildcard certificate and expectations.
+      assertion = site.public == !(lib.hasSuffix ".i" name);
+      message = "my.proxy.\"${name}\": names ending in \".i\" are internal, all others must set public = true.";
+    }) config.my.proxy;
+
     services.caddy = {
       enable = true;
       # Cloudflare plugin for the DNS challenge. v0.2.4 or newer is needed for Cloudflare's
@@ -79,33 +101,32 @@ in
         plugins = [ "github.com/caddy-dns/cloudflare@v0.2.4" ];
         hash = "sha256-tubXIDCJnO2mvdnPlZclwDhNGaeeYLSt7lnni3+pXDo=";
       };
-      # CF_API_TOKEN=... (Zone:Read + DNS:Edit for esmi.dk). Without the secret Caddy still
-      # runs, it just cannot get certificates.
+      # CF_API_TOKEN=... (Zone:Read + DNS:Edit for the new zone only) and DOMAIN=...
+      # Without the secret Caddy still runs, but on .invalid names and without certificates.
       environmentFile = lib.mkIf hasSecret config.age.secrets.caddy.path;
       globalConfig = ''
         acme_dns cloudflare {env.CF_API_TOKEN}
       '';
 
       virtualHosts = {
-        "esmi.dk".extraConfig = ''
-          root * ${./www/esmi.dk}
-          file_server
+        # These two get the wildcard certificates, and answer for names without a site of
+        # their own: public ones are dropped, internal ones get a 404.
+        "*.${domain}".extraConfig = ''
+          abort
         '';
-        "www.esmi.dk".extraConfig = ''
-          redir https://esmi.dk{uri}
-        '';
-        # Gets the wildcard certificate, and answers for names without a site of their own.
-        "*.i.esmi.dk".extraConfig = ''
+        "*.i.${domain}".extraConfig = ''
           ${internalOnly}
           respond "Not found" 404
         '';
         # Quick check that Caddy and the internal network path work.
-        "homebox.i.esmi.dk".extraConfig = ''
+        ${host "homebox.i"}.extraConfig = ''
           ${internalOnly}
           respond "Hello, world!"
         '';
       }
-      // lib.mapAttrs (_: site: { extraConfig = siteConfig site; }) config.my.proxy;
+      // lib.mapAttrs' (
+        name: site: lib.nameValuePair (host name) { extraConfig = siteConfig site; }
+      ) config.my.proxy;
     };
 
     age.secrets.caddy = lib.mkIf hasSecret {
