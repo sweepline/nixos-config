@@ -109,9 +109,15 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 
 ### Containers
 - Rootless quadlets via quadlet-nix in Home Manager (`home-manager.users.mikkel`), lingering
-  user, one module per app. Data in bind mounts `/srv/appdata/<app>`. A root service creates
-  the datasets and sets owners and modes before the user manager starts (never deletes).
-  Postgres data dirs get their own datasets with `recordsize=16K`.
+  user, one module per app in `hosts/homebox/apps/` (shared pieces in `apps/lib.nix`). Data in
+  bind mounts `/srv/appdata/<app>`. A root service (`datasets.nix`, `my.datasets`) creates the
+  datasets and sets owner and mode of their top directory before the user manager starts
+  (never deletes). Postgres data dirs get their own datasets with `recordsize=16K`.
+- Env vars containing the domain are templates with `@DOMAIN@`, filled in from the domain
+  secret just before the container starts, into `/run/user/1000/apps/<app>.env` (tmpfs, 0600).
+- Ports are published on 127.0.0.1 only; Caddy proxies to them. podman auto-update runs at
+  04:30, right after the nightly copy of the app data (03:30), so a bad update can be rolled
+  back to a fresh snapshot.
 
 #### Ownership and permissions
 Two trust levels. Private apps run as mikkel, so their files are mikkel's and no
@@ -219,9 +225,10 @@ users, Home Manager + quadlet-nix); `wg0-homebox.age` (IPv6 DNS typo fixed); Cad
 requested).
 
 Next in the repo:
-1. Container framework: dataset/permission service, `media`/`music` groups, a quadlet helper
-   for both trust levels, proxy entries. Vaultwarden first, then the other apps,
-   immich-public-proxy, cgit and `storage/git`.
+1. The other apps on the container framework (done: datasets, groups, run-as presets, domain
+   env files, Vaultwarden): the *arr apps and SABnzbd, Jellyfin (GPU), Jellyseerr, Lidarr,
+   slskd, Aurral, Navidrome, rsgain, Joplin, Immich, immich-public-proxy, cgit and
+   `storage/git`.
 2. Migration runbook + restore script (with `--undo`), VM test of the host.
 3. After the migration: Arc A380, `homebox-backup` on esa, restic to Hetzner, snapshot
    cleanup, AirVPN for slskd.

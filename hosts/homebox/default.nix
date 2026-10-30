@@ -9,7 +9,9 @@
     ./zfs.nix
     ./users.nix
     ./domain.nix
+    ./datasets.nix
     ./caddy.nix
+    ./apps
   ];
 
   # Not signed: the server boots unattended and has no Windows or TPM unlock to protect.
