@@ -134,7 +134,7 @@ primary group to be `mikkel` (1000), not `users`. Tested with linuxserver/prowla
 | Sonarr, Radarr, Prowlarr, Bazarr, SABnzbd | `userns=keep-id`, `user=0:0`, `PUID=PGID=1000`, `UMASK=002` | mikkel |
 | Lidarr, Aurral | same, but `PGID=2002` (music) as primary group; `GroupAdd` would not survive the init switching to the app user | mikkel |
 | Navidrome | `userns=keep-id`, `user=1000:1000`; music read-only | mikkel |
-| rsgain | not a container: a systemd timer (every 6 h) as mikkel, group music | mikkel |
+| rsgain | not a container: a systemd timer as mikkel, group music; every 15 min only album folders with new or moved audio files (found by ctime, metadata only, so the drives stay quiet), plus a monthly full pass | mikkel |
 | Vaultwarden, Immich, Joplin server | unchanged (container root = mikkel) | mikkel |
 | Postgres (Immich, Joplin) | unchanged | 100998 |
 | **Jellyfin** | `user=3001:3001`, media read-only, `keep-groups` (render) | 103000 |
