@@ -120,8 +120,10 @@ SSH in over the LAN (`ssh mikkel@192.168.10.2`) or WireGuard (`192.168.3.2`).
 
 1. System: `systemctl --failed` (empty), `zpool status` (both pools ONLINE),
    `systemctl status datasets` (no errors), `systemctl status wg-quick-wg0`.
-2. Containers: `systemctl --user --failed` (empty), `podman ps` (all running). The first start
-   pulls every image and can take a while.
+2. Containers: `systemctl --user --failed` (empty), `podman ps` (all 19 running). The first
+   start pulls every image and can take a while (about 15 minutes in the VM test). While the
+   apps start, a few `... healthcheck run ...` units can show as failed for a moment; they
+   clear themselves once the containers are `healthy`.
 3. Caddy: `journalctl -u caddy | grep -i "certificate obtained"` (the two wildcards).
 4. Every app opens on its new name (HOMEBOX.md, ports table), from the LAN and WireGuard.
 5. App settings that pointed to `*.i.esmi.dk` (HOMEBOX.md has the table): download clients,

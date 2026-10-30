@@ -250,11 +250,19 @@ Next in the repo:
    files, the `apps` network; Vaultwarden, Sonarr, Radarr, Prowlarr, SABnzbd, Bazarr, Lidarr,
    Aurral, Navidrome, rsgain, slskd, Jellyfin, Jellyseerr, Joplin, Immich,
    immich-public-proxy, cgit and `storage/git`).
-2. Done: migration runbook (HOMEBOX-MIGRATION.md) and restore tool (dry run tested with a
-   simulated pool). Next: VM test of the host (needs KVM: SVM is off in 97's BIOS). It runs
-   the restore tool for real on a fake migration set, and checks what could not be tested on
-   a desktop: cgit inside its systemd sandbox (system service with socket activation), and
-   that the Immich proxy cannot reach `immich-postgres`.
+2. Done: migration runbook (HOMEBOX-MIGRATION.md), restore tool, and a VM test of the host
+   (`hosts/homebox/vm.nix`: disko's VM with the real ssd layout, a fake storage pool, test
+   secrets for `example.test`; how to run it is at the top of that file). Tested in the VM:
+   boot from ZFS, all 19 containers, Caddy names (internal, public, unknown), the domain in
+   the apps, file owners per app, the Immich proxy cannot resolve the database, cgit in its
+   sandbox (`systemd-analyze security`: 0.8 SAFE), sanoid, the nightly copy (including a
+   failed and a stalled run), rsgain, the restore tool for real (dry run, run, rerun) on a
+   migration set with the old owners, and a reboot. Fixed on the way: /home is mounted in
+   the initrd (home directories were created on the hidden root, so Home Manager and every
+   container failed), and the nightly copy is our own syncoid service (the NixOS module's
+   sandbox stopped silently after the first dataset and exited successfully), checked after
+   each run and with a time limit. Not testable in the VM: the GPU, real certificates
+   (Cloudflare), the router and WireGuard, the Limine bootloader.
 3. After the migration: Arc A380 (below), Immich 3 (below), `homebox-backup` on esa, restic to
    Hetzner, snapshot cleanup, AirVPN for slskd.
 
