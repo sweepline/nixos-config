@@ -8,6 +8,7 @@
 - [ ] use wildcard dns cert for *.newdomain.xyz and *.i.newdomain.xyz
 - [ ] https://github.com/alangrainger/immich-public-proxy for public immich.
 - [ ] change to generic names maybe? music.domain vpn.domain flix.domain?
+- [ ] move git to /storage/git and setup cgit on git.i.newdomain
 
 ## Before installing
 
