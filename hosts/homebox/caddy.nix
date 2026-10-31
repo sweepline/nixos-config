@@ -113,6 +113,9 @@ in
 
     services.caddy = {
       enable = true;
+      # The module's default is ERROR only, which hides certificate events (obtained, renewed).
+      # INFO without access logs stays quiet.
+      logFormat = "level INFO";
       # Cloudflare plugin for the DNS challenge. v0.2.4 or newer is needed for Cloudflare's
       # current token format (cfut_..., longer than older versions accept:
       # https://github.com/caddy-dns/cloudflare/issues/127).
