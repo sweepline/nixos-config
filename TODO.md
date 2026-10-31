@@ -18,11 +18,11 @@ the repo. Never write the new domain in this repo (it is only in agenix).
 - [x] On the server now: `sudo zfs destroy -r storage/joplin` (unused, 14 old snapshots).
 - [ ] Offline list of passwords (HOMEBOX.md, "Passwords to keep outside the server").
 - [x] Cloudflare: wildcard A record `*.<domain>` (DNS only), updated by UniFi DDNS.
-- [ ] Cloudflare: TXT record on `i.<domain>` (e.g. `internal`), so internal names don't
+- [x] Cloudflare: TXT record on `i.<domain>` (e.g. `internal`), so internal names don't
       resolve publicly.
-- [ ] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).
+- [x] Router DNS: `*.i.<domain>` → the server (like `*.i.esmi.dk` today).
 - [ ] WireGuard: `vpn.<domain>` as the endpoint in every client (`wg0-*.age`, phones).
-- [ ] esmi.dk: website to Fastmail hosting, remove the A records that point home, then move
+- [x] esmi.dk: website to Fastmail hosting, remove the A records that point home, then move
       its DNS to Fastmail.
 - [ ] After the migration: new database passwords for Joplin and Immich (today the defaults
       `joplin` and `postgres`). The database keeps its own copy, so change both together:

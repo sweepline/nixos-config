@@ -59,6 +59,8 @@
   hardware.enableRedistributableFirmware = true;
 
   environment.systemPackages = with pkgs; [
+    # Terminal description for kitty, so SSH sessions from the desktops work.
+    kitty.terminfo
     git
     vim
     curl
