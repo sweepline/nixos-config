@@ -14,7 +14,7 @@ let
   # Arc A380 is in: then change this to the Arc's address (adding a card can also shift the
   # iGPU's), and switch Jellyfin to Intel QSV in Dashboard → Playback → Transcoding. The
   # device path in the container stays /dev/dri/renderD128.
-  gpu = "0000:06:00.0";
+  gpu = "0000:0a:00.0";
 in
 {
   my.datasets = {

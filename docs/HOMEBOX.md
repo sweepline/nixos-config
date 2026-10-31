@@ -12,7 +12,7 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 ## The server today (Ubuntu 26.04)
 
 - Ryzen 5 5600GT (AMD iGPU, `/dev/dri/renderD128`, used by Jellyfin for VAAPI), 62 GB RAM,
-  UEFI, NIC `enp4s0` (DHCP, LAN `192.168.10.2`), WireGuard `192.168.3.2` (client of the UniFi
+  UEFI, NIC `enp8s0` (was `enp4s0` before the A380 shifted the PCI numbering) (DHCP, LAN `192.168.10.2`), WireGuard `192.168.3.2` (client of the UniFi
   router, which is the WireGuard hub `192.168.3.1` and the DNS for `*.i.` names). ZFS hostid
   `61ba3ff7`. Dynamic public IP, kept in DNS by UniFi's DDNS (Cloudflare).
 - `sda` Samsung 870 EVO 500 GB: Ubuntu (ext4 on LVM), rootless Podman storage and all named

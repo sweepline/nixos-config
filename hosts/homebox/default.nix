@@ -28,5 +28,5 @@
 
   # LAN only: the router forwards 443 and 50300 to this machine, never 22. From outside,
   # SSH goes through WireGuard (wg0, opened in modules/nixos/common/networking.nix).
-  networking.firewall.interfaces.enp4s0.allowedTCPPorts = [ 22 ];
+  networking.firewall.interfaces.enp8s0.allowedTCPPorts = [ 22 ];
 }
