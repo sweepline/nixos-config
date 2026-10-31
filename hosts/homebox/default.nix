@@ -30,6 +30,7 @@
   # (modules/nixos/desktop/base.nix). Public keys only; add a desktop's once it has one.
   nix.settings.trusted-public-keys = [
     "97:9It81jYqVZq+2+4DsRDDPvJnjULBhtcfVGVfZr9qbYA="
+    "esa:R8xQnQf4YjWEYdUpbnUeDMh9b5DxMBsHMqHV6KOTPL8="
   ];
 
   # LAN only: the router forwards 443 and 50300 to this machine, never 22. From outside,
