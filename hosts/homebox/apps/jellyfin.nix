@@ -47,8 +47,11 @@ in
   # would pass all of mikkel's groups into the container, media and music included, so a
   # breakout could write to the media and music trees.
   users.groups.jellyfin-gpu.gid = lib.toInt owner;
+  # It also gets a fixed name without colons: podman splits a device argument at `:` (host
+  # path, container path), so the by-path name with the PCI address cannot be passed directly
+  # (found on the server: podman looked for /dev/dri/by-path/pci-0000).
   services.udev.extraRules = ''
-    SUBSYSTEM=="drm", KERNEL=="renderD*", KERNELS=="${gpu}", GROUP="jellyfin-gpu", MODE="0660"
+    SUBSYSTEM=="drm", KERNEL=="renderD*", KERNELS=="${gpu}", GROUP="jellyfin-gpu", MODE="0660", SYMLINK+="dri/jellyfin-render"
   '';
   # To watch the GPU while transcoding (intel_gpu_top, once the Arc is in).
   environment.systemPackages = [ pkgs.intel-gpu-tools ];
@@ -69,7 +72,7 @@ in
       domainEnv.JELLYFIN_PublishedServerUrl = "https://stream.@DOMAIN@";
     })
     {
-      containerConfig.devices = [ "/dev/dri/by-path/pci-${gpu}-render:/dev/dri/renderD128" ];
+      containerConfig.devices = [ "/dev/dri/jellyfin-render:/dev/dri/renderD128" ];
     }
   ];
 }
