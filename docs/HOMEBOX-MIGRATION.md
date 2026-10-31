@@ -127,7 +127,7 @@ SSH in over the LAN (`ssh mikkel@192.168.10.2`) or WireGuard (`192.168.3.2`).
    apps start, a few `... healthcheck run ...` units can show as failed for a moment; they
    clear themselves once the containers are `healthy`.
 3. Caddy: the two wildcard certificates exist,
-   `sudo ls /var/lib/caddy/.local/share/caddy/certificates/*/` (`wildcard_.<domain>` and
+   `sudo ls /var/lib/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/` (`wildcard_.<domain>` and
    `wildcard_.i.<domain>`), and `journalctl -u caddy | grep -iE "certificate obtained|error"`.
 4. Every app opens on its new name (HOMEBOX.md, ports table), from the LAN and WireGuard.
 5. App settings that pointed to `*.i.esmi.dk` (HOMEBOX.md has the table): download clients,
