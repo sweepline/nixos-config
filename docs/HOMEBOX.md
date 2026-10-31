@@ -31,6 +31,13 @@ Below it is written as `<domain>`. Nothing may read a decrypted secret at evalua
 - homebox is a host in this flake on **nixos-26.05** (`nixpkgs-stable`, `home-manager-stable`),
   without the desktop modules. Deployed from a desktop over WireGuard:
   `nh os switch -H homebox --target-host mikkel@192.168.3.2` (nh asks for the sudo password).
+- Deploying needs a signing key on the desktop: homebox only accepts store paths signed by a
+  desktop key in `hosts/homebox/default.nix` (`trusted-public-keys`). Once per desktop:
+  `sudo sh -c 'umask 077 && nix key generate-secret --key-name <host> > /etc/nix/signing-key && echo "secret-key-files = /etc/nix/signing-key" > /etc/nix/signing.conf && chmod 644 /etc/nix/signing.conf'`,
+  then add the output of `sudo sh -c 'nix key convert-secret-to-public < /etc/nix/signing-key'`
+  to that list and deploy homebox. Paths built before the key existed are unsigned: rebuild,
+  or `sudo nix store sign -k /etc/nix/signing-key -r <path>`. (Rejected: mikkel as a trusted
+  Nix user on homebox, which gives root without the sudo password.)
 - The Ubuntu SSH host key is reused (`secrets/keys.nix`, `hosts.homebox`), so agenix secrets
   work on the first boot. The private key must be copied before the wipe.
 - Server secrets are encrypted for the host key and all user keys (like every host). Undecided:

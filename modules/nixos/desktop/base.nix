@@ -9,6 +9,15 @@
 
   programs.nh.flake = config.my.configDir;
 
+  # Sign everything this desktop builds, so homebox accepts it on deploy (nh --target-host
+  # copies as mikkel, and Nix only takes unsigned paths from trusted users). Chosen over
+  # making mikkel trusted on homebox: a trusted user can become root without the sudo
+  # password, while this key is root-only here. The key is created by hand once per desktop
+  # (docs/HOMEBOX.md, "OS and repo"), never in the repo; `!include` skips it while it is missing.
+  nix.extraOptions = ''
+    !include /etc/nix/signing.conf
+  '';
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.printing.enable = true;

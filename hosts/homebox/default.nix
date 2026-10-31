@@ -26,6 +26,12 @@
   # Found in the VM test.
   fileSystems."/home".neededForBoot = true;
 
+  # Deploys copy store paths built on the desktops; accept those signed by their keys
+  # (modules/nixos/desktop/base.nix). Public keys only; add a desktop's once it has one.
+  nix.settings.trusted-public-keys = [
+    "97:9It81jYqVZq+2+4DsRDDPvJnjULBhtcfVGVfZr9qbYA="
+  ];
+
   # LAN only: the router forwards 443 and 50300 to this machine, never 22. From outside,
   # SSH goes through WireGuard (wg0, opened in modules/nixos/common/networking.nix).
   networking.firewall.interfaces.enp8s0.allowedTCPPorts = [ 22 ];
